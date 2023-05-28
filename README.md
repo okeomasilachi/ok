@@ -13,9 +13,9 @@ This project is a custom shell implementation written in C. The shell provides a
 
 To compile and run the shell, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-repo.git`
-2. Navigate to the project directory: `cd your-repo`
-3. Compile the source code: `gcc -o shell main.c`
+1. Clone the repository: `git clone https://github.com/ok`
+2. Navigate to the project directory: `cd ok`
+3. Compile the source code: `gcc -Wall -pedantic -Werror -Wextra -std=gnu89 *.c -g -o shell`
 4. Run the shell: `./shell`
 
 ## Usage
