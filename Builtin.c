@@ -52,7 +52,7 @@ void exit_command(okeoma *info)
 
 	if (info->av[1] == NULL)
 	{
-		/*free_all(n), free_all(n1), _free(1, cmd);*/
+		free_all(info);
 		exit(EXIT_SUCCESS);
 	}
 	else if (info->av[1] != NULL)
@@ -91,13 +91,12 @@ void setenv_command(okeoma *info)
 	else
 	{
 		setenv(info->av[1], info->av[2], 1);
-		while (info->arr[i] != NULL)
+		/*while (info->arr[i] != NULL)
 				i++;
 
-		info->arr[i] = malloc(sizeof(char *));
-		info->arr[i] = env_pos(info);  /* set the position of the arr tp point to the env */
+		info->arr[i] = env_pos(info);   set the position of the arr tp point to the env 
 		for (info->i = 0; info->arr[info->i] != NULL; info->i++)
-			printf("%s\n", info->arr[info->i]);
+			printf("%s\n", info->arr[info->i]);*/
 	}
 }
 

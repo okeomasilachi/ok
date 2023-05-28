@@ -83,3 +83,18 @@ char *env_pos(okeoma *info)
 	}
 	return (NULL);
 }
+
+void free_all(okeoma *info)
+{
+	int i, j, k;
+
+	for (i = 0; info->av[i] != NULL; i++)
+	{
+		free(info->av[i]);
+	}
+	for (k = 0; info->command[k] != NULL; k++)
+	{
+		free(info->command[k]);
+	}
+	for (j = 0; info.)
+}

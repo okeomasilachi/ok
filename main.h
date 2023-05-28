@@ -41,7 +41,7 @@ typedef struct
 	char *old;
 	char *new;
 	char **command;
-	char **arr;
+	char *arr[10];
 	int y;
 	int status;
 	int i;
@@ -68,6 +68,7 @@ char *find_executable(okeoma *info);
 int execute_builtin_command(okeoma *info);
 void B_exc(okeoma *info);
 char *env_pos(okeoma *info);
+void free_all(okeoma *info);
 
 void f_tokenizer(okeoma *info, char *cm);
 char *s_tok(okeoma *info, const char *delimiters);

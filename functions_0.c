@@ -10,7 +10,6 @@ void _in(okeoma *info, char **argv)
 	info->Name = argv[0];
 	info->com_num = 0;
 	info->i = 0;
-	info->arr = malloc(sizeof(char *) * 10);
 }
 
 /**
