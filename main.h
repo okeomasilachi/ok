@@ -76,6 +76,7 @@ void prs(okeoma *info, size_t del_n);
 void prs_2(okeoma *info, size_t del_n);
 void _in(okeoma *info, char **argv);
 
+void _fee(int count, ...);
 void read_input(char *buffer, int *buffer_pos, int *buffer_size);
 char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
 

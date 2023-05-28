@@ -85,7 +85,6 @@ void exit_command(okeoma *info)
 */
 void setenv_command(okeoma *info)
 {
-	int i = 0;
 	if (info->av[1] == NULL || info->av[2] == NULL)
 		dprintf(2, "%s: %ld: %s: Usage: setenv NAME value\n", info->Name, info->com_num, info->av[0]);
 	else

@@ -86,7 +86,7 @@ char *env_pos(okeoma *info)
 
 void free_all(okeoma *info)
 {
-	int i, j, k;
+	int i, k;
 
 	for (i = 0; info->av[i] != NULL; i++)
 	{
@@ -96,5 +96,35 @@ void free_all(okeoma *info)
 	{
 		free(info->command[k]);
 	}
-	for (j = 0; info.)
+	_fee(4, info->cmd, info->av, info->command, info);
+}
+
+/**
+ * _free - free n number of dynamically allocated memory
+ * @count: number of memory to free
+ *
+ * Return: void
+*/
+void _fee(int count, ...)
+{
+	void *ptr;
+	va_list args;
+	int i;
+
+	if (count <= 0)
+	{
+		dprintf(STDERR_FILENO, "Invalid number of arguments for _free.\n");
+		return;
+	}
+	va_start(args, count);
+	for (i = 0; i < count; i++)
+	{
+		ptr = va_arg(args, void *);
+
+		if (ptr != NULL)
+			free(ptr);
+		else
+			dprintf(STDERR_FILENO, "NULL pointer encountered in _free.\n");
+	}
+	va_end(args);
 }
