@@ -30,7 +30,7 @@ typedef struct okeoma
 	char *nxt_tok_st;
 } Tokenizer;
 
-typedef struct
+typedef struct variables
 {
 	char *cmd;
 	char **av;
@@ -45,7 +45,7 @@ typedef struct
 	int status;
 	int i;
 	size_t n;
-	size_t com_num;
+	ssize_t com_num;
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
@@ -57,7 +57,7 @@ void interactive(okeoma *info);
 void non_interactive(okeoma *info);
 
 void *p_Input();
-char *read_in();
+void read_in(okeoma *info);
 
 void help_command(okeoma *info);
 void unsetenv_command(okeoma *info);
@@ -70,14 +70,12 @@ int execute_builtin_command(okeoma *info);
 void B_exc(okeoma *info);
 char *env_pos(okeoma *info);
 void free_all(okeoma *info);
-
 void f_tokenizer(okeoma *info, char *cm);
 char *s_tok(okeoma *info, const char *delimiters);
-void prs(okeoma *info, size_t del_n);
-void prs_2(okeoma *info, size_t del_n);
+void prs(okeoma *info, char *coms);
+void prs_2(okeoma *info);
 void _in(okeoma *info, char **argv);
-
-void _fee(int count, ...);
+void my_free(size_t count, ...);
 void read_input(char *buffer, int *buffer_pos, int *buffer_size);
 char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
 

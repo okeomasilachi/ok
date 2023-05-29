@@ -10,8 +10,9 @@ int main(int argc, char **argv)
 	if (info->it)
 		interactive(info);
 	else
+	{
 		non_interactive(info);
-		
-	free(info);
+		free(info);
+	}
 	return 0;
 }

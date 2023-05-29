@@ -116,7 +116,7 @@ void interactive(okeoma *info)
 
 void non_interactive(okeoma *info)
 {
-	info->cmd = read_in();
+	read_in(info);
 	if (info->cmd == NULL || *info->cmd == '\0')
 		free(info->cmd);
 

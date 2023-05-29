@@ -104,21 +104,15 @@ void *p_Input()
  * Return: pointer the array of parsed commands
  * error: NULL
 */
-void prs(okeoma *info, size_t del_n)
+void prs(okeoma *info, char *coms)
 {
-	char *com_cpy = NULL, *dl = NULL;
+	char *com_cpy = NULL, *dl = " \t\n\r";
 	size_t count = 0, cnt = 0;
-
-	if (del_n == 0)
-		dl = " \t\n\r";
-
-	if (del_n == 1)
-		dl = ";\n";
 
 	if (info->cmd)
 	{
-		com_cpy = strdup(info->command[info->i]);
-		f_tokenizer(info, info->command[info->i]);
+		com_cpy = strdup(coms);
+		f_tokenizer(info, coms);
 		info->tok = s_tok(info, dl);
 		while (info->tok)
 		{

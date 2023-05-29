@@ -13,16 +13,10 @@
 */
 void B_exc(okeoma *info)
 {
-	int i;
-
-	prs_2(info, 1);
-	for (i = 0; info->command[i] != NULL; i++)
-		puts(info->command[i]);
+	prs_2(info);
 	for (info->i = 0; info->command[info->i] != NULL; info->i++)
 	{
-		prs(info, 0);
-		for (i = 0; info->av[info->i] != NULL; i++)
-			puts(info->av[i]);
+		prs(info, info->command[info->i]);
 		if (!info->it)
 			info->com_num++;
 		info->status = execute_builtin_command(info);
@@ -31,16 +25,10 @@ void B_exc(okeoma *info)
 	}
 }
 
-void prs_2(okeoma *info, size_t del_n)
+void prs_2(okeoma *info)
 {
-	char *com_cpy = NULL, *dl = NULL;
+	char *com_cpy = NULL, *dl = dl = "; \n";
 	size_t count = 0, cnt = 0;
-
-	if (del_n == 0)
-		dl = " \t\n\r";
-
-	if (del_n == 1)
-		dl = "; \n";
 
 	if (info->cmd)
 	{
@@ -102,7 +90,7 @@ void free_all(okeoma *info)
 	{
 		free(info->command[k]);
 	}
-	_fee(4, info->cmd, info->av, info->command, info);
+	my_free(4, info->cmd, info->av, info->command, info);
 }
 
 /**
@@ -111,11 +99,11 @@ void free_all(okeoma *info)
  *
  * Return: void
 */
-void _fee(int count, ...)
+void my_free(size_t count, ...)
 {
 	void *ptr;
 	va_list args;
-	int i;
+	size_t i;
 
 	if (count <= 0)
 	{
