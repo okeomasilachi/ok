@@ -11,86 +11,86 @@
  *
  * Return: void
 */
-void B_exc(okeoma *info)
+void B_exc(okeoma *oki)
 {
-	prs_2(info);
-	for (info->i = 0; info->command[info->i] != NULL; info->i++)
+	prs_2(oki);
+	for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
 	{
-		prs(info, info->command[info->i]);
-		if (!info->it)
-			info->com_num++;
-		info->status = execute_builtin_command(info);
-		if (info->status != 0)
-			info->status = execute_command(info);
+		prs(oki, oki->command[oki->i]);
+		if (!oki->it)
+			oki->com_num++;
+		oki->status = execute_builtin_command(oki);
+		if (oki->status != 0)
+			oki->status = execute_command(oki);
 	}
 }
 
-void prs_2(okeoma *info)
+void prs_2(okeoma *oki)
 {
-	char *com_cpy = NULL, *dl = dl = "; \n";
+	char *com_cpy = NULL, *dl = dl = ";\n";
 	size_t count = 0, cnt = 0;
 
-	if (info->cmd)
+	if (oki->cmd)
 	{
-		com_cpy = strdup(info->cmd);
-		f_tokenizer(info, info->cmd);
-		info->tok = s_tok(info, dl);
-		while (info->tok)
+		com_cpy = strdup(oki->cmd);
+		f_tokenizer(oki, oki->cmd);
+		oki->tok = s_tok(oki, dl);
+		while (oki->tok)
 		{
 			cnt++;
-			info->tok = s_tok(info, dl);
+			oki->tok = s_tok(oki, dl);
 		}
 		cnt++;
-		info->command = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(info, com_cpy);
-		info->tok = s_tok(info, dl);
-		while (info->tok)
+		oki->command = malloc(sizeof(char *) * (cnt + 1));
+		f_tokenizer(oki, com_cpy);
+		oki->tok = s_tok(oki, dl);
+		while (oki->tok)
 		{
-			info->command[count] = malloc(sizeof(char) * (strlen(info->tok) + 1));
-			strcpy(info->command[count], info->tok);
-			info->tok = s_tok(info, dl);
+			oki->command[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
+			strcpy(oki->command[count], oki->tok);
+			oki->tok = s_tok(oki, dl);
 			count++;
 		}
-		info->command[count] = NULL;
+		oki->command[count] = NULL;
 		free(com_cpy);
 		com_cpy = NULL;
 		count = 0, cnt = 0;
 	}
 }
 
-char *env_pos(okeoma *info)
+char *env_pos(okeoma *oki)
 {
 	int name_len;
 	char **env, *env_var;
 
-	if (info->av[1] == NULL || *info->av[1] == '\0')
+	if (oki->av[1] == NULL || *oki->av[1] == '\0')
 		return (NULL);
 
-	name_len = strlen(info->av[1]);
+	name_len = strlen(oki->av[1]);
 	for (env = environ; *env != NULL; env++)
 	{
 		env_var = *env;
 		if (env_var == NULL || *env_var == '\0' || strchr(env_var, '=') == NULL)
 			continue;
-		if (strncmp(info->av[1], env_var, name_len) == 0 && env_var[name_len] == '=')
+		if (strncmp(oki->av[1], env_var, name_len) == 0 && env_var[name_len] == '=')
 			return (&(env_var[name_len - name_len]));
 	}
 	return (NULL);
 }
 
-void free_all(okeoma *info)
+void free_all(okeoma *oki)
 {
 	int i, k;
 
-	for (i = 0; info->av[i] != NULL; i++)
+	for (i = 0; oki->av[i] != NULL; i++)
 	{
-		free(info->av[i]);
+		free(oki->av[i]);
 	}
-	for (k = 0; info->command[k] != NULL; k++)
+	for (k = 0; oki->command[k] != NULL; k++)
 	{
-		free(info->command[k]);
+		free(oki->command[k]);
 	}
-	my_free(4, info->cmd, info->av, info->command, info);
+	my_free(4, oki->cmd, oki->av, oki->command, oki);
 }
 
 /**

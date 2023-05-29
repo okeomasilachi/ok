@@ -53,28 +53,28 @@ typedef struct variables
 	bool it;
 } okeoma;
 
-void interactive(okeoma *info);
-void non_interactive(okeoma *info);
+void interactive(okeoma *oki);
+void non_interactive(okeoma *oki);
 
 void *p_Input();
-void read_in(okeoma *info);
+void read_in(okeoma *oki);
 
-void help_command(okeoma *info);
-void unsetenv_command(okeoma *info);
-void setenv_command(okeoma *info);
-void exit_command(okeoma *info);
-void cd_command(okeoma *info);
-int execute_command(okeoma *info);
-char *find_executable(okeoma *info);
-int execute_builtin_command(okeoma *info);
-void B_exc(okeoma *info);
-char *env_pos(okeoma *info);
-void free_all(okeoma *info);
-void f_tokenizer(okeoma *info, char *cm);
-char *s_tok(okeoma *info, const char *delimiters);
-void prs(okeoma *info, char *coms);
-void prs_2(okeoma *info);
-void _in(okeoma *info, char **argv);
+void help_command(okeoma *oki);
+void unsetenv_command(okeoma *oki);
+void setenv_command(okeoma *oki);
+void exit_command(okeoma *oki);
+void cd_command(okeoma *oki);
+int execute_command(okeoma *oki);
+char *find_executable(okeoma *oki);
+int execute_builtin_command(okeoma *oki);
+void B_exc(okeoma *oki);
+char *env_pos(okeoma *oki);
+void free_all(okeoma *oki);
+void f_tokenizer(okeoma *oki, char *cm);
+char *s_tok(okeoma *oki, const char *delimiters);
+void prs(okeoma *oki, char *coms);
+void prs_2(okeoma *oki);
+void _in(okeoma *oki, char **argv);
 void my_free(size_t count, ...);
 void read_input(char *buffer, int *buffer_pos, int *buffer_size);
 char *_getline(char *buffer, int *buffer_pos, int *buffer_size);

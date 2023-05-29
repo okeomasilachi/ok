@@ -8,31 +8,31 @@
  *
  * Return: void
 */
-void cd_command(okeoma *info)
+void cd_command(okeoma *oki)
 {
-	if (!info->av[1])
+	if (!oki->av[1])
 	{
-		info->ok = getenv("HOME");
-		chdir(info->ok);
+		oki->ok = getenv("HOME");
+		chdir(oki->ok);
 		return;
 	}
-	if (strcmp(info->av[1], "-") == 0)
+	if (strcmp(oki->av[1], "-") == 0)
 	{
-		info->old = getenv("OLDPWD");
-		chdir(info->old);
-		info->new = getenv("PWD");
-		dprintf(STDOUT_FILENO, "%s\n", info->new);
+		oki->old = getenv("OLDPWD");
+		chdir(oki->old);
+		oki->new = getenv("PWD");
+		dprintf(STDOUT_FILENO, "%s\n", oki->new);
 	}
 	else
 	{
-		info->ok = getenv("PWD");
-		if (chdir(info->av[1]) == 0)
+		oki->ok = getenv("PWD");
+		if (chdir(oki->av[1]) == 0)
 		{
-			info->ok = getenv("PWD");
-			dprintf(STDOUT_FILENO, "%s\n", info->ok);
+			oki->ok = getenv("PWD");
+			dprintf(STDOUT_FILENO, "%s\n", oki->ok);
 		}
 		else
-			dprintf(2, "%s: %ld: %s: can't cd to %s\n", info->Name, info->com_num, info->av[0], info->av[1]);
+			dprintf(2, "%s: %ld: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }
 
@@ -45,32 +45,32 @@ void cd_command(okeoma *info)
  * Return: void
 */
 
-void exit_command(okeoma *info)
+void exit_command(okeoma *oki)
 {
 	int i;
 	int isNumber = 1;
 
-	if (info->av[1] == NULL)
+	if (oki->av[1] == NULL)
 	{
-		free_all(info);
+		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
-	else if (info->av[1] != NULL)
+	else if (oki->av[1] != NULL)
 	{
-		for (i = 0; info->av[1][i] != '\0'; i++)
+		for (i = 0; oki->av[1][i] != '\0'; i++)
 		{
-			if (!isdigit(info->av[1][i]))
+			if (!isdigit(oki->av[1][i]))
 			{
 				isNumber = 0;
 				break;
 			}
 		}
 		if (!isNumber)
-			dprintf(2, "%s: %ld: %s: Illegal number: %s\n", info->Name, info->com_num, info->av[0], info->av[1]);
+			dprintf(2, "%s: %ld: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
 			/*free_all(n), free_all(n1), _free(1, cmd);*/
-			exit(atoi(info->av[1]));
+			exit(atoi(oki->av[1]));
 		}
 	}
 }
@@ -83,19 +83,19 @@ void exit_command(okeoma *info)
  *
  * Return: void
 */
-void setenv_command(okeoma *info)
+void setenv_command(okeoma *oki)
 {
-	if (info->av[1] == NULL || info->av[2] == NULL)
-		dprintf(2, "%s: %ld: %s: Usage: setenv NAME value\n", info->Name, info->com_num, info->av[0]);
+	if (oki->av[1] == NULL || oki->av[2] == NULL)
+		dprintf(2, "%s: %ld: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		setenv(info->av[1], info->av[2], 1);
-		/*while (info->arr[i] != NULL)
+		setenv(oki->av[1], oki->av[2], 1);
+		/*while (oki->arr[i] != NULL)
 				i++;
 
-		info->arr[i] = env_pos(info);   set the position of the arr tp point to the env 
-		for (info->i = 0; info->arr[info->i] != NULL; info->i++)
-			printf("%s\n", info->arr[info->i]);*/
+		oki->arr[i] = env_pos(oki);   set the position of the arr tp point to the env 
+		for (oki->i = 0; oki->arr[oki->i] != NULL; oki->i++)
+			printf("%s\n", oki->arr[oki->i]);*/
 	}
 }
 
@@ -107,15 +107,15 @@ void setenv_command(okeoma *info)
  *
  * Return: void
 */
-void unsetenv_command(okeoma *info)
+void unsetenv_command(okeoma *oki)
 {
-	if (info->av[1] == NULL)
-		dprintf(STDERR_FILENO, "%s: %ld: %s: missing argument\n", info->Name, info->com_num, info->av[0]);
+	if (oki->av[1] == NULL)
+		dprintf(STDERR_FILENO, "%s: %ld: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if (!getenv(info->av[1]))
-			dprintf(STDERR_FILENO, "%s: %ld: %s: %s not set\n", info->Name, info->com_num, info->av[0], info->av[1]);
-		if (unsetenv(info->av[1]) != 0)
+		if (!getenv(oki->av[1]))
+			dprintf(STDERR_FILENO, "%s: %ld: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+		if (unsetenv(oki->av[1]) != 0)
 			perror("unsetenv");
 	}
 }
@@ -128,9 +128,9 @@ void unsetenv_command(okeoma *info)
  *
  * Return: void
 */
-void help_command(okeoma *info)
+void help_command(okeoma *oki)
 {
-	if (info->av[1] == NULL)
+	if (oki->av[1] == NULL)
 	{
 		dprintf(STDOUT_FILENO, "	This is a simple shell program\n");
 		dprintf(STDOUT_FILENO, "\nAuthors: Ebiri ThankGod, Onyedibia Okeomasilachi.\n");

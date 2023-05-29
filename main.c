@@ -2,17 +2,17 @@
 
 int main(int argc, char **argv)
 {
-	okeoma *info = malloc(sizeof(okeoma));
-	_in(info, argv);
+	okeoma *oki = malloc(sizeof(okeoma));
+	_in(oki, argv);
 	(void)argc;
 	(void)argv;
 	
-	if (info->it)
-		interactive(info);
+	if (oki->it)
+		interactive(oki);
 	else
 	{
-		non_interactive(info);
-		free(info);
+		non_interactive(oki);
+		free(oki);
 	}
 	return 0;
 }

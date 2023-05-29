@@ -1,15 +1,15 @@
 #include "main.h"
 
-void _in(okeoma *info, char **argv)
+void _in(okeoma *oki, char **argv)
 {
-	info->cmd = NULL;
-	info->av = NULL;
-	info->tok = NULL;
-	info->n = 0;
-	info->it = isatty(STDIN_FILENO);
-	info->Name = argv[0];
-	info->com_num = 0;
-	info->i = 0;
+	oki->cmd = NULL;
+	oki->av = NULL;
+	oki->tok = NULL;
+	oki->n = 0;
+	oki->it = isatty(STDIN_FILENO);
+	oki->Name = argv[0];
+	oki->com_num = 0;
+	oki->i = 0;
 }
 
 /**
@@ -104,65 +104,65 @@ void *p_Input()
  * Return: pointer the array of parsed commands
  * error: NULL
 */
-void prs(okeoma *info, char *coms)
+void prs(okeoma *oki, char *coms)
 {
 	char *com_cpy = NULL, *dl = " \t\n\r";
 	size_t count = 0, cnt = 0;
 
-	if (info->cmd)
+	if (oki->cmd)
 	{
 		com_cpy = strdup(coms);
-		f_tokenizer(info, coms);
-		info->tok = s_tok(info, dl);
-		while (info->tok)
+		f_tokenizer(oki, coms);
+		oki->tok = s_tok(oki, dl);
+		while (oki->tok)
 		{
 			cnt++;
-			info->tok = s_tok(info, dl);
+			oki->tok = s_tok(oki, dl);
 		}
 		cnt++;
-		info->av = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(info, com_cpy);
-		info->tok = s_tok(info, dl);
-		while (info->tok)
+		oki->av = malloc(sizeof(char *) * (cnt + 1));
+		f_tokenizer(oki, com_cpy);
+		oki->tok = s_tok(oki, dl);
+		while (oki->tok)
 		{
-			info->av[count] = malloc(sizeof(char) * (strlen(info->tok) + 1));
-			strcpy(info->av[count], info->tok);
-			info->tok = s_tok(info, dl);
+			oki->av[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
+			strcpy(oki->av[count], oki->tok);
+			oki->tok = s_tok(oki, dl);
 			count++;
 		}
-		info->av[count] = NULL;
+		oki->av[count] = NULL;
 		free(com_cpy);
 		com_cpy = NULL;
 		count = 0, cnt = 0;
 	}
 }
 
-int execute_command(okeoma *info)
+int execute_command(okeoma *oki)
 {
 	
-	info->ec = find_executable(info);
-	if (!info->ec)
+	oki->ec = find_executable(oki);
+	if (!oki->ec)
 	{
-		dprintf(STDERR_FILENO, "%s: %ld: %s: not found\n", info->Name, info->com_num, info->av[0]);
+		dprintf(STDERR_FILENO, "%s: %ld: %s: not found\n", oki->Name, oki->com_num, oki->av[0]);
 	}
-	if (info->ec)
+	if (oki->ec)
 	{
-		info->child_pid = fork();
-		if (info->child_pid == -1)
+		oki->child_pid = fork();
+		if (oki->child_pid == -1)
 			perror("fork");
 
-		else if (info->child_pid == 0)
+		else if (oki->child_pid == 0)
 		{
-			execve(info->ec, info->av, environ);
+			execve(oki->ec, oki->av, environ);
 			return (EXIT_FAILURE);
 		}
 		else
 		{
-			waitpid(info->child_pid, &info->status, 0);
-			free(info->ec);
-			if (WIFEXITED(info->status))
+			waitpid(oki->child_pid, &oki->status, 0);
+			free(oki->ec);
+			if (WIFEXITED(oki->status))
 			{
-				return (WEXITSTATUS(info->status));
+				return (WEXITSTATUS(oki->status));
 			}
 		}
 	}
