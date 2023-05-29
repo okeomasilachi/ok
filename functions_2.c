@@ -30,20 +30,13 @@ void B_exc(okeoma *oki)
 			if ((oki->status = execute_builtin_command(oki)) != 0)
 				oki->status = execute_command(oki);
 		}
-		if (oki->y == 1)
-		{
-			if (oki->status != 0)
-				break;
-		}
-		if (oki->y == 2)
-		{
-			if (oki->status == 0)
-				break;
-		}
+		if (oki->y == 1 && oki->status != 0)
+			break;
+		if (oki->y == 2 && oki->status == 0)
+			break;
 		oki->y = find_set(NULL, "&&", "||");
 		oki->tok2 = s_tok(&oki->tokens, "&&||");
 	}
-
 }
 
 void prs_2(okeoma *oki)
@@ -115,7 +108,7 @@ void free_all(okeoma *oki)
 }
 
 /**
- * _free - free n number of dynamically allocated memory
+ * my_free - free n number of dynamically allocated memory
  * @count: number of memory to free
  *
  * Return: void
@@ -128,7 +121,7 @@ void my_free(size_t count, ...)
 
 	if (count <= 0)
 	{
-		dprintf(STDERR_FILENO, "Invalid number of arguments for _free.\n");
+		dprintf(STDERR_FILENO, "Invalid number of arguments for my_free\n");
 		return;
 	}
 	va_start(args, count);
@@ -139,7 +132,7 @@ void my_free(size_t count, ...)
 		if (ptr != NULL)
 			free(ptr);
 		else
-			dprintf(STDERR_FILENO, "NULL pointer encountered in _free.\n");
+			dprintf(STDERR_FILENO, "NULL pointer encountered in my_free\n");
 	}
 	va_end(args);
 }
