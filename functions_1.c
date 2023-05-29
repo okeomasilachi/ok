@@ -7,10 +7,10 @@
  *
  * Return: void
 */
-void f_tokenizer(okeoma *oki, char *cm)
+void f_tokenizer(Tokenizer *tokenizer, char *input_string)
 {
-	oki->tokens.cur_tok_st = cm;
-	oki->tokens.nxt_tok_st = cm;
+	tokenizer->cur_tok_st = input_string;
+	tokenizer->nxt_tok_st = input_string;
 }
 
 /**
@@ -21,34 +21,34 @@ void f_tokenizer(okeoma *oki, char *cm)
  * Return: pointer to token
  * error: NULL if no more tokens are found
 */
-char *s_tok(okeoma *oki, const char *delimiters)
+char *s_tok(Tokenizer *tokenizer, const char *delimiters)
 {
 	char *token;
 
-	if (oki->tokens.cur_tok_st == NULL)
+	if (tokenizer->cur_tok_st == NULL)
 		return (NULL);
 	/* Skip leading delimiters */
-	oki->tokens.cur_tok_st += strspn(oki->tokens.cur_tok_st, delimiters);
+	tokenizer->cur_tok_st += strspn(tokenizer->cur_tok_st, delimiters);
 	/* Check if end of string is reached */
-	if (*oki->tokens.cur_tok_st == '\0')
+	if (*tokenizer->cur_tok_st == '\0')
 	{
-		oki->tokens.cur_tok_st = NULL;
+		tokenizer->cur_tok_st = NULL;
 		return (NULL);
 	}
-	oki->tokens.nxt_tok_st = oki->tokens.cur_tok_st;
+	tokenizer->nxt_tok_st = tokenizer->cur_tok_st;
 	/* Find the end of the current token */
-	oki->tokens.nxt_tok_st += strcspn(oki->tokens.nxt_tok_st, delimiters);
-	if (*oki->tokens.nxt_tok_st != '\0')
+	tokenizer->nxt_tok_st += strcspn(tokenizer->nxt_tok_st, delimiters);
+	if (*tokenizer->nxt_tok_st != '\0')
 	{
-		*oki->tokens.nxt_tok_st = '\0';
-		oki->tokens.nxt_tok_st++;
+		*tokenizer->nxt_tok_st = '\0';
+		tokenizer->nxt_tok_st++;
 	}
 	else
 	{
-		oki->tokens.nxt_tok_st = NULL;
+		tokenizer->nxt_tok_st = NULL;
 	}
-	token = oki->tokens.cur_tok_st;
-	oki->tokens.cur_tok_st = oki->tokens.nxt_tok_st;
+	token = tokenizer->cur_tok_st;
+	tokenizer->cur_tok_st = tokenizer->nxt_tok_st;
 
 	return (token);
 }
@@ -65,8 +65,8 @@ char *find_executable(okeoma *oki)
 	}
 	path_env = getenv("PATH");
 	path_copy = strdup(path_env);
-	f_tokenizer(oki, path_copy);
-	token = s_tok(oki, ":");
+	f_tokenizer(&oki->baxi, path_copy);
+	token = s_tok(&oki->baxi, ":");
 	while (token)
 	{
 		token_len = strlen(token);
@@ -87,7 +87,7 @@ char *find_executable(okeoma *oki)
 			return (exe_path);
 		}
 		free(exe_path);
-		token = s_tok(oki, ":");
+		token = s_tok(&oki->baxi, ":");
 	}
 	free(path_copy);
 	return (NULL);

@@ -14,10 +14,10 @@
 void B_exc(okeoma *oki)
 {
 	find_char(oki);
-	f_set(oki, oki->cmd);
-	f_tokenizer(oki, oki->cmd);
-	oki->tok = s_tok(oki, "&&||");
-	while (oki->tok != NULL)
+	oki->y = find_set(oki->cmd, "&&", "||");
+	f_tokenizer(&oki->tokens, oki->cmd);
+	oki->tok2 = s_tok(&oki->tokens, "&&||");
+	while (oki->tok2 != NULL)
 	{
 		prs_2(oki);
 		for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
@@ -26,7 +26,7 @@ void B_exc(okeoma *oki)
 
 			if (!oki->it)
 				oki->com_num++;
-		
+
 			if ((oki->status = execute_builtin_command(oki)) != 0)
 				oki->status = execute_command(oki);
 		}
@@ -40,37 +40,36 @@ void B_exc(okeoma *oki)
 			if (oki->status == 0)
 				break;
 		}
-		f_set(oki, NULL);
-		oki->tok = s_tok(oki, "&&||");
-
+		oki->y = find_set(NULL, "&&", "||");
+		oki->tok2 = s_tok(&oki->tokens, "&&||");
 	}
-	
+
 }
 
 void prs_2(okeoma *oki)
 {
-	char *com_cpy = NULL, *dl = dl = ";\n";
+	char *com_cpy = NULL, *dl = ";\n";
 	size_t count = 0, cnt = 0;
 
 	if (oki->cmd)
 	{
-		com_cpy = strdup(oki->tok);
-		f_tokenizer(oki, oki->tok);
-		oki->tok = s_tok(oki, dl);
+		com_cpy = strdup(oki->tok2);
+		f_tokenizer(&oki->Hook, oki->tok2);
+		oki->tok = s_tok(&oki->Hook, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(oki, dl);
+			oki->tok = s_tok(&oki->Hook, dl);
 		}
 		cnt++;
 		oki->command = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(oki, com_cpy);
-		oki->tok = s_tok(oki, dl);
+		f_tokenizer(&oki->Hook, com_cpy);
+		oki->tok = s_tok(&oki->Hook, dl);
 		while (oki->tok)
 		{
 			oki->command[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
 			strcpy(oki->command[count], oki->tok);
-			oki->tok = s_tok(oki, dl);
+			oki->tok = s_tok(&oki->Hook, dl);
 			count++;
 		}
 		oki->command[count] = NULL;

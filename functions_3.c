@@ -55,33 +55,34 @@ void find_char(okeoma *oki)
 	}
 }
 
-void f_set(okeoma *oki, char *str)
+int find_set(char *str, const char *s_str1, const char *s_str2)
 {
 	static char *currentPosition;
+	static int setValue;
 	char *result1, *result2;
 
 	if (str != NULL)
 	{
 		currentPosition = str;
-		oki->y = 0;
+		setValue = 0;
 	}
 	if (currentPosition == NULL)
-	{
-		dprintf(STDERR_FILENO, "Invalid input. Please provide a string to search.\n");
-	}
-	result1 = "&&" != NULL ? strstr(currentPosition, "&&") : NULL;
-	result2 = "||" != NULL ? strstr(currentPosition, "||") : NULL;
+		return (-1);
+
+	result1 = s_str1 != NULL ? strstr(currentPosition, s_str1) : NULL;
+	result2 = s_str2 != NULL ? strstr(currentPosition, s_str2) : NULL;
 	if (result1 == NULL && result2 == NULL)
-		oki->y = -1;
+		return (-1);
 
 	if (result1 == NULL || (result2 != NULL && result2 < result1))
 	{
-		currentPosition = result2 + strlen("||");
-		oki->y = 2;
+		currentPosition = result2 + strlen(s_str2);
+		setValue = 2;
 	}
 	else
 	{
-		currentPosition = result1 + strlen("&&");
-		oki->y = 1;
+		currentPosition = result1 + strlen(s_str1);
+		setValue = 1;
 	}
+	return (setValue);
 }

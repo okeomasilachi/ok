@@ -24,7 +24,7 @@ extern char **environ;
  * @cur_tok_st: holds the current token
  * @nxt_tok_st: holds the next token
 */
-typedef struct okeoma
+typedef struct
 {
 	char *cur_tok_st;
 	char *nxt_tok_st;
@@ -35,6 +35,7 @@ typedef struct variables
 	char *cmd;
 	char **av;
 	char *tok;
+	char *tok2;
 	char *Name;
 	char *ec;
 	char *ok;
@@ -61,7 +62,7 @@ void read_in(okeoma *oki);
 
 void help_command(okeoma *oki);
 void find_char(okeoma *oki);
-void f_set(okeoma *oki, char *str);
+int find_set(char *str, const char *s_str1, const char *s_str2);
 void unsetenv_command(okeoma *oki);
 void setenv_command(okeoma *oki);
 void exit_command(okeoma *oki);
@@ -72,8 +73,8 @@ int execute_builtin_command(okeoma *oki);
 void B_exc(okeoma *oki);
 char *env_pos(okeoma *oki);
 void free_all(okeoma *oki);
-void f_tokenizer(okeoma *oki, char *cm);
-char *s_tok(okeoma *oki, const char *delimiters);
+char *s_tok(Tokenizer *tokenizer, const char *delimiters);
+void f_tokenizer(Tokenizer *tokenizer, char *input_string);
 void prs(okeoma *oki, char *coms);
 void prs_2(okeoma *oki);
 void _in(okeoma *oki, char **argv);

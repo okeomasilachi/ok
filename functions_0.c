@@ -4,7 +4,9 @@ void _in(okeoma *oki, char **argv)
 {
 	oki->cmd = NULL;
 	oki->av = NULL;
+	oki->command = NULL;
 	oki->tok = NULL;
+	oki->tok2 = NULL;
 	oki->n = 0;
 	oki->it = isatty(STDIN_FILENO);
 	oki->Name = argv[0];
@@ -112,22 +114,22 @@ void prs(okeoma *oki, char *coms)
 	if (oki->cmd)
 	{
 		com_cpy = strdup(coms);
-		f_tokenizer(oki, coms);
-		oki->tok = s_tok(oki, dl);
+		f_tokenizer(&oki->baxi, coms);
+		oki->tok = s_tok(&oki->baxi, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(oki, dl);
+			oki->tok = s_tok(&oki->baxi, dl);
 		}
 		cnt++;
 		oki->av = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(oki, com_cpy);
-		oki->tok = s_tok(oki, dl);
+		f_tokenizer(&oki->baxi, com_cpy);
+		oki->tok = s_tok(&oki->baxi, dl);
 		while (oki->tok)
 		{
 			oki->av[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
 			strcpy(oki->av[count], oki->tok);
-			oki->tok = s_tok(oki, dl);
+			oki->tok = s_tok(&oki->baxi, dl);
 			count++;
 		}
 		oki->av[count] = NULL;
