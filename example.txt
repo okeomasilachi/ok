@@ -1,3 +1,3 @@
-/bin/ls                
-/bin/ls          
-/bin/lld
+/bin/ls # this line of code dose nothing
+/bin/ls && pwd
+/bin/lld || ls
