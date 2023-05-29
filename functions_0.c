@@ -117,8 +117,8 @@ void prs(okeoma *info, size_t del_n)
 
 	if (info->cmd)
 	{
-		com_cpy = strdup(info->cmd);
-		f_tokenizer(info, info->cmd);
+		com_cpy = strdup(info->command[info->i]);
+		f_tokenizer(info, info->command[info->i]);
 		info->tok = s_tok(info, dl);
 		while (info->tok)
 		{

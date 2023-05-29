@@ -17,8 +17,14 @@ void B_exc(okeoma *info)
 
 	prs_2(info, 1);
 	for (i = 0; info->command[i] != NULL; i++)
+		puts(info->command[i]);
+	for (info->i = 0; info->command[info->i] != NULL; info->i++)
 	{
 		prs(info, 0);
+		for (i = 0; info->av[info->i] != NULL; i++)
+			puts(info->av[i]);
+		if (!info->it)
+			info->com_num++;
 		info->status = execute_builtin_command(info);
 		if (info->status != 0)
 			info->status = execute_command(info);
@@ -34,7 +40,7 @@ void prs_2(okeoma *info, size_t del_n)
 		dl = " \t\n\r";
 
 	if (del_n == 1)
-		dl = ";\n";
+		dl = "; \n";
 
 	if (info->cmd)
 	{

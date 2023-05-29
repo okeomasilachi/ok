@@ -41,7 +41,6 @@ typedef struct
 	char *old;
 	char *new;
 	char **command;
-	char *arr[10];
 	int y;
 	int status;
 	int i;
@@ -55,8 +54,10 @@ typedef struct
 } okeoma;
 
 void interactive(okeoma *info);
+void non_interactive(okeoma *info);
 
 void *p_Input();
+char *read_in();
 
 void help_command(okeoma *info);
 void unsetenv_command(okeoma *info);

@@ -114,6 +114,16 @@ void interactive(okeoma *info)
 	}
 }
 
+void non_interactive(okeoma *info)
+{
+	info->cmd = read_in();
+	if (info->cmd == NULL || *info->cmd == '\0')
+		free(info->cmd);
+
+	B_exc(info);
+	
+}
+
 /**
  * execute_builtin_command - this function runs built-in
  * @args: arguments to pass to the command
