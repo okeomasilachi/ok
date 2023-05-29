@@ -60,6 +60,8 @@ void *p_Input();
 void read_in(okeoma *oki);
 
 void help_command(okeoma *oki);
+void find_char(okeoma *oki);
+void f_set(okeoma *oki, char *str);
 void unsetenv_command(okeoma *oki);
 void setenv_command(okeoma *oki);
 void exit_command(okeoma *oki);

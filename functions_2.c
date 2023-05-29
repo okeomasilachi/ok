@@ -13,16 +13,38 @@
 */
 void B_exc(okeoma *oki)
 {
-	prs_2(oki);
-	for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
+	find_char(oki);
+	f_set(oki, oki->cmd);
+	f_tokenizer(oki, oki->cmd);
+	oki->tok = s_tok(oki, "&&||");
+	while (oki->tok != NULL)
 	{
-		prs(oki, oki->command[oki->i]);
-		if (!oki->it)
-			oki->com_num++;
-		oki->status = execute_builtin_command(oki);
-		if (oki->status != 0)
-			oki->status = execute_command(oki);
+		prs_2(oki);
+		for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
+		{
+			prs(oki, oki->command[oki->i]);
+
+			if (!oki->it)
+				oki->com_num++;
+		
+			if ((oki->status = execute_builtin_command(oki)) != 0)
+				oki->status = execute_command(oki);
+		}
+		if (oki->y == 1)
+		{
+			if (oki->status != 0)
+				break;
+		}
+		if (oki->y == 2)
+		{
+			if (oki->status == 0)
+				break;
+		}
+		f_set(oki, NULL);
+		oki->tok = s_tok(oki, "&&||");
+
 	}
+	
 }
 
 void prs_2(okeoma *oki)
@@ -32,8 +54,8 @@ void prs_2(okeoma *oki)
 
 	if (oki->cmd)
 	{
-		com_cpy = strdup(oki->cmd);
-		f_tokenizer(oki, oki->cmd);
+		com_cpy = strdup(oki->tok);
+		f_tokenizer(oki, oki->tok);
 		oki->tok = s_tok(oki, dl);
 		while (oki->tok)
 		{

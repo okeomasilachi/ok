@@ -43,3 +43,45 @@ void read_in(okeoma *oki)
 	oki->cmd[write_index] = '\0';
 	oki->cmd = (char*)realloc(oki->cmd, (write_index + 1) * sizeof(char));
 }
+
+
+void find_char(okeoma *oki)
+{
+	char *str_cpy = strchr(oki->cmd, '#');
+
+	if (str_cpy != NULL)
+	{
+		*str_cpy = '\0';
+	}
+}
+
+void f_set(okeoma *oki, char *str)
+{
+	static char *currentPosition;
+	char *result1, *result2;
+
+	if (str != NULL)
+	{
+		currentPosition = str;
+		oki->y = 0;
+	}
+	if (currentPosition == NULL)
+	{
+		dprintf(STDERR_FILENO, "Invalid input. Please provide a string to search.\n");
+	}
+	result1 = "&&" != NULL ? strstr(currentPosition, "&&") : NULL;
+	result2 = "||" != NULL ? strstr(currentPosition, "||") : NULL;
+	if (result1 == NULL && result2 == NULL)
+		oki->y = -1;
+
+	if (result1 == NULL || (result2 != NULL && result2 < result1))
+	{
+		currentPosition = result2 + strlen("||");
+		oki->y = 2;
+	}
+	else
+	{
+		currentPosition = result1 + strlen("&&");
+		oki->y = 1;
+	}
+}
