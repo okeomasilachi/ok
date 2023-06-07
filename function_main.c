@@ -1,13 +1,6 @@
 #include "main.h"
 
 
-/*void sig_H(int sig)
-{
-	(void)sig;
-	_put("\n===> ");
-	fflush(stdout);
-}*/
-
 void signal_handler(int signum) {
 	(void)signum;
     printf("\n===> ");
