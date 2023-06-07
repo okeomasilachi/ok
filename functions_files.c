@@ -117,34 +117,3 @@ void process(okeoma *oki)
 		oki->tok2 = s_tok(&oki->tokens, "&&||");
 	}
 }
-
-int _putchar(char c)
-{
-	static char buff[1024];
-	static int j;
-
-	if (c <= 0 || j >= 1024)
-	{
-		write(STDOUT_FILENO, buff, j);
-		j = 0;
-	}
-	else
-	{
-		buff[j] = c;
-		j++;
-	}
-	return (1);
-}
-
-int _put(const char *str)
-{
-	int i = 0, c = 0;
-
-	while (*(str + i))
-	{
-		c += _putchar(*(str + i));
-		i++;
-	}
-	_putchar(-1);
-	return (c);
-}

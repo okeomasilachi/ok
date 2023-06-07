@@ -18,6 +18,9 @@
 
 #define BUFFER_SIZE 1024
 
+#define STO 1
+#define STE 2
+
 extern char **environ;
 
 /**
