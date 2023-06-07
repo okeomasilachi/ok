@@ -141,11 +141,10 @@ void prs(okeoma *oki, char *coms)
 
 int execute_command(okeoma *oki)
 {
-	
 	oki->ec = find_executable(oki);
 	if (!oki->ec)
 	{
-		dprintf(STDERR_FILENO, "%s: %ld: %s: not found\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: not found\n", oki->Name, oki->com_num, oki->av[0]);
 	}
 	if (oki->ec)
 	{
@@ -156,6 +155,7 @@ int execute_command(okeoma *oki)
 		else if (oki->child_pid == 0)
 		{
 			execve(oki->ec, oki->av, environ);
+			perror("execve");
 			return (EXIT_FAILURE);
 		}
 		else

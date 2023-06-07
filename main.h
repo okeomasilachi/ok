@@ -36,7 +36,7 @@ typedef struct
 
 typedef struct variables
 {
-	char *cmd;
+	char **command;
 	char **av;
 	char *tok;
 	char *tok2;
@@ -45,7 +45,7 @@ typedef struct variables
 	char *ok;
 	char *old;
 	char *new;
-	char **command;
+	char *cmd;
 	int y;
 	int status;
 	int i;
@@ -92,5 +92,10 @@ void _in(okeoma *oki, char **argv);
 void my_free(size_t count, ...);
 void read_input(char *buffer, int *buffer_pos, int *buffer_size);
 char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
+void p(int stream, const char *format, ...);
+void print_integer(int num, int n);
+void print_string(char *s, int n);
+void write_string(int n, const char *s);
+int _isspace(int c);
 
 #endif /* MAIN_H */

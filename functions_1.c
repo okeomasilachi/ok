@@ -99,7 +99,7 @@ void interactive(okeoma *oki)
 	while (true)
 	{
 		oki->com_num++;
-		printf("===> ");
+		p(STO, "===> ");
 		oki->cmd = p_Input();
 		if (oki->cmd == NULL || *oki->cmd == '\0')
 		{

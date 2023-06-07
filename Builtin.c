@@ -21,7 +21,7 @@ void cd_command(okeoma *oki)
 		oki->old = getenv("OLDPWD");
 		chdir(oki->old);
 		oki->new = getenv("PWD");
-		dprintf(STDOUT_FILENO, "%s\n", oki->new);
+		p(STO, "%s\n", oki->new);
 	}
 	else
 	{
@@ -29,10 +29,10 @@ void cd_command(okeoma *oki)
 		if (chdir(oki->av[1]) == 0)
 		{
 			oki->ok = getenv("PWD");
-			dprintf(STDOUT_FILENO, "%s\n", oki->ok);
+			p(STO, "%s\n", oki->ok);
 		}
 		else
-			dprintf(2, "%s: %ld: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+			p(STE, "%s: %d: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }
 
@@ -66,7 +66,7 @@ void exit_command(okeoma *oki)
 			}
 		}
 		if (!isNumber)
-			dprintf(2, "%s: %ld: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
 			free_all(oki);
@@ -86,7 +86,7 @@ void exit_command(okeoma *oki)
 void setenv_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL || oki->av[2] == NULL)
-		dprintf(2, "%s: %ld: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 		setenv(oki->av[1], oki->av[2], 1);
 }
@@ -102,11 +102,11 @@ void setenv_command(okeoma *oki)
 void unsetenv_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL)
-		dprintf(STDERR_FILENO, "%s: %ld: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
 		if (!getenv(oki->av[1]))
-			dprintf(STDERR_FILENO, "%s: %ld: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		if (unsetenv(oki->av[1]) != 0)
 			perror("unsetenv");
 	}
@@ -124,7 +124,7 @@ void help_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL)
 	{
-		dprintf(STDOUT_FILENO, "	This is a simple shell program\n");
-		dprintf(STDOUT_FILENO, "\nAuthors: Ebiri ThankGod, Onyedibia Okeomasilachi.\n");
+		p(STO, "	This is a simple shell program\n");
+		p(STO, "\nAuthors: Ebiri ThankGod, Onyedibia Okeomasilachi.\n");
 	}
 }

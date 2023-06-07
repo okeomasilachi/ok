@@ -119,7 +119,7 @@ void my_free(size_t count, ...)
 
 	if (count <= 0)
 	{
-		dprintf(STDERR_FILENO, "Invalid number of arguments for my_free\n");
+		p(STE, "Invalid number of arguments for my_free\n");
 		return;
 	}
 	va_start(args, count);
@@ -130,7 +130,7 @@ void my_free(size_t count, ...)
 		if (ptr != NULL)
 			free(ptr);
 		else
-			dprintf(STDERR_FILENO, "NULL pointer encountered in my_free\n");
+			p(STE, "NULL pointer encountered in my_free\n");
 	}
 	va_end(args);
 }

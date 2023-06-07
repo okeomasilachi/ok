@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 		}
 		if (argv[1] != NULL)
 		{
-			dprintf(STDERR_FILENO, "%s: %ld: cannot open %s: No such file\n", oki->Name, oki->com_num, argv[1]);
+			p(STE, "%s: %d: cannot open %s: No such file\n", oki->Name, oki->com_num, argv[1]);
 			exit(EXIT_SUCCESS);
 		}
 		non_interactive(oki);
