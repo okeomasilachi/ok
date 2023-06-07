@@ -14,6 +14,7 @@
 #include <sys/wait.h>
 #include <ctype.h>
 #include <limits.h>
+#include <signal.h>
 
 #define BUFFER_SIZE 1024
 
@@ -62,7 +63,7 @@ void read_in(okeoma *oki);
 
 void help_command(okeoma *oki);
 void find_char(okeoma *oki);
-int find_set(char *str, const char *s_str1, const char *s_str2);
+int find_set(char *str);
 void unsetenv_command(okeoma *oki);
 void setenv_command(okeoma *oki);
 void exit_command(okeoma *oki);
@@ -71,8 +72,15 @@ int execute_command(okeoma *oki);
 char *find_executable(okeoma *oki);
 int execute_builtin_command(okeoma *oki);
 void B_exc(okeoma *oki);
+void process(okeoma *oki);
+void file(okeoma *oki, char *argv);
+char *read_file(const char *filename);
+char *read_lines(int fd);
+int open_file(const char *filename);
 char *env_pos(okeoma *oki);
 void free_all(okeoma *oki);
+int _put(const char *str);
+int _putchar(char c);
 char *s_tok(Tokenizer *tokenizer, const char *delimiters);
 void f_tokenizer(Tokenizer *tokenizer, char *input_string);
 void prs(okeoma *oki, char *coms);

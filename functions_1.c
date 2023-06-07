@@ -93,37 +93,6 @@ char *find_executable(okeoma *oki)
 	return (NULL);
 }
 
-
-void interactive(okeoma *oki)
-{
-	while (true)
-	{
-		oki->com_num++;
-		printf("===> ");
-		oki->cmd = p_Input();
-		if (oki->cmd == NULL || *oki->cmd == '\0')
-		{
-			free(oki->cmd);
-			continue;
-		}
-		B_exc(oki);
-		for (oki->i = 0; oki->av[oki->i] != NULL; oki->i++)
-			free(oki->av[oki->i]);
-	
-		free(oki->av);
-	}
-}
-
-void non_interactive(okeoma *oki)
-{
-	read_in(oki);
-	if (oki->cmd == NULL || *oki->cmd == '\0')
-		free(oki->cmd);
-
-	B_exc(oki);
-	
-}
-
 /**
  * execute_builtin_command - this function runs built-in
  * @args: arguments to pass to the command

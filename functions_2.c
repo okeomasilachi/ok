@@ -14,7 +14,7 @@
 void B_exc(okeoma *oki)
 {
 	find_char(oki);
-	oki->y = find_set(oki->cmd, "&&", "||");
+	oki->y = find_set(oki->cmd);
 	f_tokenizer(&oki->tokens, oki->cmd);
 	oki->tok2 = s_tok(&oki->tokens, "&&||");
 	while (oki->tok2 != NULL)
@@ -34,7 +34,7 @@ void B_exc(okeoma *oki)
 			break;
 		if (oki->y == 2 && oki->status == 0)
 			break;
-		oki->y = find_set(NULL, "&&", "||");
+		oki->y = find_set(NULL);
 		oki->tok2 = s_tok(&oki->tokens, "&&||");
 	}
 }
@@ -97,14 +97,12 @@ void free_all(okeoma *oki)
 	int i, k;
 
 	for (i = 0; oki->av[i] != NULL; i++)
-	{
 		free(oki->av[i]);
-	}
+
 	for (k = 0; oki->command[k] != NULL; k++)
-	{
 		free(oki->command[k]);
-	}
-	my_free(4, oki->cmd, oki->av, oki->command, oki);
+	
+	free(oki->cmd), free(oki->av), free(oki->command), free(oki);
 }
 
 /**

@@ -69,7 +69,7 @@ void exit_command(okeoma *oki)
 			dprintf(2, "%s: %ld: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
-			/*free_all(n), free_all(n1), _free(1, cmd);*/
+			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
 	}
@@ -88,15 +88,7 @@ void setenv_command(okeoma *oki)
 	if (oki->av[1] == NULL || oki->av[2] == NULL)
 		dprintf(2, "%s: %ld: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
-	{
 		setenv(oki->av[1], oki->av[2], 1);
-		/*while (oki->arr[i] != NULL)
-				i++;
-
-		oki->arr[i] = env_pos(oki);   set the position of the arr tp point to the env 
-		for (oki->i = 0; oki->arr[oki->i] != NULL; oki->i++)
-			printf("%s\n", oki->arr[oki->i]);*/
-	}
 }
 
 /**
