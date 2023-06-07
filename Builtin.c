@@ -89,6 +89,7 @@ void setenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 		setenv(oki->av[1], oki->av[2], 1);
+		
 }
 
 /**
