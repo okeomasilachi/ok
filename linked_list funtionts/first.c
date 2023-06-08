@@ -7,21 +7,33 @@ typedef struct node
 } Node;
 
 void print_node(Node *head);
+Node *insert_at_head(Node *head, int value);
 
 
 int main(void)
 {
-	Node a, b, c;
-	a.value = 5;
-	b.value = 6;
-	c.value = 7;
-	a.nxt = &b;
-	b.nxt = &c;
-	c.nxt = NULL;
-
-	print_node(&a);
+	Node *a = NULL;
+	a = insert_at_head(a, 6);
+	a = insert_at_head(a, 7);
+	a = insert_at_head(a, 8);
+	a = insert_at_head(a, 9);
+	print_node(a);
 	return 0;
 	
+}
+
+Node *insert_at_head(Node *head, int value)
+{
+	Node *new_node = malloc(sizeof(Node));
+	new_node->value = value;
+	if (head == NULL)
+		return (new_node);
+	else
+	{
+		new_node->nxt = head;
+		return (new_node);
+	}
+
 }
 
 void print_node(Node *head)
@@ -38,3 +50,5 @@ void print_node(Node *head)
 	}
 	
 }
+
+ 
