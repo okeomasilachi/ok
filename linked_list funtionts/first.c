@@ -21,59 +21,84 @@ Node *delete_all_match(Node *head, int delete_value, int *num_deleted);
 Node *efficient_delete_match(Node *head, int del_value, int *num_del);
 Node *append_list(Node *head1, Node *head2);
 Node *revers_list(Node *head);
+Node *sort_list(Node *head);
+void delete_duplicate(Node *head);
 
 int main(void)
 {
-	int len = 0, i, j;
-
-	Node *a = NULL, *b = NULL;
-	for (i = 1; i <= 5; i++)
-		a = insert_at_tail(a, i);
-	for (j = 6; j <= 10; j++)
-		b = insert_at_tail(b, j);
+	Node *a = NULL;
 	
+	a = insert_at_tail(a, 5);
+	a = insert_at_tail(a, 7);
+	a = insert_at_tail(a, 5);
 
-
-	puts("before");
 	print_node(a);
-	puts("l 2");
-	print_node(b);
-	puts("after");
-	a = append_list(a, b);
-	print_node(a);
-	
-	a = revers_list(a);
+	delete_duplicate(a);
 	print_node(a);
 	return 0;
 
 }
 
-Node *swap_list(Node *head)
+void delete_duplicate(Node *head)
 {
-	if (head == NULL) return;
-	if (head->nxt == NULL) return;
+	if (head == NULL)
+		return;
 
-	bool swapped = false;
-	Node *current = head;
-	Node *prev = NULL;
+	Node *cur1 = head;
 
-	while (current->nxt != NULL)
+	while (cur1 != NULL && cur1->nxt != NULL)
 	{
-		prev = current;
-		current = current->nxt;
-		if (current != NULL)
-		{
-			int temp;
-			temp = prev->value;
-			prev->value = current->value;
-			current->value = temp;
-			swapped = true;
-		}
-	}
-	
+		Node *cur2 = cur1;
 
+		while (cur2->nxt != NULL)
+		{
+			if (cur1->value == cur2->nxt->value)
+			{
+				Node *dup = cur2->nxt;
+				cur2->nxt = cur2->nxt->nxt;
+				free(dup);
+			}
+			else
+			{
+				cur2 = cur2->nxt;
+			}
+		}
+		cur1 = cur1->nxt;
+	}
 }
 
+Node *sort_list(Node *head)
+{
+	if (head == NULL || head->nxt == NULL)
+	{
+		return head;
+	}
+
+	bool swapped;
+	Node *current;
+	Node *last_swapped = NULL;
+
+	do
+	{
+		swapped = false;
+		current = head;
+
+		while (current->nxt != last_swapped)
+		{
+			if (current->value > current->nxt->value)
+			{
+				int temp = current->value;
+				current->value = current->nxt->value;
+				current->nxt->value = temp;
+				swapped = true;
+			}
+			current = current->nxt;
+		}
+		last_swapped = current;
+	} while (swapped);
+
+	return head;
+}
 
 
 Node *revers_list(Node *head)
