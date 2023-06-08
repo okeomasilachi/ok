@@ -48,6 +48,34 @@ int main(void)
 
 }
 
+Node *swap_list(Node *head)
+{
+	if (head == NULL) return;
+	if (head->nxt == NULL) return;
+
+	bool swapped = false;
+	Node *current = head;
+	Node *prev = NULL;
+
+	while (current->nxt != NULL)
+	{
+		prev = current;
+		current = current->nxt;
+		if (current != NULL)
+		{
+			int temp;
+			temp = prev->value;
+			prev->value = current->value;
+			current->value = temp;
+			swapped = true;
+		}
+	}
+	
+
+}
+
+
+
 Node *revers_list(Node *head)
 {
 	if (head == NULL) return NULL;
