@@ -47,20 +47,20 @@ for test_case in "${test_cases[@]}"; do
         fi
 
         # Execute the command in your shell and capture the output and stream
-        your_shell_output=$(./ok "$your_shell_input" 2>&1)
+        your_shell_output=$(./home/okeoma/Desktop/simple_shell-master/ok "$your_shell_input" 2>&1)
         your_shell_exit_status=$?
 
         # Execute the same command in sh shell and capture the output and stream
         sh_shell_output=$(sh -c "$your_shell_input" 2>&1)
         sh_shell_exit_status=$?
 
-        echo "Your shell output:"
+        echo "==============>Your shell output:"
         echo "$your_shell_output"
 
-        echo "sh shell output:"
+        echo "==============>sh shell output:"
         echo "$sh_shell_output"
 
-        echo "Result:"
+        echo "==============>Result:"
         compare_output "$sh_shell_output" "$your_shell_output" "stdout" "stdout" "$sh_shell_exit_status" "$your_shell_exit_status"
 
         if [[ $? -ne 0 ]]; then

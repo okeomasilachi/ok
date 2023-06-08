@@ -35,7 +35,7 @@ void read_input(char *buffer, int *buffer_pos, int *buffer_size)
 
 		if (*buffer_size == 0)
 		{
-			putchar('\n');
+			p(STO, '\n');
 			exit(EXIT_SUCCESS);
 		}
 		*buffer_pos = 0;
