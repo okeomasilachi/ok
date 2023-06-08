@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <signal.h>
+#include <time.h>
 
 #define BUFFER_SIZE 1024
 

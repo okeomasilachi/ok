@@ -18,40 +18,68 @@ int count_matches(Node *node, int f_value);
 void replace_matches(Node *node, int f_value, int r_value);
 Node *delete_first_match(Node *head, int delete_value, bool *was_deleted);
 Node *delete_all_match(Node *head, int delete_value, int *num_deleted);
-Node *e_delete_all_match(Node *head, int del_value, int *num_del);
+Node *efficient_delete_match(Node *head, int del_value, int *num_del);
+Node *append_list(Node *head1, Node *head2);
+Node *revers_list(Node *head);
 
 int main(void)
 {
-	int len = 0;
+	int len = 0, i, j;
 
-	Node *a = NULL;
-	a = insert_at_tail(a, 7);
-	a = insert_at_tail(a, 7);
-	a = insert_at_tail(a, 8);
-	a = insert_at_tail(a, 8);
-	a = insert_at_tail(a, 9);
-	a = insert_at_tail(a, 7);
-	a = insert_at_tail(a, 3);
-	a = insert_at_tail(a, 6);
-	a = insert_at_tail(a, 7);
-	a = insert_at_tail(a, 9);
-	a = insert_at_tail(a, 7);
+	Node *a = NULL, *b = NULL;
+	for (i = 1; i <= 5; i++)
+		a = insert_at_tail(a, i);
+	for (j = 6; j <= 10; j++)
+		b = insert_at_tail(b, j);
+	
+
 
 	puts("before");
 	print_node(a);
-
+	puts("l 2");
+	print_node(b);
 	puts("after");
-	a = e_delete_all_match(a, 7, &len);
-	printf("%d 7s deleted\n", len);
+	a = append_list(a, b);
 	print_node(a);
-
+	
+	a = revers_list(a);
+	print_node(a);
 	return 0;
 
 }
 
+Node *revers_list(Node *head)
+{
+	if (head == NULL) return NULL;
+	if (head->nxt == NULL) return head;
+
+	Node *current = head;
+	Node *next = head->nxt;
+
+	current->nxt = NULL;
+
+	while (next != NULL)
+	{
+		Node *tmp = next->nxt;
+		next->nxt = current;
+		current = next;
+		next = tmp;
+	}
+	return (current);	
+}
 
 
-Node *e_delete_all_match(Node *head, int del_value, int *num_del)
+Node *append_list(Node *head1, Node *head2)
+{
+	if (head1 == NULL) return head2;
+	Node *current = head1;
+	while (current->nxt != NULL) current = current->nxt;
+	current->nxt = head2;
+	return (head1);
+}
+
+
+Node *efficient_delete_match(Node *head, int del_value, int *num_del)
 {
 	*num_del = 0;
 
@@ -249,13 +277,13 @@ Node *insert_at_tail(Node *head, int value)
 
 void print_node(Node *head)
 {
-	char i = 'a';
+	int i = 1;
 	Node *current;
 	current = head;
 
 	while (current != NULL)
 	{
-		printf("node at %c: = %d\n", i, current->value);
+		printf("node at %d: = %d\n", i, current->value);
 		i++;
 		current = current->nxt;
 	}
