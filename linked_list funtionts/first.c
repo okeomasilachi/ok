@@ -23,21 +23,102 @@ Node *append_list(Node *head1, Node *head2);
 Node *revers_list(Node *head);
 Node *sort_list(Node *head);
 void delete_duplicate(Node *head);
+Node *insert_after(Node *head, int after_value, int insert_value);
+Node *delete_list(Node *node);
+Node *merge_sorted_list(Node *head1, Node *head2);
+Node *add_list(Node *list1, Node *list2);
 
 int main(void)
 {
-	Node *a = NULL;
+	int i, j;
+	Node *a = NULL, *b = NULL;
 	
-	a = insert_at_tail(a, 5);
-	a = insert_at_tail(a, 7);
-	a = insert_at_tail(a, 5);
+	for (i = 0; i < 6; i++)
+		a = insert_at_tail(a, i);
 
+	for (j = 6; j < 11; j++)
+		b = insert_at_tail(b, j);
+	puts("before");
+	puts("\nlist a");
 	print_node(a);
-	delete_duplicate(a);
+	puts("\nlist b");
+	print_node(b);
+
+	puts("\nafter");
+	a = add_list(a, b);
 	print_node(a);
 	return 0;
 
 }
+
+
+Node *add_list(Node *list1, Node *list2)
+{
+	if (list1 == NULL && list2 == NULL) return NULL;
+	if (list1 == NULL && list2 != NULL) return list2;
+	if (list2 == NULL && list1 != NULL) return list1;
+
+	Node *cur = malloc(sizeof(Node));
+	Node *oth = malloc(sizeof(Node));
+	cur = list1;
+	oth = list2;
+	while (cur->nxt != NULL && oth->nxt != NULL)
+	{
+		cur->value = cur->value + oth->value;
+		cur = cur->nxt;
+		oth = oth->nxt;
+	}
+	cur->value = cur->value + oth->value;
+	return (list1);
+}
+
+
+/*Node *merge_sorted_list(Node *head1, Node *head2)
+{
+	if (head1 == NULL && head2 == NULL) return NULL;
+	if (head1 == NULL && head2 != NULL) return head2;
+	if (head2 == NULL && head1 != NULL) return head1;
+	 
+}*/
+
+Node *delete_list(Node *node)
+{
+	if (node != NULL)
+	{
+		delete_list(node->nxt);
+		free(node);
+	}
+	return (NULL);
+}
+
+Node *insert_after(Node *head, int after_value, int insert_value)
+{
+	Node *new_node = malloc(sizeof(Node));
+	new_node->value = insert_value;
+
+	if (head == NULL) return (new_node);
+	else
+	{
+		Node *current = head;
+
+		while (current->nxt != NULL)
+		{
+			if (current->value == after_value)
+			{
+				new_node->nxt = current->nxt;
+				current->nxt = new_node;
+				return(head);
+			}
+			else current = current->nxt;
+		}
+		new_node->nxt = current->nxt;
+		current->nxt = new_node;
+
+		return (head);
+	}
+}
+
+
 
 void delete_duplicate(Node *head)
 {
