@@ -86,3 +86,4 @@ int find_set(char *str)
 	}
 	return (setValue);
 }
+

@@ -24,8 +24,15 @@
 
 extern char **environ;
 
+typedef struct env_list
+{
+	char *NAME;
+	char *value;
+	struct env_list *next;
+} env_list;
+
 /**
- * struct okeoma - structs fro the strtok funtion
+ * struct okeoma - structs for the strtok funtion
  * @cur_tok_st: holds the current token
  * @nxt_tok_st: holds the next token
 */
@@ -55,6 +62,7 @@ typedef struct variables
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
+	env_list *env;
 	pid_t child_pid;
 	bool it;
 } okeoma;
@@ -65,7 +73,7 @@ void non_interactive(okeoma *oki);
 void *p_Input();
 void read_in(okeoma *oki);
 
-void help_command(okeoma *oki);
+void env_command(okeoma *oki);
 void find_char(okeoma *oki);
 int find_set(char *str);
 void unsetenv_command(okeoma *oki);
@@ -98,5 +106,15 @@ void print_integer(int num, int n);
 void print_string(char *s, int n);
 void write_string(int n, const char *s);
 int _isspace(int c);
+
+void free_list(env_list *head);
+char *get_env(env_list *env, const char *NAME);
+env_list *list_from_env(char **env);
+bool is_member(env_list *head, const char *f_value);
+void print_node(env_list *head);
+env_list *insert_at_tail(env_list *head, char *NAME, char *value);
+env_list *delete_first_match(env_list *head, char *delete_value, bool *was_deleted);
+
+
 
 #endif /* MAIN_H */

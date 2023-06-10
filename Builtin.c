@@ -12,23 +12,26 @@ void cd_command(okeoma *oki)
 {
 	if (!oki->av[1])
 	{
-		oki->ok = getenv("HOME");
+		oki->ok = get_env(oki->env, "HOME");
+		printf("%s\n", oki->ok);
 		chdir(oki->ok);
+		oki->env = list_from_env(environ);
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
 	{
-		oki->old = getenv("OLDPWD");
+		oki->old = get_env(oki->env, "OLDPWD");
 		chdir(oki->old);
-		oki->new = getenv("PWD");
+		oki->env = list_from_env(environ);
+		oki->new = get_env(oki->env, "PWD");
 		p(STO, "%s\n", oki->new);
 	}
 	else
 	{
-		oki->ok = getenv("PWD");
 		if (chdir(oki->av[1]) == 0)
 		{
-			oki->ok = getenv("PWD");
+			oki->env = list_from_env(environ);
+			oki->ok = get_env(oki->env, "PWD");
 			p(STO, "%s\n", oki->ok);
 		}
 		else
@@ -52,6 +55,7 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
+		free_list(oki->env);
 		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
@@ -69,6 +73,7 @@ void exit_command(okeoma *oki)
 			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
+			free_list(oki->env);
 			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
@@ -88,8 +93,10 @@ void setenv_command(okeoma *oki)
 	if (oki->av[1] == NULL || oki->av[2] == NULL)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
-		setenv(oki->av[1], oki->av[2], 1);
-		
+	{
+		oki->env = insert_at_tail(oki->env, oki->av[1], oki->av[2]);
+		return;
+	}
 }
 
 /**
@@ -102,14 +109,16 @@ void setenv_command(okeoma *oki)
 */
 void unsetenv_command(okeoma *oki)
 {
+	bool *i = false;
+
 	if (oki->av[1] == NULL)
 		p(STE, "%s: %d: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if (!getenv(oki->av[1]))
+		if (get_env(oki->env, oki->av[1]) == NULL)
 			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
-		if (unsetenv(oki->av[1]) != 0)
-			perror("unsetenv");
+		else
+			oki->env = delete_first_match(oki->env, oki->av[1], i);
 	}
 }
 
@@ -121,11 +130,7 @@ void unsetenv_command(okeoma *oki)
  *
  * Return: void
 */
-void help_command(okeoma *oki)
+void env_command(okeoma *oki)
 {
-	if (oki->av[1] == NULL)
-	{
-		p(STO, "	This is a simple shell program\n");
-		p(STO, "\nAuthors: Ebiri ThankGod, Onyedibia Okeomasilachi.\n");
-	}
+	print_node(oki->env);
 }

@@ -12,6 +12,7 @@ void _in(okeoma *oki, char **argv)
 	oki->Name = argv[0];
 	oki->com_num = 0;
 	oki->i = 0;
+	oki->env = list_from_env(environ);
 }
 
 /**
@@ -35,7 +36,7 @@ void read_input(char *buffer, int *buffer_pos, int *buffer_size)
 
 		if (*buffer_size == 0)
 		{
-			p(STO, '\n');
+			p(STO, "\n");
 			exit(EXIT_SUCCESS);
 		}
 		*buffer_pos = 0;
