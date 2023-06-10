@@ -17,10 +17,7 @@ int main(int argc, char **argv)
 	if (oki->it && argc == 1)
 		interactive(oki);
 	else
-	{
 		non_interactive(oki);
-	}
-	
-	
+
 	return 0;
 }

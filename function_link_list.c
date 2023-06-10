@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 /**
  * list_from_env - Builds a linked list from the environmental variable
@@ -57,7 +57,7 @@ bool is_value(env_list *head, const char *value)
 {
 	if (head == NULL) return false;
 	else if (strcmp(head->NAME, value) == 0) return true;
-	else return is_member(head->next, value);
+	else return is_value(head->next, value);
 }
 
 /**
@@ -71,7 +71,7 @@ bool is_NAME(env_list *head, const char *NAME)
 {
 	if (head == NULL) return false;
 	else if (head->NAME == NAME) return true;
-	else return is_member(head->next, NAME);
+	else return is_NAME(head->next, NAME);
 }
 
 /**
@@ -104,7 +104,7 @@ void print(env_list *head)
 
 	while (current != NULL)
 	{
-		printf("%s=%s\n", current->NAME, current->value);
+		p(STO, "%s=%s\n", current->NAME, current->value);
 		current = current->next;
 	}
 	
@@ -124,14 +124,14 @@ env_list *insert_env(env_list *head, char *NAME, char *value)
 
 	if (head == NULL)
 		return (new_node);
-	else if (is_member(head, NAME))
+	/*else if (is_NAME(head, NAME))
 	{
 		current = head;
 		while (current->NAME != NAME)
 			current = current->next;
 		current->value = value;
 		return (head);
-	}
+	}*/
 	else
 	{
 		new_node = malloc(sizeof(env_list));
@@ -160,7 +160,7 @@ env_list *delete_match(env_list *head, char *delete_NAME)
 	if (head == NULL) return (NULL);
 	else if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
 	{
-		env_list *temp = head->next;
+		temp = head->next;
 		head->next = temp->next;
 		free(temp);
 		return (head);
@@ -185,6 +185,66 @@ char *get_env(env_list *env, const char *NAME)
 	
 	if (current->next == NULL) return NULL;
 	else if (strcmp(current->NAME, NAME) == 0) return (current->value);
-	else get_env(current->next, NAME);	
+	else return get_env(current->next, NAME);	
 }
 
+/**
+ * delete_duplicate - Deletes duplicate nodes from an env_linked list
+ * @head: The head of the linked list
+ *
+ * Return: void
+ */
+void delete_duplicate(env_list *head)
+{
+	env_list *cur1 = NULL, *cur2 = NULL, *dup = NULL;
+
+	if (head == NULL)
+		return;
+	head = revers_list(head);
+	cur1 = head;
+	while (cur1 != NULL && cur1->next != NULL)
+	{
+		cur2 = cur1;
+		while (cur2->next != NULL)
+		{
+			if (strcmp(cur1->NAME, cur2->next->NAME) == 0)
+			{
+				
+				dup = cur2->next;
+				cur2->next = cur2->next->next;
+				free(dup);
+			}
+			else
+				cur2 = cur2->next;
+		}
+		cur1 = cur1->next;
+	}
+	head = revers_list(head);
+}
+
+/**
+ * revers_list - Reverses a linked list
+ * @head: The head of the linked list
+ *
+ * Return: A pointer to the reversed linked list
+ */
+env_list *revers_list(env_list *head)
+{
+	env_list *current = NULL, *next = NULL, *tmp = NULL; 
+	if (head == NULL) return NULL;
+	if (head->next == NULL) return head;
+
+	current = head;
+	next = head->next;
+
+	current->next = NULL;
+
+	while (next != NULL)
+	{
+		tmp = next->next;
+		next->next = current;
+		current = next;
+		next = tmp;
+	}
+	return (current);	
+}

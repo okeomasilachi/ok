@@ -12,8 +12,7 @@ void cd_command(okeoma *oki)
 {
 	if (!oki->av[1])
 	{
-		oki->ok = get_env(oki->env, "HOME");
-		printf("%s\n", oki->ok);
+		oki->ok = get_env(oki->env, "HOME");	
 		chdir(oki->ok);
 		oki->env = list_from_env(environ);
 		return;
@@ -94,7 +93,8 @@ void setenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		oki->env = insert_at_tail(oki->env, oki->av[1], oki->av[2]);
+		oki->env = insert_env(oki->env, oki->av[1], oki->av[2]);
+		delete_duplicate(oki->env);
 		return;
 	}
 }
@@ -109,8 +109,6 @@ void setenv_command(okeoma *oki)
 */
 void unsetenv_command(okeoma *oki)
 {
-	bool *i = false;
-
 	if (oki->av[1] == NULL)
 		p(STE, "%s: %d: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
 	else
@@ -118,19 +116,44 @@ void unsetenv_command(okeoma *oki)
 		if (get_env(oki->env, oki->av[1]) == NULL)
 			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
-			oki->env = delete_first_match(oki->env, oki->av[1], i);
+			oki->env = delete_match(oki->env, oki->av[1]);
 	}
 }
 
 /**
- * help_command - print help
+ * env_command - print help
+ * @oki: structure with all variables
+ *
+ * Return: void
+*/
+void env_command(okeoma *oki)
+{
+	delete_duplicate(oki->env);
+	print(oki->env);
+}
+
+/**
+ * get_env_command - print a particular environ
  * @args: arguments to work with
  * @NAME: name of the compiled program
  * @num: argument count
  *
  * Return: void
 */
-void env_command(okeoma *oki)
+void get_env_command(okeoma *oki)
 {
-	print_node(oki->env);
+	bool nv = is_NAME(oki->env, oki->av[1]);
+
+	if (nv == true && oki->av[2] == NULL)
+	{
+		p(STO, "%s\n", get_env(oki->env, oki->av[1]));
+	}
+	else if (oki->av[2] != NULL)
+	{
+		p(STE, "%s: %d: %s: Usage: %s <NAME of environmental variable>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
+	}
+	else
+	{
+		p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+	}
 }

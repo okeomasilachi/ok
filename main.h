@@ -74,6 +74,7 @@ void *p_Input();
 void read_in(okeoma *oki);
 
 void env_command(okeoma *oki);
+void get_env_command(okeoma *oki);
 void find_char(okeoma *oki);
 int find_set(char *str);
 void unsetenv_command(okeoma *oki);
@@ -110,10 +111,13 @@ int _isspace(int c);
 void free_list(env_list *head);
 char *get_env(env_list *env, const char *NAME);
 env_list *list_from_env(char **env);
-bool is_member(env_list *head, const char *f_value);
-void print_node(env_list *head);
-env_list *insert_at_tail(env_list *head, char *NAME, char *value);
-env_list *delete_first_match(env_list *head, char *delete_value, bool *was_deleted);
+bool is_value(env_list *head, const char *value);
+bool is_NAME(env_list *head, const char *NAME);
+void print(env_list *head);
+env_list *insert_env(env_list *head, char *NAME, char *value);
+env_list *delete_match(env_list *head, char *delete_NAME);
+void delete_duplicate(env_list *head);
+env_list *revers_list(env_list *head);
 
 
 

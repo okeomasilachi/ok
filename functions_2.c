@@ -101,8 +101,8 @@ void free_all(okeoma *oki)
 
 	for (k = 0; oki->command[k] != NULL; k++)
 		free(oki->command[k]);
-	
-	free(oki->cmd), free(oki->av), free(oki->command), free(oki);
+
+	my_free(3, oki->cmd, oki->command, oki->av);
 }
 
 /**
