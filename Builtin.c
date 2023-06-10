@@ -17,7 +17,6 @@ void cd_command(okeoma *oki)
 		chdir(oki->ok);
 		set_env_value(oki->env, "OLDPWD", oki->old);
 		set_env_value(oki->env, "PWD", oki->ok);
-		/*oki->env = list_from_env(environ);*/
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
@@ -120,10 +119,10 @@ void unsetenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if (get_env(oki->env, oki->av[1]) == NULL)
-			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
-		else
+		if (is_NAME(oki->env, oki->av[1]))
 			oki->env = delete_match(oki->env, oki->av[1]);
+		else
+			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
 	}
 }
 
@@ -149,9 +148,7 @@ void env_command(okeoma *oki)
 */
 void get_env_command(okeoma *oki)
 {
-	bool nv = is_NAME(oki->env, oki->av[1]);
-
-	if (nv == true && oki->av[2] == NULL)
+	if (is_NAME(oki->env, oki->av[1]))
 	{
 		p(STO, "%s\n", get_env(oki->env, oki->av[1]));
 	}

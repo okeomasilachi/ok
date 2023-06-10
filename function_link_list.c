@@ -70,7 +70,7 @@ bool is_value(env_list *head, const char *value)
 bool is_NAME(env_list *head, const char *NAME)
 {
 	if (head == NULL) return false;
-	else if (head->NAME == NAME) return true;
+	else if (strcmp(head->NAME, NAME) == 0) return true;
 	else return is_NAME(head->next, NAME);
 }
 
