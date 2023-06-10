@@ -47,17 +47,31 @@ env_list *list_from_env(char **env)
 }
 
 /**
- * is_member - Checks if a value is present in a linked list
+ * is_value - Checks if a value is present in a linked list
  * @head: The head of the linked list
- * @f_value: The value to search for
+ * @value: The value to search for
  *
  * Return: true if the value is found, false otherwise
  */
-bool is_member(env_list *head, const char *f_value)
+bool is_value(env_list *head, const char *value)
 {
 	if (head == NULL) return false;
-	else if (strcmp(head->NAME, f_value) == 0) return true;
-	else return is_member(head->next, f_value);
+	else if (strcmp(head->NAME, value) == 0) return true;
+	else return is_member(head->next, value);
+}
+
+/**
+ * is_NAME - Checks if a value is present in a linked list
+ * @head: The head of the linked list
+ * @NAME: The value to search for
+ *
+ * Return: true if the value is found, false otherwise
+ */
+bool is_NAME(env_list *head, const char *NAME)
+{
+	if (head == NULL) return false;
+	else if (head->NAME == NAME) return true;
+	else return is_member(head->next, NAME);
 }
 
 /**
@@ -68,25 +82,22 @@ bool is_member(env_list *head, const char *f_value)
 */
 void free_list(env_list *head)
 {
-	env_list *current = head, *temp = NULL;
-	
-	while (current != NULL)
-	{
-		temp = current;
-		current = current->next;
-		free(temp->NAME);
-		free(temp->value);
-		free(temp);
-	}
+	if (head == NULL) return;
+
+	free_list(head->next);
+	free(head->NAME);
+	free(head->value);
+	free(head);
 }
 
+
 /**
- * print_node - Prints the values of a linked list
+ * print - Prints the values of a env_linked list
  * @head: The head of the linked list
  *
  * Return: void
  */
-void print_node(env_list *head)
+void print(env_list *head)
 {
 	env_list *current;
 	current = head;
@@ -100,13 +111,14 @@ void print_node(env_list *head)
 }
 
 /**
- * insert_at_tail - Inserts a new env_list with a given value at the tail of a linked list
+ * insert_env - Inserts a new env_list with a given NAME and value at the tail of a linked list
  * @head: The head of the linked list
+ * @NAME: name of variable
  * @value: The value to be inserted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *insert_at_tail(env_list *head, char *NAME, char *value)
+env_list *insert_env(env_list *head, char *NAME, char *value)
 {
 	env_list *new_node = NULL, *current = NULL;
 
@@ -135,77 +147,44 @@ env_list *insert_at_tail(env_list *head, char *NAME, char *value)
 }
 
 /**
- * delete_first_match - Deletes the first env_list with a given value from a linked list
+ * delete_match - Deletes the first env_list with a given NAME from a linked list
  * @head: The head of the linked list
  * @delete_value: The value to be deleted
- * @was_deleted: Pointer to the variable that indicates if a env_list was deleted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *delete_first_match(env_list *head, char *delete_value, bool *was_deleted)
+env_list *delete_match(env_list *head, char *delete_NAME)
 {
-	env_list *current = NULL, *prev = NULL, *temp = NULL;
+	env_list *temp = NULL;
 
-	if (head == NULL)
+	if (head == NULL) return (NULL);
+	else if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
 	{
-		*was_deleted = false;
-		return (NULL);
+		env_list *temp = head->next;
+		head->next = temp->next;
+		free(temp);
+		return (head);
 	}
-	if (head->NAME == delete_value)
-	{
-		temp = head->next;
-		free(head);
-		*was_deleted = (true);
-		return (temp);
-	}
-	current = head->next;
-	prev = head;
-	while (current != NULL)
-	{
-		if (current->NAME == delete_value)
-		{
-			prev->next = current->next;
-			free(current);
-			*was_deleted = true;
-			return (head);
-		}
-		prev = current;
-		current = current->next;
-	}
-	*was_deleted = false;
-	return (head);
-}
-
-char *get_env(env_list *env, const char *NAME)
-{
-	char *ret = NULL;
-	bool ok = is_member(env, NAME);
-	if (ok)
-		puts("here1");
-	if (env == NULL || NAME == NULL) return NULL;
 	else
 	{
-		if (strcmp(env->NAME, NAME) == 0)
-		{
-			puts("here");
-			ret = strdup(env->value);
-			return (ret);
-		}
-		env = env->next;
+		head->next = delete_match(head->next, delete_NAME);
+		return (head);
 	}
-	puts("here2");
-	return (ret);	
 }
 
-
-
-int main(void)
+/**
+ * get_env - returns the value of a NAME in the env_list if it exist
+ * @env: the list to search
+ * @NAME: the name to search for in the list
+ *
+ * Return: a pointer to the value if the NAME exits else NULL
+*/
+char *get_env(env_list *env, const char *NAME)
 {
-	env_list *me = list_from_env(environ);
-	char *name = get_env(me, "PWD");
-
-	printf("%s\n", name);
-
-	return 0;
+	env_list *current = env;
+	
+	if (current->next == NULL) return NULL;
+	else if (strcmp(current->NAME, NAME) == 0) return (current->value);
+	else get_env(current->next, NAME);	
 }
 
