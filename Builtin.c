@@ -10,20 +10,27 @@
 */
 void cd_command(okeoma *oki)
 {
-	if (!oki->av[1])
+	if (oki->av[1] == NULL)
 	{
-		oki->ok = get_env(oki->env, "HOME");	
+		oki->ok = get_env(oki->env, "HOME");
+		oki->old = get_env(oki->env, "PWD");
 		chdir(oki->ok);
-		oki->env = list_from_env(environ);
+		set_env_value(oki->env, "OLDPWD", oki->old);
+		set_env_value(oki->env, "PWD", oki->ok);
+		/*oki->env = list_from_env(environ);*/
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
 	{
+		oki->ok = get_env(oki->env, "PWD");
 		oki->old = get_env(oki->env, "OLDPWD");
-		chdir(oki->old);
-		oki->env = list_from_env(environ);
-		oki->new = get_env(oki->env, "PWD");
-		p(STO, "%s\n", oki->new);
+		if (chdir(oki->old) == 0)
+		{
+			set_env_value(oki->env, "PWD", oki->old);
+			set_env_value(oki->env, "OLDPWD", oki->ok);
+			p(STO, "%s\n", oki->old);
+			return;
+		}
 	}
 	else
 	{
