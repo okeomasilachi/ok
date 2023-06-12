@@ -253,12 +253,13 @@ void process_array(alias *head, char **array, int size)
 			found_match = 1;
 	}
 	if (found_match)
-		process_array(array, size); /* Continue processing until no matches are found */
+		process_array(head, array, size); /* Continue processing until no matches are found */
 }
 
 void print_aliases(alias *head, char **alias_names)
 {
 	alias *current = head;
+	int i = 0;
 	
 	if (alias_names == NULL)
 	{
@@ -269,9 +270,7 @@ void print_aliases(alias *head, char **alias_names)
 		}
 	}
 	else
-	{
-		int i = 0;
-		
+	{		
 		while (alias_names[i] != NULL)
 		{
 			current = head;
@@ -290,6 +289,29 @@ void print_aliases(alias *head, char **alias_names)
 	}
 }
 
+void add_alias(alias *head, char *name, char *value)
+{
+	alias *current, *new_alias = (alias *)malloc(sizeof(alias));
+	
+	new_alias->NAME = strdup(name);
+	new_alias->value = strdup(value);
+	new_alias->next = NULL;
+
+	if (head == NULL)
+	{
+		head = new_alias;
+	}
+	else
+	{
+		current = head;
+		while (current->next != NULL)
+			current = current->next;
+
+		current->next = new_alias;
+	}
+}
+
+
 void define_alias(alias *head, char *name, char *value)
 {
 	alias *current = head;
@@ -304,35 +326,37 @@ void define_alias(alias *head, char *name, char *value)
 		}
 		current = current->next;
 	}
-	add_alias(name, value);
+	add_alias(head, name, value);
 }
 
-void handle_alias_command(alias *head, char **args)
+void handle_alias_command(okeoma *oki)
 {
-	if (args[1] == NULL)
+	char *name, *value;
+	int i = 1;
+	
+	if (oki->av[1] == NULL)
 	{
 		/* No arguments provided, print all aliases */
-		print_aliases(NULL);
+		print_aliases(oki->head, NULL);
 	}
-	else if (args[2] == NULL)
+	else if (oki->av[2] == NULL)
 	{
 		/* Print specific aliases */
-		print_aliases(args + 1);
+		print_aliases(oki->head, oki->av[1]);
 	}
 	else
 	{
 		/* Define new aliases */
-		int i = 1;
-		while (args[i] != NULL)
+		while (oki->av[1] != NULL)
 		{
-			char *name = args[i];
-			char *value = strchr(name, '=');  /* Check for name=value format */
+			name = oki->av[1];
+			value = strchr(name, '=');  /* Check for name=value format */
 			
 			if (value != NULL)
 			{
 				*value = '\0';  /* Separate name and value */
 				value++;
-				define_alias(head, name, value);
+				define_alias(oki->head, name, value);
 			}
 			i++;
 		}

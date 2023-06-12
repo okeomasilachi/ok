@@ -62,7 +62,7 @@ typedef struct variables
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
-	alias *env;
+	alias *head;
 	pid_t child_pid;
 	bool it;
 } okeoma;
