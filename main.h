@@ -24,12 +24,12 @@
 
 extern char **environ;
 
-typedef struct env_list
+typedef struct alias_list
 {
 	char *NAME;
 	char *value;
-	struct env_list *next;
-} env_list;
+	struct alias *next;
+} alias;
 
 /**
  * struct okeoma - structs for the strtok funtion
@@ -62,7 +62,7 @@ typedef struct variables
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
-	env_list *env;
+	alias *env;
 	pid_t child_pid;
 	bool it;
 } okeoma;
@@ -108,18 +108,24 @@ void print_string(char *s, int n);
 void write_string(int n, const char *s);
 int _isspace(int c);
 
-void free_list(env_list *head);
-char *get_env(env_list *env, const char *NAME);
-env_list *list_from_env(char **env);
-bool is_value(env_list *head, const char *value);
-bool is_NAME(env_list *head, const char *NAME);
-void print(env_list *head);
-env_list *insert_env(env_list *head, char *NAME, char *value);
-env_list *delete_match(env_list *head, char *delete_NAME);
-void delete_duplicate(env_list *head);
-env_list *revers_list(env_list *head);
-void set_env_value(env_list *env, const char *NAME, const char *value);
+void free_list(alias *head);
+char *get_env(alias *env, const char *NAME);
+alias *list_from_env(char **env);
+bool is_value(alias *head, const char *value);
+bool is_NAME(alias *head, const char *NAME);
+void print(alias *head);
+alias *insert_env(alias *head, char *NAME, char *value);
+alias *delete_match(alias *head, char *delete_NAME);
+void delete_duplicate(alias *head);
+alias *revers_list(alias *head);
+void set_env_value(alias *env, const char *NAME, const char *value);
 
 
+char *oki_getenv(const char *name);
+bool oki_confirm_env(const char *name);
+int oki_setenv(const char *name, const char *value, int overwrite);
+int oki_unsetenv(const char *name);
+int oki_putenv(char *string);
+void oki_clearenv(void);
 
 #endif /* MAIN_H */

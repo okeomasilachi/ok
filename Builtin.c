@@ -12,37 +12,33 @@ void cd_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL)
 	{
-		oki->ok = get_env(oki->env, "HOME");
-		oki->old = get_env(oki->env, "PWD");
+		oki->ok = oki_getenv("HOME");
+		oki->old = oki_getenv("PWD");
 		chdir(oki->ok);
-		set_env_value(oki->env, "OLDPWD", oki->old);
-		set_env_value(oki->env, "PWD", oki->ok);
+		oki_setenv("OLDPWD", oki->old, 1);
+		oki_setenv("PWD", oki->ok, 1);
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
 	{
-		oki->ok = get_env(oki->env, "PWD");
-		oki->old = get_env(oki->env, "OLDPWD");
-		if (chdir(oki->old) == 0)
-		{
-			set_env_value(oki->env, "PWD", oki->old);
-			set_env_value(oki->env, "OLDPWD", oki->ok);
-			p(STO, "%s\n", oki->old);
-			return;
-		}
+		oki->old = oki_getenv("OLDPwD");
+		chdir(oki->old);
+		p(STO, "%s\n", oki->old);
+		return;
 	}
-	else
+	else 
 	{
 		if (chdir(oki->av[1]) == 0)
 		{
-			oki->env = list_from_env(environ);
-			oki->ok = get_env(oki->env, "PWD");
+			oki->ok = oki_getenv("PWD");
 			p(STO, "%s\n", oki->ok);
+			return;
 		}
 		else
 			p(STE, "%s: %d: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }
+
 
 /**
  * exit_command - exits the program
@@ -60,7 +56,6 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
-		free_list(oki->env);
 		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
@@ -78,7 +73,6 @@ void exit_command(okeoma *oki)
 			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
-			free_list(oki->env);
 			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
@@ -95,12 +89,11 @@ void exit_command(okeoma *oki)
 */
 void setenv_command(okeoma *oki)
 {
-	if (oki->av[1] == NULL || oki->av[2] == NULL)
+	if (oki->av[1] == NULL || oki->av[2] == NULL || oki->av[3] != NULL)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		oki->env = insert_env(oki->env, oki->av[1], oki->av[2]);
-		delete_duplicate(oki->env);
+		oki_setenv(oki->av[1], oki->av[2], 1);
 		return;
 	}
 }
@@ -115,27 +108,15 @@ void setenv_command(okeoma *oki)
 */
 void unsetenv_command(okeoma *oki)
 {
-	if (oki->av[1] == NULL)
-		p(STE, "%s: %d: %s: missing argument\n", oki->Name, oki->com_num, oki->av[0]);
+	if (oki->av[1] == NULL || oki->av[2] != NULL)
+		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if (is_NAME(oki->env, oki->av[1]))
-			oki->env = delete_match(oki->env, oki->av[1]);
+		if (oki_confirm_env(oki->av[1]) == true)
+			oki_unsetenv(oki->av[1]);
 		else
-			p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
+			p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
 	}
-}
-
-/**
- * env_command - print help
- * @oki: structure with all variables
- *
- * Return: void
-*/
-void env_command(okeoma *oki)
-{
-	delete_duplicate(oki->env);
-	print(oki->env);
 }
 
 /**
@@ -148,16 +129,18 @@ void env_command(okeoma *oki)
 */
 void get_env_command(okeoma *oki)
 {
-	if (is_NAME(oki->env, oki->av[1]))
+	if (oki->av[1] == NULL || oki->av[2] != NULL)
 	{
-		p(STO, "%s\n", get_env(oki->env, oki->av[1]));
+		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
 	}
-	else if (oki->av[2] != NULL)
+	else if (oki_confirm_env(oki->av[1]) == true)
 	{
-		p(STE, "%s: %d: %s: Usage: %s <NAME of environmental variable>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
+		oki->ok = oki_getenv(oki->av[1]);
+		p(STO, "%s\n", oki->ok);
+		return;
 	}
 	else
 	{
-		p(STE, "%s: %d: %s: %s not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+		p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }

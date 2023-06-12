@@ -12,7 +12,7 @@ void _in(okeoma *oki, char **argv)
 	oki->Name = argv[0];
 	oki->com_num = 0;
 	oki->i = 0;
-	oki->env = list_from_env(environ);
+
 }
 
 /**

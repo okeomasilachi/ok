@@ -1,50 +1,5 @@
 #include "main.h"
 
-/**
- * list_from_env - Builds a linked list from the environmental variable
- * @env: pointer to the environmental list
- *
- * Return: Returns pointer to the linked list 
-*/
-env_list *list_from_env(char **env)
-{
-	env_list *head = NULL, *current = NULL, *new_node = NULL;
-	char *variable, *separator, *name, *value;
-	int i = 0, name_len;
-
-	while (env[i] != NULL)
-	{
-		variable = env[i];
-		separator = strchr(variable, '=');
-		
-		if (separator != NULL)
-		{
-			name_len = separator - variable;
-			name = (char *)malloc((name_len + 1) * sizeof(char));
-			strncpy(name, variable, name_len);
-			name[name_len] = '\0';
-			
-			value = strdup(separator + 1);	/* Extract the variable value */
-			/* Create a new env_list for the variable */
-			new_node = (env_list *)malloc(sizeof(env_list));
-			new_node->NAME = name;
-			new_node->value = value;
-			new_node->next = NULL;
-			if (head == NULL) /* First env_list in the list */
-			{
-				head = new_node;
-				current = new_node;
-			}
-			else /* Append the env_list to the end of the list */
-			{
-				current->next = new_node;
-				current = new_node;
-			}
-		}
-		i++;
-	}
-	return (head);
-}
 
 /**
  * is_value - Checks if a value is present in a linked list
@@ -53,7 +8,7 @@ env_list *list_from_env(char **env)
  *
  * Return: true if the value is found, false otherwise
  */
-bool is_value(env_list *head, const char *value)
+bool is_value(alias *head, const char *value)
 {
 	if (head == NULL) return false;
 	else if (strcmp(head->NAME, value) == 0) return true;
@@ -67,7 +22,7 @@ bool is_value(env_list *head, const char *value)
  *
  * Return: true if the value is found, false otherwise
  */
-bool is_NAME(env_list *head, const char *NAME)
+bool is_NAME(alias *head, const char *NAME)
 {
 	if (head == NULL) return false;
 	else if (strcmp(head->NAME, NAME) == 0) return true;
@@ -80,7 +35,7 @@ bool is_NAME(env_list *head, const char *NAME)
  *
  * Return: Void
 */
-void free_list(env_list *head)
+void free_list(alias *head)
 {
 	if (head == NULL) return;
 
@@ -97,44 +52,44 @@ void free_list(env_list *head)
  *
  * Return: void
  */
-void print(env_list *head)
+void print(alias *head)
 {
-	env_list *current;
+	alias *current;
 	current = head;
 
 	while (current != NULL)
 	{
-		p(STO, "%s=%s\n", current->NAME, current->value);
+		p(STO, "%s=\'%s\'\n", current->NAME, current->value);
 		current = current->next;
 	}
-	
+
 }
 
 /**
- * insert_env - Inserts a new env_list with a given NAME and value at the tail of a linked list
+ * insert_env - Inserts a new alias with a given NAME and value at the tail of a linked list
  * @head: The head of the linked list
  * @NAME: name of variable
  * @value: The value to be inserted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *insert_env(env_list *head, char *NAME, char *value)
+alias *insert_env(alias *head, char *NAME, char *value)
 {
-	env_list *new_node = NULL, *current = NULL;
+	alias *new_node = NULL, *current = NULL;
 
 	if (head == NULL)
 		return (new_node);
-	/*else if (is_NAME(head, NAME))
+	else if (is_NAME(head, NAME))
 	{
 		current = head;
 		while (current->NAME != NAME)
 			current = current->next;
 		current->value = value;
 		return (head);
-	}*/
+	}
 	else
 	{
-		new_node = malloc(sizeof(env_list));
+		new_node = malloc(sizeof(alias));
 		new_node->value = value;
 		new_node->NAME = NAME;
 		new_node->next = NULL;
@@ -147,15 +102,15 @@ env_list *insert_env(env_list *head, char *NAME, char *value)
 }
 
 /**
- * delete_match - Deletes the first env_list with a given NAME from a linked list
+ * delete_match - Deletes the first alias with a given NAME from a linked list
  * @head: The head of the linked list
  * @delete_value: The value to be deleted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *delete_match(env_list *head, char *delete_NAME)
+alias *delete_match(alias *head, char *delete_NAME)
 {
-	env_list *temp = NULL;
+	alias *temp = NULL;
 
 	if (head == NULL) return (NULL);
 	else if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
@@ -173,40 +128,40 @@ env_list *delete_match(env_list *head, char *delete_NAME)
 }
 
 /**
- * get_env - returns the value of a NAME in the env_list if it exist
+ * get_env - returns the value of a NAME in the alias if it exist
  * @env: the list to search
  * @NAME: the name to search for in the list
  *
  * Return: a pointer to the value if the NAME exits else NULL
 */
-char *get_env(env_list *env, const char *NAME)
+char *get_env(alias *env, const char *NAME)
 {
-	env_list *current = env;
-	
+	alias *current = env;
+
 	if (current->next == NULL) return NULL;
 	else if (strcmp(current->NAME, NAME) == 0) return (current->value);
-	else return get_env(current->next, NAME);	
+	else return get_env(current->next, NAME);
 }
 
 /**
- * set_env_value - sets the value of a NAME in the env_list if it exist
+ * set_env_value - sets the value of a NAME in the alias if it exist
  * @env: the list to search
  * @NAME: the name to search for in the list
  * @value: value to be inserted
  *
  * Return: a pointer to the value if the NAME exits else NULL
 */
-void set_env_value(env_list *env, const char *NAME, const char *value)
+void set_env_value(alias *env, const char *NAME, const char *value)
 {
-	env_list *current = env;
-	
+	alias *current = env;
+
 	if (current->next == NULL) return;
 	else if (strcmp(current->NAME, NAME) == 0)
 	{
 		current->value = strdup(value);
 		return;
 	}
-	else set_env_value(current->next, NAME, value);	
+	else set_env_value(current->next, NAME, value);
 }
 
 /**
@@ -215,9 +170,9 @@ void set_env_value(env_list *env, const char *NAME, const char *value)
  *
  * Return: void
  */
-void delete_duplicate(env_list *head)
+void delete_duplicate(alias *head)
 {
-	env_list *cur1 = NULL, *cur2 = NULL, *dup = NULL;
+	alias *cur1 = NULL, *cur2 = NULL, *dup = NULL;
 
 	if (head == NULL)
 		return;
@@ -230,7 +185,7 @@ void delete_duplicate(env_list *head)
 		{
 			if (strcmp(cur1->NAME, cur2->next->NAME) == 0)
 			{
-				
+
 				dup = cur2->next;
 				cur2->next = cur2->next->next;
 				free(dup);
@@ -249,9 +204,9 @@ void delete_duplicate(env_list *head)
  *
  * Return: A pointer to the reversed linked list
  */
-env_list *revers_list(env_list *head)
+alias *revers_list(alias *head)
 {
-	env_list *current = NULL, *next = NULL, *tmp = NULL; 
+	alias *current = NULL, *next = NULL, *tmp = NULL;
 	if (head == NULL) return NULL;
 	if (head->next == NULL) return head;
 
@@ -267,5 +222,119 @@ env_list *revers_list(env_list *head)
 		current = next;
 		next = tmp;
 	}
-	return (current);	
+	return (current);
+}
+
+/* Function to check if a string matches any alias and replace it with the corresponding value */
+int replace_with_alias(alias *head, char *str)
+{
+	alias *current = head;
+	
+	while (current != NULL)
+	{
+		if (strcmp(str, current->NAME) == 0)
+		{
+			strcpy(str, current->value);
+			return 1; /* Match found and replaced */
+		}
+		current = current->next;
+	}
+	return 0; /* No match found */
+}
+
+/* Function to process the array and replace aliases recursively */
+void process_array(alias *head, char **array, int size)
+{
+	int i, found_match = 0;
+	
+	for (i = 0; i < size; i++)
+	{
+		if (replace_with_alias(head ,array[i]))
+			found_match = 1;
+	}
+	if (found_match)
+		process_array(array, size); /* Continue processing until no matches are found */
+}
+
+void print_aliases(alias *head, char **alias_names)
+{
+	alias *current = head;
+	
+	if (alias_names == NULL)
+	{
+		while (current != NULL)
+		{
+			printf("%s='%s'\n", current->NAME, current->value);
+			current = current->next;
+		}
+	}
+	else
+	{
+		int i = 0;
+		
+		while (alias_names[i] != NULL)
+		{
+			current = head;
+			
+			while (current != NULL)
+			{
+				if (strcmp(alias_names[i], current->NAME) == 0)
+				{
+					printf("%s='%s'\n", current->NAME, current->value);
+					break;
+				}
+				current = current->next;
+			}
+			i++;
+		}
+	}
+}
+
+void define_alias(alias *head, char *name, char *value)
+{
+	alias *current = head;
+	
+	while (current != NULL)
+	{
+		if (strcmp(name, current->NAME) == 0)
+		{
+			free(current->value);
+			current->value = strdup(value);
+			return;
+		}
+		current = current->next;
+	}
+	add_alias(name, value);
+}
+
+void handle_alias_command(alias *head, char **args)
+{
+	if (args[1] == NULL)
+	{
+		/* No arguments provided, print all aliases */
+		print_aliases(NULL);
+	}
+	else if (args[2] == NULL)
+	{
+		/* Print specific aliases */
+		print_aliases(args + 1);
+	}
+	else
+	{
+		/* Define new aliases */
+		int i = 1;
+		while (args[i] != NULL)
+		{
+			char *name = args[i];
+			char *value = strchr(name, '=');  /* Check for name=value format */
+			
+			if (value != NULL)
+			{
+				*value = '\0';  /* Separate name and value */
+				value++;
+				define_alias(head, name, value);
+			}
+			i++;
+		}
+	}
 }

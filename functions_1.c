@@ -93,6 +93,40 @@ char *find_executable(okeoma *oki)
 	return (NULL);
 }
 
+char *find_directory(const char *directory_name, okeoma *oki)
+{
+    char *path_env, *path_copy, *token, *dir_path;
+    size_t token_len, dir_name_len;
+
+    path_env = getenv("PATH");
+    path_copy = strdup(path_env);
+    f_tokenizer(&oki->baxi, path_copy);
+    token = s_tok(&oki->baxi, ":");
+    while (token)
+    {
+        token_len = strlen(token);
+        dir_name_len = strlen(directory_name);
+        dir_path = (char *)malloc((token_len + dir_name_len + 2) * sizeof(char));
+        if (dir_path == NULL)
+        {
+            perror("Memory allocation failed");
+            free(path_copy);
+            return NULL;
+        }
+        strcpy(dir_path, token);
+        strcat(dir_path, "/");
+        strcat(dir_path, directory_name);
+        if (access(dir_path, F_OK) == 0)
+        {
+            free(path_copy);
+            return dir_path;
+        }
+        free(dir_path);
+        token = s_tok(&oki->baxi, ":");
+    }
+    free(path_copy);
+    return NULL;
+}
 
 void interactive(okeoma *oki)
 {
@@ -134,7 +168,6 @@ int execute_builtin_command(okeoma *oki)
 		"exit",
 		"setenv",
 		"unsetenv",
-		"env",
 		"getenv"
 	};
 
@@ -143,7 +176,6 @@ int execute_builtin_command(okeoma *oki)
 		&exit_command,
 		&setenv_command,
 		&unsetenv_command,
-		&env_command,
 		&get_env_command
 	};
 	int num_built_in_com = sizeof(built_in_commands) / sizeof(char *), i;
