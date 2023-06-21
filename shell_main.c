@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	_in(oki, argv);
 	signal(SIGINT, sig);
 	if (oki->it && argc == 1)
-		interactiive(oki);
+		interactive(oki);
 	else
 		non_interactive(oki);
 

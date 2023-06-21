@@ -12,16 +12,15 @@ void cd_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL)
 	{
-		oki->ok = oki_getenv("HOME");
-		oki->old = oki_getenv("PWD");
+		oki->ok = _getenv("HOME");
 		chdir(oki->ok);
-		oki_setenv("OLDPWD", oki->old, 1);
-		oki_setenv("PWD", oki->ok, 1);
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
 	{
-		oki->old = oki_getenv("OLDPwD");
+		if (oki->old != NULL)
+			free(oki->old);
+		oki->old = _getenv("OLDPWD");
 		chdir(oki->old);
 		p(STO, "%s\n", oki->old);
 		return;
@@ -30,7 +29,9 @@ void cd_command(okeoma *oki)
 	{
 		if (chdir(oki->av[1]) == 0)
 		{
-			oki->ok = oki_getenv("PWD");
+			if (oki->ok != NULL)
+				free(oki->ok);
+			oki->ok = _getenv("PWD");
 			p(STO, "%s\n", oki->ok);
 			return;
 		}
@@ -56,6 +57,7 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
+		my_clearenv();
 		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
@@ -73,6 +75,7 @@ void exit_command(okeoma *oki)
 			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
+			my_clearenv();
 			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
@@ -93,7 +96,7 @@ void setenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		oki_setenv(oki->av[1], oki->av[2], 1);
+		_setenv(oki->av[1], oki->av[2], 1);
 		return;
 	}
 }
@@ -112,8 +115,8 @@ void unsetenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if (oki_confirm_env(oki->av[1]) == true)
-			oki_unsetenv(oki->av[1]);
+		if ((oki->ok = _getenv(oki->av[1])) != NULL)
+			_unsetenv(oki->av[1]);
 		else
 			p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
 	}
@@ -133,9 +136,8 @@ void get_env_command(okeoma *oki)
 	{
 		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
 	}
-	else if (oki_confirm_env(oki->av[1]) == true)
+	else if ((oki->ok = _getenv(oki->av[1])) != NULL)
 	{
-		oki->ok = oki_getenv(oki->av[1]);
 		p(STO, "%s\n", oki->ok);
 		return;
 	}
@@ -143,4 +145,15 @@ void get_env_command(okeoma *oki)
 	{
 		p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
+}
+
+
+void _alias(okeoma *oki)
+{
+	alias *head = NULL;
+
+	if (oki->av[1] == NULL)
+		print(head);
+	else
+		head = define_alias(head, oki->av[1]);
 }

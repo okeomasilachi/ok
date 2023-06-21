@@ -24,12 +24,12 @@
 
 extern char **environ;
 
-typedef struct alias_list
+typedef struct
 {
 	char *NAME;
 	char *value;
-	struct alias *next;
-} alias;
+	struct env_list *next;
+} env_list;
 
 /**
  * struct okeoma - structs for the strtok funtion
@@ -62,7 +62,7 @@ typedef struct variables
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
-	alias *head;
+	env_list *head;
 	pid_t child_pid;
 	bool it;
 } okeoma;
@@ -119,13 +119,14 @@ alias *delete_match(alias *head, char *delete_NAME);
 void delete_duplicate(alias *head);
 alias *revers_list(alias *head);
 void set_env_value(alias *env, const char *NAME, const char *value);
+/*-------------------------------------------------------------------*/
+void _alias(okeoma *oki);
+void define_alias(alias *head, char *name);
+alias *add_alias(alias *head, char *name, char *value);
+void print_aliases(alias *head, char *name);
+void process_array(alias *head, char **array);
+int replace_with_alias(alias *head, char *str);
 
 
-char *oki_getenv(const char *name);
-bool oki_confirm_env(const char *name);
-int oki_setenv(const char *name, const char *value, int overwrite);
-int oki_unsetenv(const char *name);
-int oki_putenv(char *string);
-void oki_clearenv(void);
 
 #endif /* MAIN_H */
