@@ -87,3 +87,16 @@ int find_set(char *str)
 	return (setValue);
 }
 
+
+/**
+ * 
+*/
+char *get_cwd(void)
+{
+	char path[MAX_PATH];
+
+	if (getcwd(path, sizeof(path)) == NULL)
+		return (NULL);
+	else
+		return (strdup(path));
+}

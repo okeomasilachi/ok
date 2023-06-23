@@ -92,9 +92,9 @@ void free_list_recursive(env_list *head)
  */
 bool is_value(env_list *head, const char *value)
 {
-	if (head == NULL) return false;
-	else if (strcmp(head->NAME, value) == 0) return true;
-	else is_value(head->next, value);
+	if (head == NULL) return (false);
+	else if (strcmp(head->NAME, value) == 0) return (true);
+	else return (is_value(head->next, value));
 }
 
 /**
@@ -106,9 +106,9 @@ bool is_value(env_list *head, const char *value)
  */
 bool is_NAME(env_list *head, const char *NAME)
 {
-	if (head == NULL) return false;
-	else if (strcmp(head->NAME, NAME) == 0) return true;
-	else is_NAME(head->next, NAME);
+	if (head == NULL) return (false);
+	else if (strcmp(head->NAME, NAME) == 0) return (true);
+	else return (is_NAME(head->next, NAME));
 }
 
 /**
@@ -127,6 +127,7 @@ void print(env_list *head)
 		printf("%s=%s\n", current->NAME, current->value);
 		current = current->next;
 	}
+	return;
 	
 }
 
@@ -138,24 +139,32 @@ void print(env_list *head)
  *
  * Return: A pointer to the modified linked list
  */
-env_list *insert_env(env_list *head, char *NAME, char *value)
+env_list *insert_env(env_list *head, const char *NAME, const char *value)
 {
-	env_list *new_node = NULL, *current = NULL;
+	env_list *new_node = NULL, *current = head;
+
+	new_node = malloc(sizeof(env_list));
+	new_node->value = strdup(value);
+	new_node->NAME = strdup(NAME);
+	new_node->next = NULL;
 
 	if (head == NULL)
 		return (new_node);
-	else if (is_member(head, NAME))
+	else if (is_NAME(current, NAME) == true)
 	{
-		set_env_value(head, NAME, value);
+		while (current != NULL)
+		{
+			if (strcmp(current->NAME, NAME) == 0)
+			{
+				free(current->value);
+				current->value = strdup(value);
+			}
+			current = current->next;
+		}
 		return (head);
 	}
 	else
 	{
-		new_node = malloc(sizeof(env_list));
-		new_node->value = value;
-		new_node->NAME = NAME;
-		new_node->next = NULL;
-		current = head;
 		while (current->next != NULL)
 			current = current->next;
 		current->next = new_node;
@@ -177,7 +186,7 @@ env_list *delete_match(env_list *head, char *delete_NAME)
 	if (head == NULL) return (NULL);
 	else if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
 	{
-		env_list *temp = head->next;
+		temp = head->next;
 		head->next = temp->next;
 		free(temp);
 		return (head);
@@ -213,21 +222,22 @@ char *get_env(env_list *env, const char *NAME)
  */
 void delete_duplicate(env_list *head)
 {
+	env_list *cur1, *cur2, *dup;
+
 	if (head == NULL)
 		return;
 
-	head = revers_env_list(head);
-	env_list *cur1 = head;
+	head = revers_list(head);
+	cur1 = head;
 
 	while (cur1 != NULL && cur1->next != NULL)
 	{
-		env_list *cur2 = cur1;
-
+		cur2 = cur1;
 		while (cur2->next != NULL)
 		{
 			if (strcmp(cur1->NAME, cur2->next->NAME) == 0)
 			{
-				env_list *dup = cur2->next;
+				dup = cur2->next;
 				cur2->next = cur2->next->next;
 				free(dup);
 			}
@@ -238,7 +248,7 @@ void delete_duplicate(env_list *head)
 		}
 		cur1 = cur1->next;
 	}
-	head = revers_env_list(head);
+	head = revers_list(head);
 }
 
 /**
@@ -247,7 +257,7 @@ void delete_duplicate(env_list *head)
  *
  * Return: A pointer to the reversed linked list
  */
-env_list *revers_env_list(env_list *head)
+env_list *revers_list(env_list *head)
 {
 	env_list *current = NULL, *next = NULL, *tmp = NULL; 
 	if (head == NULL) return NULL;
@@ -278,24 +288,16 @@ env_list *revers_env_list(env_list *head)
 */
 void set_env_value(env_list *env, const char *NAME, const char *value)
 {
-	env_list *current = env;
-	
-	if (current->next == NULL) return;
-	else if (strcmp(current->NAME, NAME) == 0)
-	{
-		current->value = strdup(value);
-		return;
-	}
-	else set_env_value(current->next, NAME, value);	
+	env = insert_env(env, NAME, value);	
 }
 
-void env_command(env_list *head)
+void env_command(okeoma *oki)
 {
-	env_list *cur = head;
+	env_list *cur = oki->head;
 
 	while (cur != NULL)
 	{
-		printf("%s=%s", cur->NAME, cur->value);
+		printf("%s=%s\n", cur->NAME, cur->value);
 		cur = cur->next;
 	}
 	return;

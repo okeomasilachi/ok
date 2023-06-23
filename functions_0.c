@@ -2,6 +2,7 @@
 
 void _in(okeoma *oki, char **argv)
 {
+	oki->mypid = getpid();
 	oki->cmd = NULL;
 	oki->av = NULL;
 	oki->command = NULL;
@@ -12,8 +13,7 @@ void _in(okeoma *oki, char **argv)
 	oki->Name = argv[0];
 	oki->com_num = 0;
 	oki->i = 0;
-	oki->head = NULL;
-
+	oki->head = list_from_env(environ);
 }
 
 /**

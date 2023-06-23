@@ -26,8 +26,9 @@ void B_exc(okeoma *oki)
 
 			if (!oki->it)
 				oki->com_num++;
-
-			if ((oki->status = execute_builtin_command(oki)) != 0)
+			if (checker(oki->av[1]) == true)
+				oki->status = modify(oki);	
+			else if ((oki->status = execute_builtin_command(oki)) != 0)
 				oki->status = execute_command(oki);
 		}
 		if (oki->y == 1 && oki->status != 0)
@@ -129,8 +130,8 @@ void my_free(size_t count, ...)
 
 		if (ptr != NULL)
 			free(ptr);
-		else
-			p(STE, "NULL pointer encountered in my_free\n");
+		/*else
+			p(STE, "NULL pointer encountered in my_free\n");*/
 	}
 	va_end(args);
 }

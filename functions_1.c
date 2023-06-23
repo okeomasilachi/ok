@@ -134,7 +134,7 @@ int execute_builtin_command(okeoma *oki)
 		"setenv",
 		"unsetenv",
 		"getenv",
-		"env"
+		"environ"
 	};
 
 	void (*built_in_funcs[])(okeoma *oki) = {

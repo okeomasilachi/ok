@@ -12,27 +12,39 @@ void cd_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL)
 	{
-		oki->ok = _getenv("HOME");
-		chdir(oki->ok);
+		oki->ok = getenv("HOME");
+		oki->old = getenv("PWD");
+		if (chdir(oki->ok) == 0)
+		{
+			printf("new = %s\nold = %s\n", oki->ok, oki->old);
+	
+			set_env_value(oki->head, "OLDPWD", oki->old);
+		}
 		return;
 	}
 	if (strcmp(oki->av[1], "-") == 0)
 	{
-		if (oki->old != NULL)
-			free(oki->old);
-		oki->old = _getenv("OLDPWD");
-		chdir(oki->old);
-		p(STO, "%s\n", oki->old);
+		oki->ok = getenv("OLDPWD");
+		oki->old =  getenv("PWD");
+		if  (chdir(oki->ok) == 0)
+		{
+			printf("new = %s\nold = %s\n", oki->ok, oki->old);
+			/*set_env_value(oki->head, "OLDPWD", oki->old);
+			set_env_value(oki->head, "PWD", oki->ok);
+			p(STO, "%s\n", oki->ok);*/
+		}
 		return;
 	}
 	else 
 	{
+		oki->old = get_env(oki->head, "PWD");
 		if (chdir(oki->av[1]) == 0)
 		{
-			if (oki->ok != NULL)
-				free(oki->ok);
-			oki->ok = _getenv("PWD");
-			p(STO, "%s\n", oki->ok);
+			oki->ok = get_cwd();
+			printf("new = %s\nold = %s\n", oki->ok, oki->old);
+			/*set_env_value(oki->head, "OLDPWD", oki->old);
+			set_env_value(oki->head, "PWD", oki->ok);
+			p(STO, "%s\n", oki->ok);*/
 			return;
 		}
 		else
@@ -57,7 +69,7 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
-		my_clearenv();
+		free_list_recursive(oki->head);
 		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
@@ -75,7 +87,7 @@ void exit_command(okeoma *oki)
 			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
-			my_clearenv();
+			free_list_recursive(oki->head);
 			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
@@ -96,7 +108,7 @@ void setenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		_setenv(oki->av[1], oki->av[2], 1);
+		set_env_value(oki->head, oki->av[1], oki->av[2]);
 		return;
 	}
 }
@@ -115,8 +127,8 @@ void unsetenv_command(okeoma *oki)
 		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->Name, oki->com_num, oki->av[0]);
 	else
 	{
-		if ((oki->ok = _getenv(oki->av[1])) != NULL)
-			_unsetenv(oki->av[1]);
+		if (is_NAME(oki->head, oki->av[1]) == true)
+			oki->head = delete_match(oki->head, oki->av[1]);
 		else
 			p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
 	}
@@ -136,9 +148,10 @@ void get_env_command(okeoma *oki)
 	{
 		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
 	}
-	else if ((oki->ok = _getenv(oki->av[1])) != NULL)
+	else if ((oki->ok = get_env(oki->head, oki->av[1])) != NULL)
 	{
 		p(STO, "%s\n", oki->ok);
+		free(oki->ok);
 		return;
 	}
 	else
@@ -148,12 +161,3 @@ void get_env_command(okeoma *oki)
 }
 
 
-void _alias(okeoma *oki)
-{
-	alias *head = NULL;
-
-	if (oki->av[1] == NULL)
-		print(head);
-	else
-		head = define_alias(head, oki->av[1]);
-}

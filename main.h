@@ -18,17 +18,18 @@
 #include <time.h>
 
 #define BUFFER_SIZE 1024
-
 #define STO 1
 #define STE 2
+#define v (void)
+#define MAX_PATH 4096
 
 extern char **environ;
 
-typedef struct
+typedef struct environ_list
 {
 	char *NAME;
 	char *value;
-	struct env_list *next;
+	struct environ_list *next;
 } env_list;
 
 /**
@@ -52,18 +53,25 @@ typedef struct variables
 	char *ec;
 	char *ok;
 	char *old;
-	char *new;
+	char *path;
 	char *cmd;
+
 	int y;
 	int status;
 	int i;
+
 	size_t n;
 	ssize_t com_num;
+
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
+
 	env_list *head;
+
+	pid_t mypid;
 	pid_t child_pid;
+
 	bool it;
 } okeoma;
 
@@ -108,25 +116,29 @@ void print_string(char *s, int n);
 void write_string(int n, const char *s);
 int _isspace(int c);
 
-void free_list(alias *head);
-char *get_env(alias *env, const char *NAME);
-alias *list_from_env(char **env);
-bool is_value(alias *head, const char *value);
-bool is_NAME(alias *head, const char *NAME);
-void print(alias *head);
-alias *insert_env(alias *head, char *NAME, char *value);
-alias *delete_match(alias *head, char *delete_NAME);
-void delete_duplicate(alias *head);
-alias *revers_list(alias *head);
-void set_env_value(alias *env, const char *NAME, const char *value);
+void free_list(env_list *head);
+void free_list_recursive(env_list *head);
+char *get_env(env_list *env, const char *NAME);
+env_list *list_from_env(char **env);
+bool is_value(env_list *head, const char *value);
+bool is_NAME(env_list *head, const char *NAME);
+void print(env_list *head);
+env_list *insert_env(env_list *head, const char *NAME, const char *value);
+env_list *delete_match(env_list *head, char *delete_NAME);
+void delete_duplicate(env_list *head);
+env_list *revers_list(env_list *head);
+void set_env_value(env_list *env, const char *NAME, const char *value);
 /*-------------------------------------------------------------------*/
 void _alias(okeoma *oki);
-void define_alias(alias *head, char *name);
-alias *add_alias(alias *head, char *name, char *value);
-void print_aliases(alias *head, char *name);
-void process_array(alias *head, char **array);
-int replace_with_alias(alias *head, char *str);
+void define_alias(env_list *head, char *name);
+env_list *add_alias(env_list *head, char *name, char *value);
+void print_aliases(env_list *head, char *name);
+void process_array(env_list *head, char **array);
+int replace_with_alias(env_list *head, char *str);
+char *get_cwd(void);
 
-
+char *value(char *str);
+bool checker(char *arr);
+int modify(okeoma *oki);
 
 #endif /* MAIN_H */
