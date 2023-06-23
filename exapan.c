@@ -20,6 +20,28 @@ bool checker(char *arr)
 	else return false;
 }
 
+int change(env_list *head, char *av)
+{
+	env_list *cur = head;
+	char *tok = NULL, *val = NULL;
+	int len;
+
+
+	v val, v len;
+	val = strstr(av, "$");
+
+	while (cur != NULL)
+	{
+		len = (strlen(cur->NAME) + 1);
+		tok = malloc(sizeof(char *));
+		tok = strcat("$", cur->NAME);
+		printf("%s\n", tok);
+
+		cur = cur->next;
+	}
+	return (0);
+}
+
 int modify(okeoma *oki)
 {
 	env_list *current = NULL;
@@ -50,7 +72,26 @@ int modify(okeoma *oki)
 		return (0);
 	}
 	else if (oki->av[1] != NULL)
+	{
 		printf("%s\n", oki->av[1]);
+		return (0);
+	}
+	return (-1);
+}
+
+int main()
+{
+	env_list *env = list_from_env(environ);
+	char arr[] = "process id = $HOME";
+
+	if (checker(arr) == true)
+	{
+		change(env, arr);
+		return (0);
+	}
 	else
-		return (-1);
+		puts("no");
+
+
+	return (-1);
 }

@@ -140,5 +140,6 @@ char *get_cwd(void);
 char *value(char *str);
 bool checker(char *arr);
 int modify(okeoma *oki);
+int change(env_list *head, char *av);
 
 #endif /* MAIN_H */

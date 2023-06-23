@@ -304,3 +304,124 @@ void env_command(okeoma *oki)
 }
 
 
+
+
+
+
+char *value(char *str)
+{
+	char *val = strdup(str);
+
+	if (strstr(val, "$") != NULL)
+	{
+		val = (strstr(val, "$") + 1);
+		return (val);
+	}
+
+	return (NULL);
+}
+
+bool checker(char *arr)
+{
+	if (arr == NULL) return false;
+	else if (strstr(arr, "$") != NULL) return true;
+	else return false;
+}
+
+int change(env_list *head, char *av)
+{
+	env_list *cur = head;
+	char *tok = NULL, *val = NULL, *rep = NULL, *rem = NULL, *va = NULL, *new;
+	int len;
+	size_t n_size;
+
+	va = strdup(av);
+
+	v val, v len, v rem;
+	val = strstr(va, "$");
+
+	while (cur != NULL)
+	{
+		len = strlen(cur->NAME) + 2;
+		tok = malloc(len);
+		strcat(tok, "$");
+		strcat(tok, cur->NAME);
+		
+		if ((rep = strstr(va, tok)) != NULL)
+		{
+			len = strlen(tok);
+			if(strncmp(rep, tok, len) == 0)
+			{
+				rem = strdup(rep + len);
+				n_size = strlen(cur->value) + strlen(rem) + 1;
+				new = malloc(n_size);
+				strcpy(new, cur->value);
+				strcat(new, rem);
+				memcpy(rep, new, n_size);
+				printf("%s\n", va);
+				free(rem), free(new), free(tok), free(va);
+				return (0);
+			}
+		}
+		cur = cur->next;
+	}
+	free(va);
+	return (-1);
+}
+
+int modify(okeoma *oki)
+{
+	env_list *current = NULL;
+	char *val = value(oki->av[1]);
+
+	if (is_NAME(oki->head, val) == true)
+	{
+		current = oki->head;
+		while (current != NULL)
+		{
+			if (strcmp(current->NAME, val) == 0)
+			{
+				printf("%s\n", current->value);
+				return (0);
+			}
+			current = current->next;
+		}
+		return (-1);
+	}
+	else if (strcmp(val, "?") == 0)
+	{
+		printf("%d\n", oki->status);
+		return (0);
+	}
+	else if (strcmp(val, "$") == 0)
+	{
+		printf("%d\n", oki->mypid);
+		return (0);
+	}
+	else if (oki->av[1] != NULL)
+	{
+		printf("%s\n", oki->av[1]);
+		return (0);
+	}
+	return (-1);
+}
+
+int main()
+{
+	env_list *env = list_from_env(environ);
+	char arr[] = "$HOME";
+	char *vl = malloc(strlen(arr));
+	strcpy(vl, arr);
+
+	if (checker(vl) == true)
+	{
+		change(env, vl);
+		return (0);
+	}
+	else
+		puts("no");
+
+
+	return (-1);
+}
+

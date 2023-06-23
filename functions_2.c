@@ -27,7 +27,7 @@ void B_exc(okeoma *oki)
 			if (!oki->it)
 				oki->com_num++;
 			if (checker(oki->av[1]) == true)
-				oki->status = modify(oki);	
+				oki->status = change(oki);	
 			else if ((oki->status = execute_builtin_command(oki)) != 0)
 				oki->status = execute_command(oki);
 		}
