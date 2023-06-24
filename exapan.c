@@ -1,19 +1,5 @@
 #include "main.h"
 
-
-char *value(char *str)
-{
-	char *val = strdup(str);
-
-	if (strstr(val, "$") != NULL)
-	{
-		val = (strstr(val, "$") + 1);
-		return (val);
-	}
-
-	return (NULL);
-}
-
 bool checker(char *arr)
 {
 	if (arr == NULL) return false;
@@ -160,20 +146,3 @@ char *replace(env_list *head, okeoma *oki,char *value)
 	}
 	return (sec);
 }
-
-/*int main(void)
-{
-	char al[] = "echo $HOME $$ $? $PWD okeoma$$jkn";
-	char *ve = malloc(20);
-	bool check;
-	okeoma *me = malloc(sizeof(okeoma));
-	me->mypid = getpid();
-	me->status = 100;
-	me->head = list_from_env(environ);
-
-	strcpy(ve, al);
-	ve = replace(me->head, me, ve);
-	printf("%s\n", ve);
-
-	return (0);
-}*/
