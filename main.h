@@ -59,6 +59,7 @@ typedef struct variables
 	int y;
 	int status;
 	int i;
+	int check;
 
 	size_t n;
 	ssize_t com_num;
@@ -139,7 +140,9 @@ char *get_cwd(void);
 
 char *value(char *str);
 bool checker(char *arr);
-int modify(okeoma *oki);
-int change(env_list *head, char *av);
-
+char *second(okeoma *oki, char *av);
+char *first(env_list *head, char *av);
+void int_char(int n1, int n2, char **str);
+void r_char(int value, char* str, int base);
+char *replace(env_list *head, okeoma *oki,char *value);
 #endif /* MAIN_H */

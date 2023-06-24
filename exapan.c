@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 char *value(char *str)
 {
 	char *val = strdup(str);
@@ -20,78 +21,159 @@ bool checker(char *arr)
 	else return false;
 }
 
-int change(env_list *head, char *av)
+void r_char(int value, char* str, int base)
+{
+	int i, is_neg, rem, len, st, ed;
+	char temp;
+
+	if (value == 0)
+	{
+		str[0] = '0';
+		str[1] = '\0';
+		return;
+	}
+	i = 0;
+	is_neg = 0;
+	
+	if (value < 0 && base == 10)
+	{
+		is_neg = 1;
+		value = -value;
+	}
+	while (value != 0)
+	{
+		rem = value % base;
+		str[i++] = (rem > 9) ? (rem - 10) + 'A' : rem + '0';
+		value /= base;
+	}
+	if (is_neg)
+		str[i++] = '-';
+
+	str[i] = '\0';
+	len = strlen(str);
+	st = 0;
+	ed = len - 1;
+	while (st < ed)
+	{
+		temp = str[st];
+		str[st] = str[ed];
+		str[ed] = temp;
+		st++;
+		ed--;
+	}
+}
+
+
+void int_char(int n1, int n2, char **str)
+{
+	str[0] = malloc(20);
+	str[1] = malloc(20);
+
+	r_char(n1, str[0], 10);
+	r_char(n2, str[1], 10);
+}
+
+char *first(env_list *head, char *av)
 {
 	env_list *cur = head;
-	char *tok = NULL, *val = NULL;
+	char *tok = NULL, *rep = NULL, *rem = NULL, *va = NULL, *new;
 	int len;
+	size_t n_size;
 
-
-	v val, v len;
-	val = strstr(av, "$");
-
+	va = strdup(av);
 	while (cur != NULL)
 	{
-		len = (strlen(cur->NAME) + 1);
-		tok = malloc(sizeof(char *));
-		tok = strcat("$", cur->NAME);
-		printf("%s\n", tok);
-
+		len = strlen(cur->NAME) + 2;
+		tok = malloc(len);
+		strcat(tok, "$");
+		strcat(tok, cur->NAME);
+		if ((rep = strstr(va, tok)) != NULL)
+		{
+			len = strlen(tok);
+			if(strncmp(rep, tok, len) == 0)
+			{
+				rem = strdup(rep + len);
+				n_size = strlen(cur->value) + strlen(rem) + 1;
+				new = malloc(n_size);
+				strcpy(new, cur->value);
+				strcat(new, rem);
+				memcpy(rep, new, n_size);
+				free(rem), free(new), free(tok);
+				return (va);
+			}
+		}
 		cur = cur->next;
 	}
-	return (0);
+	free(tok), free(va);
+	return (av);
 }
 
-int modify(okeoma *oki)
-{
-	env_list *current = NULL;
-	char *val = value(oki->av[1]);
 
-	if (is_NAME(oki->head, val) == true)
+char *second(okeoma *oki, char *av)
+{
+	char *val = NULL, *rem = NULL, *va = NULL, *new;
+	char *expand[] = {"$$", "$?"}, *ex[2];
+	int len, i = 0;
+	size_t n_size;
+
+	if (checker(av) == true)
 	{
-		current = oki->head;
-		while (current != NULL)
+		va = strdup(av);
+		val = strstr(va, "$");
+		int_char(oki->mypid, oki->status, ex);
+		while (expand[i] != NULL)
 		{
-			if (strcmp(current->NAME, val) == 0)
+			if ((val = strstr(va, expand[i])) != NULL)
 			{
-				printf("%s\n", current->value);
-				return (0);
+				len = strlen(expand[i]);
+				if(strncmp(val, expand[i], len) == 0)
+				{
+					rem = strdup(val + len);
+					n_size = strlen(ex[i]) + strlen(rem) + 1;
+					new = malloc(n_size);
+					strcpy(new, ex[i]);
+					strcat(new, rem);
+					memcpy(val, new, n_size);
+					free(rem), free(new);
+					return (va);
+				}
 			}
-			current = current->next;
+			i++;
 		}
-		return (-1);
 	}
-	else if (strcmp(val, "?") == 0)
-	{
-		printf("%d\n", oki->status);
-		return (0);
-	}
-	else if (strcmp(val, "$") == 0)
-	{
-		printf("%d\n", oki->mypid);
-		return (0);
-	}
-	else if (oki->av[1] != NULL)
-	{
-		printf("%s\n", oki->av[1]);
-		return (0);
-	}
-	return (-1);
+	free(va);
+	return (av);
 }
 
-int main()
+char *replace(env_list *head, okeoma *oki,char *value)
 {
-	env_list *env = list_from_env(environ);
-	char arr[] = "process id = $HOME";
-
-	if (checker(arr) == true)
+	bool check;
+	char *sec = strdup(value);
+				
+	check = checker(sec);
+	while (check == true)
 	{
-		change(env, arr);
-		return (0);
+		sec = first(head, sec);
+		sec = second(oki, sec);
+		
+		check = checker(sec);
 	}
-	else
-		puts("no");
-
-
-	return (-1);
+	return (sec);
 }
+
+/*int main(void)
+{
+	char al[] = "echo $HOME $$ $? $PWD okeoma$$jkn";
+	char *ve = malloc(20);
+	bool check;
+	okeoma *me = malloc(sizeof(okeoma));
+	me->mypid = getpid();
+	me->status = 100;
+	me->head = list_from_env(environ);
+
+	strcpy(ve, al);
+	ve = replace(me->head, me, ve);
+	printf("%s\n", ve);
+
+	return (0);
+}*/

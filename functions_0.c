@@ -157,7 +157,7 @@ int execute_command(okeoma *oki)
 		else if (oki->child_pid == 0)
 		{
 			execve(oki->ec, oki->av, environ);
-			perror("execve");
+			p(STE, "%s: %d: %s: Permission denied\n", oki->Name, oki->com_num, oki->av[0]);
 			return (EXIT_FAILURE);
 		}
 		else

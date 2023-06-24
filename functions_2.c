@@ -13,6 +13,8 @@
 */
 void B_exc(okeoma *oki)
 {
+	int z;
+
 	find_char(oki);
 	oki->y = find_set(oki->cmd);
 	f_tokenizer(&oki->tokens, oki->cmd);
@@ -23,12 +25,11 @@ void B_exc(okeoma *oki)
 		for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
 		{
 			prs(oki, oki->command[oki->i]);
+			if (!oki->it) oki->com_num++;
 
-			if (!oki->it)
-				oki->com_num++;
-			if (checker(oki->av[1]) == true)
-				oki->status = change(oki);	
-			else if ((oki->status = execute_builtin_command(oki)) != 0)
+			for (z = 0; oki->av[z] != NULL; z++)
+				oki->av[z] = replace(oki->head, oki, oki->av[z]);	
+			if ((oki->status = execute_builtin_command(oki)) != 0)
 				oki->status = execute_command(oki);
 		}
 		if (oki->y == 1 && oki->status != 0)
