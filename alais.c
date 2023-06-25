@@ -1,51 +1,5 @@
 #include "main.h"
 
-/**
- * list_from_env - Builds a linked list from the environmental variable
- * @env: pointer to the environmental list
- *
- * Return: Returns pointer to the linked list 
-*/
-env_list *list_from_env(char **env)
-{
-	env_list *head = NULL, *current = NULL, *new_node = NULL;
-	char *variable, *separator, *name, *value;
-	int i = 0, name_len;
-
-	while (env[i] != NULL)
-	{
-		variable = env[i];
-		separator = strchr(variable, '=');
-		
-		if (separator != NULL)
-		{
-			/* Extract the variable name */
-			name_len = separator - variable;
-			name = (char *)malloc((name_len + 1) * sizeof(char));
-			strncpy(name, variable, name_len);
-			name[name_len] = '\0';
-			
-			value = strdup(separator + 1);	/* Extract the variable value */
-			/* Create a new env_list for the variable */
-			new_node = (env_list *)malloc(sizeof(env_list));
-			new_node->NAME = name;
-			new_node->value = value;
-			new_node->next = NULL;
-			if (head == NULL) /* First env_list in the list */
-			{
-				head = new_node;
-				current = new_node;
-			}
-			else /* Append the env_list to the end of the list */
-			{
-				current->next = new_node;
-				current = new_node;
-			}
-		}
-		i++;
-	}
-	return (head);
-}
 
 /**
  * free_list - free's memory allocated by list_from_env
@@ -53,9 +7,9 @@ env_list *list_from_env(char **env)
  *
  * Return: Void
 */
-void free_list(env_list *head)
+void free_alias_list(alias *head)
 {
-	env_list *current = head, *temp = NULL;
+	alias *current = head, *temp = NULL;
 	
 	while (current != NULL)
 	{
@@ -73,11 +27,11 @@ void free_list(env_list *head)
  *
  * Return: Void
 */
-void free_list_recursive(env_list *head)
+void free_recursive(alias *head)
 {
 	if (head == NULL) return;
 
-	free_list(head->next);
+	free_recursive(head->next);
 	free(head->NAME);
 	free(head->value);
 	free(head);
@@ -90,11 +44,11 @@ void free_list_recursive(env_list *head)
  *
  * Return: true if the value is found, false otherwise
  */
-bool is_value(env_list *head, const char *value)
+bool check_value(alias *head, const char *value)
 {
 	if (head == NULL) return (false);
 	else if (strcmp(head->NAME, value) == 0) return (true);
-	else return (is_value(head->next, value));
+	else return (check_value(head->next, value));
 }
 
 /**
@@ -104,11 +58,11 @@ bool is_value(env_list *head, const char *value)
  *
  * Return: true if the value is found, false otherwise
  */
-bool is_NAME(env_list *head, const char *NAME)
+bool check_NAME(alias *head, const char *NAME)
 {
 	if (head == NULL) return (false);
 	else if (strcmp(head->NAME, NAME) == 0) return (true);
-	else return (is_NAME(head->next, NAME));
+	else return (check_NAME(head->next, NAME));
 }
 
 /**
@@ -117,14 +71,14 @@ bool is_NAME(env_list *head, const char *NAME)
  *
  * Return: void
  */
-void print(env_list *head)
+void print_alias(alias *head)
 {
-	env_list *current;
+	alias *current;
 	current = head;
 
 	while (current != NULL)
 	{
-		printf("%s=%s\n", current->NAME, current->value);
+		printf("%s='%s'\n", current->NAME, current->value);
 		current = current->next;
 	}
 	return;
@@ -132,25 +86,49 @@ void print(env_list *head)
 }
 
 /**
- * insert_env - Inserts a new env_list with a given NAME and value at the tail of a linked list
+ * print - Prints the values of an env_linked list
+ * @head: The head of the linked list
+ *
+ * Return: void
+ */
+void print_s_alias(alias *head, const char *NAME)
+{
+	alias *current;
+	current = head;
+
+	while (current != NULL)
+	{
+		if (strcmp(NAME, current->NAME) == 0)
+		{
+			printf("%s='%s'\n", current->NAME, current->value);
+		}
+
+		current = current->next;
+	}
+	return;
+	
+}
+
+/**
+ * insert_env - Inserts a new alias with a given NAME and value at the tail of a linked list
  * @head: The head of the linked list
  * @NAME: name of variable
  * @value: The value to be inserted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *insert_env(env_list *head, const char *NAME, const char *value)
+alias *insert(alias *head, const char *NAME, const char *value)
 {
-	env_list *new_node = NULL, *current = head;
+	alias *new_node = NULL, *current = head;
 
-	new_node = malloc(sizeof(env_list));
+	new_node = malloc(sizeof(alias));
 	new_node->value = strdup(value);
 	new_node->NAME = strdup(NAME);
 	new_node->next = NULL;
 
 	if (head == NULL)
 		return (new_node);
-	else if (is_NAME(current, NAME) == true)
+	else if (check_NAME(current, NAME) == true)
 	{
 		while (current != NULL)
 		{
@@ -173,15 +151,15 @@ env_list *insert_env(env_list *head, const char *NAME, const char *value)
 }
 
 /**
- * delete_match - Deletes the first matching node from an env_list with a given NAME
+ * delete_match - Deletes the first matching node from an alias with a given NAME
  * @head: The head of the linked list
  * @delete_NAME: The NAME of list to be deleted
  *
  * Return: A pointer to the modified linked list
  */
-env_list *delete_match(env_list *head, char *delete_NAME)
+alias *delete_alias_mth(alias *head, char *delete_NAME)
 {
-	env_list *temp = NULL;
+	alias *temp = NULL;
 
 	if (head == NULL) return (NULL);
 	else if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
@@ -193,25 +171,52 @@ env_list *delete_match(env_list *head, char *delete_NAME)
 	}
 	else
 	{
-		head->next = delete_match(head->next, delete_NAME);
+		head->next = delete_alias_mth(head->next, delete_NAME);
 		return (head);
 	}
 }
 
 /**
- * get_env - returns the value of a NAME in the env_list if it exist
+ * get_env - returns the value of a NAME in the alias if it exist
  * @env: the list to search
  * @NAME: the name to search for in the list
  *
  * Return: a pointer to the value if the NAME exits else NULL
 */
-char *get_env(env_list *env, const char *NAME)
+char *get_alias(alias *env, const char *NAME)
 {
-	env_list *current = env;
+	alias *current = env;
 	
 	if (current->next == NULL) return NULL;
 	else if (strcmp(current->NAME, NAME) == 0) return (current->value);
-	else return get_env(current->next, NAME);	
+	else return get_alias(current->next, NAME);	
+}
+
+/**
+ * revers_env_list - Reverses a linked list
+ * @head: The head of the linked list
+ *
+ * Return: A pointer to the reversed linked list
+ */
+alias *revers(alias *head)
+{
+	alias *current = NULL, *next = NULL, *tmp = NULL; 
+	if (head == NULL) return NULL;
+	if (head->next == NULL) return head;
+
+	current = head;
+	next = head->next;
+
+	current->next = NULL;
+
+	while (next != NULL)
+	{
+		tmp = next->next;
+		next->next = current;
+		current = next;
+		next = tmp;
+	}
+	return (current);	
 }
 
 /**
@@ -220,14 +225,14 @@ char *get_env(env_list *env, const char *NAME)
  *
  * Return: void
  */
-void delete_duplicate(env_list *head)
+void delete_dup(alias *head)
 {
-	env_list *cur1, *cur2, *dup;
+	alias *cur1, *cur2, *dup;
 
 	if (head == NULL)
 		return;
 
-	head = revers_list(head);
+	head = revers(head);
 	cur1 = head;
 
 	while (cur1 != NULL && cur1->next != NULL)
@@ -248,53 +253,28 @@ void delete_duplicate(env_list *head)
 		}
 		cur1 = cur1->next;
 	}
-	head = revers_list(head);
+	head = revers(head);
 }
 
-/**
- * revers_env_list - Reverses a linked list
- * @head: The head of the linked list
- *
- * Return: A pointer to the reversed linked list
- */
-env_list *revers_list(env_list *head)
-{
-	env_list *current = NULL, *next = NULL, *tmp = NULL; 
-	if (head == NULL) return NULL;
-	if (head->next == NULL) return head;
 
-	current = head;
-	next = head->next;
-
-	current->next = NULL;
-
-	while (next != NULL)
-	{
-		tmp = next->next;
-		next->next = current;
-		current = next;
-		next = tmp;
-	}
-	return (current);	
-}
 
 /**
- * set_env_value - sets the value of a NAME in the env_list if it exist to the specified value
+ * set_env_value - sets the value of a NAME in the alias if it exist to the specified value
  * @env: the list to search
  * @NAME: the name to search for in the list
  * @value: value to be inserted
  *
  * Return: a pointer to the value if the NAME exits else NULL
 */
-void set_env_value(env_list *env, const char *NAME, const char *value)
+void set_alias(alias *env, const char *NAME, const char *value)
 {
-	env = insert_env(env, NAME, value);	
+	env = insert(env, NAME, value);	
 }
 
 
-void env_command(okeoma *oki)
+void alias_command(okeoma *oki)
 {
-	env_list *cur = oki->head;
+	alias *cur = oki->head;
 
 	while (cur != NULL)
 	{
@@ -307,23 +287,40 @@ void env_command(okeoma *oki)
 
 int main(void)
 {
-	char *check = malloc(10), *c1, *c2, *tok;
+	char *check = malloc(10), *c1, *tok;
 	strcpy(check, "okeoma l");
 	int len = 0;
-	env_list *alias;
+	alias *Alias, *cur;
 
+	printf("%s\n", check);
 	tok = strtok(check, " \n");
 
 	while (tok != NULL)
 	{
 		if (strcmp(tok, "l") == 0)
 		{
-
-			printf("%c\n", check[len]);
+			tok = "onyedibia";
 		}
 		len += strlen(tok) + 1;
-
+		Alias = insert(Alias, tok, tok);
 		tok = strtok(NULL, " \n");
 	}
-	
+	cur = Alias;
+	c1 = malloc(sizeof(char) * len);
+	if (c1 == NULL)
+		puts("yes");
+	c1[0] = '\0';
+	while (cur != NULL)
+	{
+		strcat(c1, cur->value);
+		strcat(c1, " ");
+
+		cur = cur->next;
+	}
+	len = strlen(c1);
+	c1[len + 1] = '\0';
+
+	printf("%s\n", c1);
+
+	return 0;
 }

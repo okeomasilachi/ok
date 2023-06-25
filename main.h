@@ -32,6 +32,15 @@ typedef struct environ_list
 	struct environ_list *next;
 } env_list;
 
+
+typedef struct list
+{
+	char *NAME;
+	char *value;
+	struct list *next;
+} alias;
+
+
 /**
  * struct okeoma - structs for the strtok funtion
  * @cur_tok_st: holds the current token
