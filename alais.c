@@ -1,5 +1,16 @@
 #include "main.h"
 
+/*void find_char(const char *dest, int character)
+{
+	char *str_cpy = strchr(dest, character);
+
+	if (str_cpy != NULL)
+	{
+		*str_cpy = '\0';
+	}
+}
+*/
+
 
 /**
  * free_list - free's memory allocated by list_from_env
@@ -93,12 +104,11 @@ void print_alias(alias *head)
  */
 void print_s_alias(alias *head, const char *NAME)
 {
-	alias *current;
-	current = head;
+	alias *current = head;
 
 	while (current != NULL)
 	{
-		if (strcmp(NAME, current->NAME) == 0)
+		if (strcmp(current->NAME, NAME) == 0)
 		{
 			printf("%s='%s'\n", current->NAME, current->value);
 		}
@@ -256,59 +266,102 @@ void delete_dup(alias *head)
 	head = revers(head);
 }
 
-
-
-/**
- * set_env_value - sets the value of a NAME in the alias if it exist to the specified value
- * @env: the list to search
- * @NAME: the name to search for in the list
- * @value: value to be inserted
- *
- * Return: a pointer to the value if the NAME exits else NULL
-*/
-void set_alias(alias *env, const char *NAME, const char *value)
+char *get_value(char *str)
 {
-	env = insert(env, NAME, value);	
-}
+	char *val = strdup(str);
 
-
-void alias_command(okeoma *oki)
-{
-	alias *cur = oki->head;
-
-	while (cur != NULL)
+	if (strstr(val, "=") != NULL)
 	{
-		printf("%s=%s\n", cur->NAME, cur->value);
-		cur = cur->next;
+		val = (strstr(val, "=") + 1);
+		return (val);
 	}
-	return;
+
+	return (NULL);
 }
 
-
-int main(void)
+void alias_(okeoma *oki)
 {
-	char *check = malloc(10), *c1, *tok;
-	strcpy(check, "okeoma l");
-	int len = 0;
-	alias *Alias, *cur;
+	char *ch;
 
-	printf("%s\n", check);
-	tok = strtok(check, " \n");
+	if (oki->av[1] == NULL)
+	{
+		print_alias(oki->pos);
+		return;
+	}
+	else if (oki->av[1] != NULL && check_NAME(oki->pos, oki->av[1]) != true && (ch = strstr(oki->av[1], "=")) != NULL)
+	{
+		char *value = strdup(oki->av[1]);
+		
+		value = get_value(value);
+		find_char(oki->av[1], '=');
+		oki->pos = insert(oki->pos, oki->av[1], value);
+		return;
+	}
+	else
+	{
+		int i;
+		for (i = 1; oki->av[i] != NULL; i++)
+		{
+			if (check_NAME(oki->pos, oki->av[i]) == true)
+				print_s_alias(oki->pos, oki->av[i]);
+			else
+				p(STE, "%s: %ld: %s: %s: not found\n", oki->Name, oki->com_num, oki->av[0], oki->av[i]);
+		}
+		return;
+	}
+	
+}
 
+bool alias_checker(alias *head, char *arr)
+{
+	char *tok, *che = strdup(arr);
+	alias *cur = head;
+
+	if (head == NULL || arr == NULL) return false;
+
+	tok = strtok(che, " \n");
 	while (tok != NULL)
 	{
-		if (strcmp(tok, "l") == 0)
+		while (cur != NULL)
 		{
-			tok = "onyedibia";
+			if (strcmp(tok, cur->NAME) == 0)
+				return true;
+
+			cur = cur->next;
+		}
+		cur = head;
+		tok = strtok(NULL, " \n");
+	}
+	return (false);
+}
+
+char *command(alias *head, char *check)
+{
+	char *c1 = NULL, *tok, *che = strdup(check);
+	int len = 0;
+	alias *Alias = NULL, *cur = head;
+
+	if (head == NULL)
+		return (check);
+
+	tok = strtok(che, " \n");
+	while (tok != NULL)
+	{
+		while (cur != NULL)
+		{
+			if (strcmp(tok, cur->NAME) == 0)
+			{
+				tok = strdup(cur->value);
+			}
+			cur = cur->next;
 		}
 		len += strlen(tok) + 1;
 		Alias = insert(Alias, tok, tok);
+		cur = head;
 		tok = strtok(NULL, " \n");
 	}
 	cur = Alias;
 	c1 = malloc(sizeof(char) * len);
-	if (c1 == NULL)
-		puts("yes");
 	c1[0] = '\0';
 	while (cur != NULL)
 	{
@@ -317,10 +370,27 @@ int main(void)
 
 		cur = cur->next;
 	}
-	len = strlen(c1);
-	c1[len + 1] = '\0';
+	c1[strlen(c1) + 1] = '\0';
+	return(c1);
+}
 
-	printf("%s\n", c1);
+
+/*int main()
+{
+	alias *head = insert(head, "okeoma", "ok");
+	head = insert(head, "l", "ls");
+	char *ch = malloc(sizeof(char) * 20);
+	strcpy(ch, "l");
+
+	printf("%s\n", ch);
+	print_alias(head);
+
+	ch = command(head, ch);
+
+	if (ch != NULL)
+		printf("%s\n", ch);
+	else
+		printf("ch is NULL");
 
 	return 0;
-}
+}*/

@@ -14,8 +14,16 @@
 void B_exc(okeoma *oki)
 {
 	int z;
+	bool affirm;
 
-	find_char(oki);
+	find_char(oki->cmd, '#');
+
+	affirm = alias_checker(oki->pos, oki->cmd);
+	while (affirm == true)
+	{
+		oki->cmd = command(oki->pos, oki->cmd);
+		affirm = alias_checker(oki->pos, oki->cmd);
+	}
 	oki->y = find_set(oki->cmd);
 	f_tokenizer(&oki->tokens, oki->cmd);
 	oki->tok2 = s_tok(&oki->tokens, "&&||");

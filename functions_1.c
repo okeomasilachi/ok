@@ -134,7 +134,8 @@ int execute_builtin_command(okeoma *oki)
 		"setenv",
 		"unsetenv",
 		"getenv",
-		"environ"
+		"environ",
+		"alias"
 	};
 
 	void (*built_in_funcs[])(okeoma *oki) = {
@@ -143,7 +144,8 @@ int execute_builtin_command(okeoma *oki)
 		&setenv_command,
 		&unsetenv_command,
 		&get_env_command,
-		&env_command
+		&env_command,
+		&alias_
 	};
 	int num_built_in_com = sizeof(built_in_commands) / sizeof(char *), i;
 

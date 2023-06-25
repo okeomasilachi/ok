@@ -78,6 +78,7 @@ typedef struct variables
 	Tokenizer baxi;
 
 	env_list *head;
+	alias *pos;
 
 	pid_t mypid;
 	pid_t child_pid;
@@ -93,7 +94,7 @@ void read_in(okeoma *oki);
 
 void env_command(okeoma *oki);
 void get_env_command(okeoma *oki);
-void find_char(okeoma *oki);
+void find_char(const char *dest, int character);
 int find_set(char *str);
 void unsetenv_command(okeoma *oki);
 void setenv_command(okeoma *oki);
@@ -154,4 +155,33 @@ char *first(env_list *head, char *av);
 void int_char(int n1, int n2, char **str);
 void r_char(int value, char* str, int base);
 char *replace(env_list *head, okeoma *oki,char *value);
+
+
+void free_alias_list(alias *head);
+void free_recursive(alias *head);
+bool check_value(alias *head, const char *value);
+bool check_NAME(alias *head, const char *NAME);
+void print_alias(alias *head);
+void print_s_alias(alias *head, const char *NAME);
+alias *insert(alias *head, const char *NAME, const char *value);
+alias *delete_alias_mth(alias *head, char *delete_NAME);
+char *get_alias(alias *env, const char *NAME);
+alias *revers(alias *head);
+void delete_dup(alias *head);
+char *get_value(char *str);
+void alias_(okeoma *oki);
+char *command(alias *head, char *check);
+bool alias_checker(alias *head, char *arr);
+
+
+
+
+
+
+
+
+
+
+
+
 #endif /* MAIN_H */

@@ -95,7 +95,7 @@ void file(okeoma *oki, char *argv)
 
 void process(okeoma *oki)
 {
-	find_char(oki);
+	find_char(oki->cmd, '#');
 	oki->y = find_set(oki->cmd);
 	f_tokenizer(&oki->tokens, oki->cmd);
 	oki->tok2 = s_tok(&oki->tokens, "&&||");

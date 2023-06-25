@@ -304,26 +304,3 @@ void env_command(okeoma *oki)
 	return;
 }
 
-
-int main(void)
-{
-	char *check = malloc(10), *c1, *c2, *tok;
-	strcpy(check, "okeoma l");
-	int len = 0;
-	env_list *alias;
-
-	tok = strtok(check, " \n");
-
-	while (tok != NULL)
-	{
-		if (strcmp(tok, "l") == 0)
-		{
-
-			printf("%c\n", check[len]);
-		}
-		len += strlen(tok) + 1;
-
-		tok = strtok(NULL, " \n");
-	}
-	
-}

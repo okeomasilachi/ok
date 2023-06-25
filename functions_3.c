@@ -45,9 +45,9 @@ void read_in(okeoma *oki)
 }
 
 
-void find_char(okeoma *oki)
+void find_char(const char *dest, int character)
 {
-	char *str_cpy = strchr(oki->cmd, '#');
+	char *str_cpy = strchr(dest, character);
 
 	if (str_cpy != NULL)
 	{
