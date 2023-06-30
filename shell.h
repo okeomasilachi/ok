@@ -25,6 +25,9 @@
 
 extern char **environ;
 
+/**
+ * 
+*/
 typedef struct environ_list
 {
 	char *NAME;
@@ -32,14 +35,15 @@ typedef struct environ_list
 	struct environ_list *next;
 } env_list;
 
-
+/**
+ * 
+*/
 typedef struct list
 {
 	char *NAME;
 	char *value;
 	struct list *next;
 } alias;
-
 
 /**
  * struct okeoma - structs for the strtok funtion
@@ -52,6 +56,9 @@ typedef struct
 	char *nxt_tok_st;
 } Tokenizer;
 
+/**
+ * 
+*/
 typedef struct variables
 {
 	char **command;
@@ -64,35 +71,24 @@ typedef struct variables
 	char *old;
 	char *path;
 	char *cmd;
-
 	int y;
 	int status;
 	int i;
 	int check;
-
 	size_t n;
 	ssize_t com_num;
-
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
-
 	env_list *head;
 	alias *pos;
-
 	pid_t mypid;
 	pid_t child_pid;
-
 	bool it;
 } okeoma;
 
-void interactive(okeoma *oki);
-void non_interactive(okeoma *oki);
-
 void *p_Input();
 void read_in(okeoma *oki);
-
-void env_command(okeoma *oki);
 void get_env_command(okeoma *oki);
 void find_char(const char *dest, int character);
 int find_set(char *str);
@@ -104,15 +100,11 @@ int execute_command(okeoma *oki);
 char *find_executable(okeoma *oki);
 int execute_builtin_command(okeoma *oki);
 void B_exc(okeoma *oki);
-void process(okeoma *oki);
 void file(okeoma *oki, char *argv);
 char *read_file(const char *filename);
 char *read_lines(int fd);
 int open_file(const char *filename);
-char *env_pos(okeoma *oki);
 void free_all(okeoma *oki);
-int _put(const char *str);
-int _putchar(char c);
 char *s_tok(Tokenizer *tokenizer, const char *delimiters);
 void f_tokenizer(Tokenizer *tokenizer, char *input_string);
 void prs(okeoma *oki, char *coms);
@@ -126,9 +118,7 @@ void print_integer(int num, int n);
 void print_string(char *s, int n);
 void write_string(int n, const char *s);
 int _isspace(int c);
-
 void free_list(env_list *head);
-void free_list_recursive(env_list *head);
 char *get_env(env_list *env, const char *NAME);
 env_list *list_from_env(char **env);
 bool is_value(env_list *head, const char *value);
@@ -139,49 +129,25 @@ env_list *delete_match(env_list *head, char *delete_NAME);
 void delete_duplicate(env_list *head);
 env_list *revers_list(env_list *head);
 void set_env_value(env_list *env, const char *NAME, const char *value);
-/*-------------------------------------------------------------------*/
-void _alias(okeoma *oki);
-void define_alias(env_list *head, char *name);
-env_list *add_alias(env_list *head, char *name, char *value);
-void print_aliases(env_list *head, char *name);
-void process_array(env_list *head, char **array);
-int replace_with_alias(env_list *head, char *str);
 char *get_cwd(void);
-
-char *value(char *str);
 bool checker(char *arr);
 char *second(okeoma *oki, char *av);
 char *first(env_list *head, char *av);
 void int_char(int n1, int n2, char **str);
 void r_char(int value, char* str, int base);
 char *replace(env_list *head, okeoma *oki,char *value);
-
-
-void free_alias_list(alias *head);
 void free_recursive(alias *head);
-bool check_value(alias *head, const char *value);
 bool check_NAME(alias *head, const char *NAME);
-void print_alias(alias *head);
-void print_s_alias(alias *head, const char *NAME);
+void print_alias(alias *head, okeoma *oki);
+void print_s_alias(alias *head, const char *NAME, okeoma *oki);
 alias *insert(alias *head, const char *NAME, const char *value);
-alias *delete_alias_mth(alias *head, char *delete_NAME);
-char *get_alias(alias *env, const char *NAME);
-alias *revers(alias *head);
-void delete_dup(alias *head);
 char *get_value(char *str);
 void alias_(okeoma *oki);
 char *command(alias *head, char *check);
 bool alias_checker(alias *head, char *arr);
-
-
-
-
-
-
-
-
-
-
-
+char *rem(char *str);
+char **env_from_list(env_list *head);
+char *strbind(const char *name, const char *value);
+size_t list_len(env_list *head);
 
 #endif /* MAIN_H */

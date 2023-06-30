@@ -38,7 +38,7 @@ for test_case in "${test_cases[@]}"; do
     echo "Test case: $test_case"
 
     # Execute the command in your shell and capture the output and stream
-    your_shell_output=$(./home/okeoma/Desktop/simple_shell-master/ok "$test_case" 2>&1)
+    your_shell_output=$(shell "$test_case" 2>&1)
     your_shell_exit_status=$?
 
     # Execute the same command in sh shell and capture the output and stream

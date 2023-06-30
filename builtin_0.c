@@ -1,67 +1,56 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * cd_command - changes directory to the specified path
- * @args: arguments to work with
- * @NAME: name of the compiled program
- * @num: argument count
+ * @oki: struct of type okeoma
  *
  * Return: void
 */
 void cd_command(okeoma *oki)
 {
+	int i;
+
 	if (oki->av[1] == NULL)
 	{
-		oki->ok = getenv("HOME");
-		oki->old = getenv("PWD");
-		if (chdir(oki->ok) == 0)
+		i = chdir(get_env(oki->head, "HOME"));
+		if (i == 0)
 		{
-			printf("new = %s\nold = %s\n", oki->ok, oki->old);
-	
-			set_env_value(oki->head, "OLDPWD", oki->old);
+			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
+			set_env_value(oki->head, "PWD", get_cwd());
 		}
 		return;
 	}
-	if (strcmp(oki->av[1], "-") == 0)
+	else if (strcmp(oki->av[1], "-") == 0)
 	{
-		oki->ok = getenv("OLDPWD");
-		oki->old =  getenv("PWD");
-		if  (chdir(oki->ok) == 0)
+		oki->ok = get_env(oki->head, "OLDPWD");
+		i = chdir(oki->ok);
+		if  (i == 0)
 		{
-			printf("new = %s\nold = %s\n", oki->ok, oki->old);
-			/*set_env_value(oki->head, "OLDPWD", oki->old);
-			set_env_value(oki->head, "PWD", oki->ok);
-			p(STO, "%s\n", oki->ok);*/
+			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
+			set_env_value(oki->head, "PWD", get_cwd());
+			p(STO, "%s\n", get_env(oki->head, "PWD"));
 		}
 		return;
 	}
-	else 
+	else
 	{
-		oki->old = get_env(oki->head, "PWD");
-		if (chdir(oki->av[1]) == 0)
+		i = chdir(oki->av[1]);
+		if (i == 0)
 		{
-			oki->ok = get_cwd();
-			printf("new = %s\nold = %s\n", oki->ok, oki->old);
-			/*set_env_value(oki->head, "OLDPWD", oki->old);
-			set_env_value(oki->head, "PWD", oki->ok);
-			p(STO, "%s\n", oki->ok);*/
-			return;
+			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
+			set_env_value(oki->head, "PWD", get_cwd());
 		}
 		else
 			p(STE, "%s: %d: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }
 
-
 /**
  * exit_command - exits the program
- * @args: arguments to work with
- * @NAME: name of the compiled program
- * @num: argument count
+ * @oki: struct of type okeoma
  *
  * Return: void
 */
-
 void exit_command(okeoma *oki)
 {
 	int i;
@@ -69,7 +58,7 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
-		free_list_recursive(oki->head);
+		free_list(oki->head);
 		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
@@ -87,7 +76,7 @@ void exit_command(okeoma *oki)
 			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 		else
 		{
-			free_list_recursive(oki->head);
+			free_list(oki->head);
 			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
@@ -96,9 +85,7 @@ void exit_command(okeoma *oki)
 
 /**
  * setenv_command - sets the specified environ
- * @args: arguments to work with
- * @NAME: name of the compiled program
- * @num: argument count
+ * @oki: struct of type okeoma
  *
  * Return: void
 */
@@ -115,9 +102,7 @@ void setenv_command(okeoma *oki)
 
 /**
  * unsetenv_command - unsets an environmental variable
- * @args: arguments to work with
- * @NAME: name of the compiled program
- * @num: argument count
+ * @oki: struct of type okeoma
  *
  * Return: void
 */
@@ -136,9 +121,7 @@ void unsetenv_command(okeoma *oki)
 
 /**
  * get_env_command - print a particular environ
- * @args: arguments to work with
- * @NAME: name of the compiled program
- * @num: argument count
+ * @oki: struct of type okeoma
  *
  * Return: void
 */
@@ -159,5 +142,3 @@ void get_env_command(okeoma *oki)
 		p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
 	}
 }
-
-

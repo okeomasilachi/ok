@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 
 /**
  * open_file - opens a file for processing
@@ -89,31 +89,6 @@ void file(okeoma *oki, char *argv)
 	if (read > 0 && oki->cmd[read - 1] == '\n')
 		oki->cmd[read - 1] = '\0';
 
-	process(oki);
+	B_exc(oki);
 	exit(EXIT_SUCCESS);
-}
-
-void process(okeoma *oki)
-{
-	find_char(oki->cmd, '#');
-	oki->y = find_set(oki->cmd);
-	f_tokenizer(&oki->tokens, oki->cmd);
-	oki->tok2 = s_tok(&oki->tokens, "&&||");
-	while (oki->tok2 != NULL)
-	{
-		prs_2(oki);
-		for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
-		{
-			prs(oki, oki->command[oki->i]);
-			oki->com_num++;
-			if ((oki->status = execute_builtin_command(oki)) != 0)
-				oki->status = execute_command(oki);
-		}
-		if (oki->y == 1 && oki->status != 0)
-			break;
-		if (oki->y == 2 && oki->status == 0)
-			break;
-		oki->y = find_set(NULL);
-		oki->tok2 = s_tok(&oki->tokens, "&&||");
-	}
 }

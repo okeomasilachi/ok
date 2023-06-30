@@ -47,7 +47,7 @@ for test_case in "${test_cases[@]}"; do
         fi
 
         # Execute the command in your shell and capture the output and stream
-        your_shell_output=$(./home/okeoma/Desktop/simple_shell-master/ok "$your_shell_input" 2>&1)
+        your_shell_output=$(shell "$your_shell_input" 2>&1)
         your_shell_exit_status=$?
 
         # Execute the same command in sh shell and capture the output and stream

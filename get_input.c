@@ -1,20 +1,4 @@
-#include "main.h"
-
-void _in(okeoma *oki, char **argv)
-{
-	oki->mypid = getpid();
-	oki->cmd = NULL;
-	oki->av = NULL;
-	oki->command = NULL;
-	oki->tok = NULL;
-	oki->tok2 = NULL;
-	oki->n = 0;
-	oki->it = isatty(STDIN_FILENO);
-	oki->Name = argv[0];
-	oki->com_num = 0;
-	oki->i = 0;
-	oki->head = list_from_env(environ);
-}
+#include "shell.h"
 
 /**
  * read_input - reads input from a buffer
@@ -101,74 +85,50 @@ void *p_Input()
 }
 
 /**
- * prs - parses input command to tokens
- * @command: command to be parsed
- * @del_n: sets delimiter to requirments
+ * read-in - reads from stdin to a buffer
+ * @oki: structure containing all parameters
  *
- * Return: pointer the array of parsed commands
- * error: NULL
+ * Return: Void 
 */
-void prs(okeoma *oki, char *coms)
+void read_in(okeoma *oki)
 {
-	char *com_cpy = NULL, *dl = " \t\n\r";
-	size_t count = 0, cnt = 0;
+	ssize_t read_bytes;
+	int input_length, write_index = 0, space_count = 0, i, newline_count;
 
-	if (oki->cmd)
+	oki->cmd = (char *)malloc(BUFFER_SIZE * sizeof(char));
+	read_bytes = read(STDIN_FILENO, oki->cmd, BUFFER_SIZE);
+	input_length = read_bytes;
+	write_index = 0, space_count = 0;
+	for (i = 0; i < input_length; i++)
 	{
-		com_cpy = strdup(coms);
-		f_tokenizer(&oki->baxi, coms);
-		oki->tok = s_tok(&oki->baxi, dl);
-		while (oki->tok)
-		{
-			cnt++;
-			oki->tok = s_tok(&oki->baxi, dl);
-		}
-		cnt++;
-		oki->av = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(&oki->baxi, com_cpy);
-		oki->tok = s_tok(&oki->baxi, dl);
-		while (oki->tok)
-		{
-			oki->av[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
-			strcpy(oki->av[count], oki->tok);
-			oki->tok = s_tok(&oki->baxi, dl);
-			count++;
-		}
-		oki->av[count] = NULL;
-		free(com_cpy);
-		com_cpy = NULL;
-		count = 0, cnt = 0;
+		if (isspace(oki->cmd[i]))
+			space_count++;
+		else
+			space_count = 0;
+
+		if (space_count <= 1)
+			oki->cmd[write_index++] = oki->cmd[i];
 	}
-}
-
-int execute_command(okeoma *oki)
-{
-	oki->ec = find_executable(oki);
-	if (!oki->ec)
+	newline_count = 0;
+	for (i = 0; i < write_index; i++)
 	{
-		p(STE, "%s: %d: %s: not found\n", oki->Name, oki->com_num, oki->av[0]);
-	}
-	if (oki->ec)
-	{
-		oki->child_pid = fork();
-		if (oki->child_pid == -1)
-			perror("fork");
-
-		else if (oki->child_pid == 0)
-		{
-			execve(oki->ec, oki->av, environ);
-			p(STE, "%s: %d: %s: Permission denied\n", oki->Name, oki->com_num, oki->av[0]);
-			return (EXIT_FAILURE);
-		}
+		if (oki->cmd[i] == '\n')
+			newline_count++;
 		else
 		{
-			waitpid(oki->child_pid, &oki->status, 0);
-			free(oki->ec);
-			if (WIFEXITED(oki->status))
+			if (newline_count > 1)
 			{
-				return (WEXITSTATUS(oki->status));
+				oki->cmd[i - newline_count + 1] = ';';
+				write_index = write_index - (newline_count - 1);
 			}
+			newline_count = 0;
 		}
 	}
-	return (-1);
+	if (newline_count > 1)
+	{
+		oki->cmd[write_index - newline_count + 1] = ';';
+		write_index = write_index - (newline_count - 1);
+	}
+	oki->cmd[write_index] = '\0';
+	oki->cmd = (char*)realloc(oki->cmd, (write_index + 1) * sizeof(char));
 }

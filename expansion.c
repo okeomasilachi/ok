@@ -1,64 +1,13 @@
-#include "main.h"
+#include "shell.h"
 
-bool checker(char *arr)
-{
-	if (arr == NULL) return false;
-	else if (strstr(arr, "$") != NULL) return true;
-	else return false;
-}
-
-void r_char(int value, char* str, int base)
-{
-	int i, is_neg, rem, len, st, ed;
-	char temp;
-
-	if (value == 0)
-	{
-		str[0] = '0';
-		str[1] = '\0';
-		return;
-	}
-	i = 0;
-	is_neg = 0;
-	
-	if (value < 0 && base == 10)
-	{
-		is_neg = 1;
-		value = -value;
-	}
-	while (value != 0)
-	{
-		rem = value % base;
-		str[i++] = (rem > 9) ? (rem - 10) + 'A' : rem + '0';
-		value /= base;
-	}
-	if (is_neg)
-		str[i++] = '-';
-
-	str[i] = '\0';
-	len = strlen(str);
-	st = 0;
-	ed = len - 1;
-	while (st < ed)
-	{
-		temp = str[st];
-		str[st] = str[ed];
-		str[ed] = temp;
-		st++;
-		ed--;
-	}
-}
-
-
-void int_char(int n1, int n2, char **str)
-{
-	str[0] = malloc(20);
-	str[1] = malloc(20);
-
-	r_char(n1, str[0], 10);
-	r_char(n2, str[1], 10);
-}
-
+/**
+ * first - checks for variable expansion in the environ list
+ * @head: pointer to the head of an environ list
+ * @av: string to run comparism with
+ *
+ * Return: a pointer to the modified string
+ * else retruns the original string 
+*/
 char *first(env_list *head, char *av)
 {
 	env_list *cur = head;
@@ -94,7 +43,14 @@ char *first(env_list *head, char *av)
 	return (av);
 }
 
-
+/**
+ * second - checks for variable expansion from pre-defined variables
+ * @oki: struct of type okeoma
+ * @av: pointer to the string to compare
+ *
+ * Return: a pointer to the modified string
+ * else retruns the original string
+*/
 char *second(okeoma *oki, char *av)
 {
 	char *val = NULL, *rem = NULL, *va = NULL, *new;
@@ -131,7 +87,15 @@ char *second(okeoma *oki, char *av)
 	return (av);
 }
 
-char *replace(env_list *head, okeoma *oki,char *value)
+/**
+ * replace - carries out variable expantion procedures
+ * @head: pointer to the head of an env list
+ * @oki: struct of type okeoma
+ * @value: pointer to a string to carry out variable exapansion
+ *
+ * Return: a pointer to the modified string
+*/
+char *replace(env_list *head, okeoma *oki, char *value)
 {
 	bool check;
 	char *sec = strdup(value);
