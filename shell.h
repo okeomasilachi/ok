@@ -22,11 +22,18 @@
 #define STE 2
 #define v (void)
 #define MAX_PATH 4096
+#define READ 1
+#define WRITE 2
+#define APPEND 4
+#define TRUNC 8
 
 extern char **environ;
 
 /**
- * 
+ * struct environ_list - struct to store the env in a linked list
+ * @NAME: name of the environ
+ * @value: value
+ * @next: pointer to the next Node
 */
 typedef struct environ_list
 {
@@ -36,7 +43,10 @@ typedef struct environ_list
 } env_list;
 
 /**
- * 
+ * struct list - struct to hold the alias of the shell
+ * @NAME: alias to replace
+ * @value: value of the alias
+ * @next: pointer to the next Node
 */
 typedef struct list
 {
@@ -46,18 +56,42 @@ typedef struct list
 } alias;
 
 /**
- * struct okeoma - structs for the strtok funtion
+ * struct onyedibia - structs for the strtok funtion
  * @cur_tok_st: holds the current token
  * @nxt_tok_st: holds the next token
 */
-typedef struct
+typedef struct onyedibia
 {
 	char *cur_tok_st;
 	char *nxt_tok_st;
 } Tokenizer;
 
 /**
- * 
+ * struct variables - struct that holds all nessacery parameters
+ * @command:holds argumentents for the ';' shell operation
+ * @av: holds the arguments to be executed
+ * @tok: holds tokens for s_tok
+ * @tok2: holds tokens for s_tok
+ * @N: holds the name of the program on execution
+ * @ec: holds the full path for the execve funtion
+ * @ok: support variable
+ * @old: holds the value of the OLDPWD
+ * @path: holds the path
+ * @cmd: the initial commandline intake
+ * @y: hold variable for the implementation of the "&&" and "||"
+ * @status: holds the exit status of the last executed program
+ * @i: for loop
+ * @check: parameter check
+ * @n: for the strlen of a string
+ * @c: the number of command of the current shell process
+ * @tokens: s_tok initialiser
+ * @Hook: s_tok initialiser
+ * @baxi: s_tok initialiser
+ * @head: holds the env in a linked list
+ * @pos: holds all aliases
+ * @mypid: holds the process id of the shell
+ * @child_pid: holds pid for the fork function
+ * @it: hole the isatty value
 */
 typedef struct variables
 {
@@ -65,7 +99,7 @@ typedef struct variables
 	char **av;
 	char *tok;
 	char *tok2;
-	char *Name;
+	char *N;
 	char *ec;
 	char *ok;
 	char *old;
@@ -76,7 +110,7 @@ typedef struct variables
 	int i;
 	int check;
 	size_t n;
-	ssize_t com_num;
+	ssize_t c;
 	Tokenizer tokens;
 	Tokenizer Hook;
 	Tokenizer baxi;
@@ -134,8 +168,8 @@ bool checker(char *arr);
 char *second(okeoma *oki, char *av);
 char *first(env_list *head, char *av);
 void int_char(int n1, int n2, char **str);
-void r_char(int value, char* str, int base);
-char *replace(env_list *head, okeoma *oki,char *value);
+void r_char(int value, char *str, int base);
+char *replace(env_list *head, okeoma *oki, char *value);
 void free_recursive(alias *head);
 bool check_NAME(alias *head, const char *NAME);
 void print_alias(alias *head, okeoma *oki);

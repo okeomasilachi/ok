@@ -94,7 +94,7 @@ void prs(okeoma *oki, char *coms)
 }
 
 /**
- * prs - parses input command to tokens
+ * prs_2 - parses input command to tokens
  * @oki: struct of type okeoma
  *
  * Return: void

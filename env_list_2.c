@@ -9,9 +9,12 @@
  */
 bool is_value(env_list *head, const char *value)
 {
-	if (head == NULL) return (false);
-	else if (strcmp(head->NAME, value) == 0) return (true);
-	else return (is_value(head->next, value));
+	if (head == NULL)
+		return (false);
+	else if (strcmp(head->NAME, value) == 0)
+		return (true);
+	else
+		return (is_value(head->next, value));
 }
 
 /**
@@ -23,9 +26,12 @@ bool is_value(env_list *head, const char *value)
  */
 bool is_NAME(env_list *head, const char *NAME)
 {
-	if (head == NULL) return (false);
-	else if (strcmp(head->NAME, NAME) == 0) return (true);
-	else return (is_NAME(head->next, NAME));
+	if (head == NULL)
+		return (false);
+	else if (strcmp(head->NAME, NAME) == 0)
+		return (true);
+	else
+		return (is_NAME(head->next, NAME));
 }
 
 /**
@@ -37,15 +43,13 @@ bool is_NAME(env_list *head, const char *NAME)
 void print(env_list *head)
 {
 	env_list *current;
-	current = head;
 
+	current = head;
 	while (current != NULL)
 	{
 		printf("%s=%s\n", current->NAME, current->value);
 		current = current->next;
 	}
-	return;
-	
 }
 
 /**
@@ -60,7 +64,8 @@ size_t list_len(env_list *head)
 	size_t len = 0;
 	env_list *current = head;
 
-	if (head == NULL) return (len - 1);
+	if (head == NULL)
+		return (len - 1);
 	while (current != NULL)
 	{
 		len++;
@@ -87,7 +92,8 @@ char *strbind(const char *name, const char *value)
 	len = (strlen(name) + strlen(value));
 	take = malloc(sizeof(char) * (len + 2));
 
-	if (take == NULL) return (NULL);
+	if (take == NULL)
+		return (NULL);
 
 	strcpy(take, name);
 	strcat(take, "=");

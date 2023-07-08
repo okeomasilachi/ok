@@ -12,7 +12,8 @@ bool alias_checker(alias *head, char *arr)
 	char *tok, *che = strdup(arr);
 	alias *cur = head;
 
-	if (head == NULL || arr == NULL) return false;
+	if (head == NULL || arr == NULL)
+		return (false);
 
 	tok = strtok(che, " \n");
 	while (tok != NULL)
@@ -20,7 +21,7 @@ bool alias_checker(alias *head, char *arr)
 		while (cur != NULL)
 		{
 			if (strcmp(tok, cur->NAME) == 0)
-				return true;
+				return (true);
 
 			cur = cur->next;
 		}
@@ -31,7 +32,8 @@ bool alias_checker(alias *head, char *arr)
 }
 
 /**
- * command - replaces defined aliases with there corresponding values in a string
+ * command - replaces defined aliases with there
+ *		corresponding values in a string
  * @head: pointer to the head of the linked list
  * @check: the string to be modified
  *
@@ -73,7 +75,7 @@ char *command(alias *head, char *check)
 		cur = cur->next;
 	}
 	c1[strlen(c1) + 1] = '\0';
-	return(c1);
+	return (c1);
 }
 
 /**
@@ -100,7 +102,7 @@ int number(char *str, char *match)
 /**
  * position - gets the location of the character srh in str
  * @str: the string to search
- * @srt: the match to look for
+ * @srh: the match to look for
  *
  * Return: The (int) position of the character position
  * error: if the string is not present -1
@@ -119,7 +121,7 @@ int position(char *str, char *srh)
 		i++;
 	}
 	return (pos);
-	
+
 }
 
 /**
@@ -133,7 +135,8 @@ char *rem(char *str)
 	char *first, *sec, *str_cpy = strdup(str);
 	int a, i;
 
-	if (str == NULL) return (NULL);
+	if (str == NULL)
+		return (NULL);
 
 	a = number(str_cpy, "'");
 	i = strlen(str_cpy) - a;
@@ -144,5 +147,5 @@ char *rem(char *str)
 		strcat(first, sec);
 		sec = strtok(NULL, "'");
 	}
-	return(first);
+	return (first);
 }

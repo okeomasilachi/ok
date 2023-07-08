@@ -8,8 +8,10 @@
 */
 bool null_check(char *ok)
 {
-	if (ok == NULL) return (true);
-	else return (false);
+	if (ok == NULL)
+		return (true);
+	else
+		return (false);
 }
 
 /**

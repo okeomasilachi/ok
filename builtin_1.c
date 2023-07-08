@@ -24,10 +24,9 @@ char *get_cwd(void)
 */
 void alias_(okeoma *oki)
 {
-	char *ch, *value;
-	int cnt, i, j, k;
+	char *value;
+	int cnt;
 
-	v ch, v value, v i, v j, v k;
 	if (oki->av[1] == NULL)
 		print_alias(oki->pos, oki);
 	else
@@ -35,7 +34,7 @@ void alias_(okeoma *oki)
 
 		for (cnt = 1; oki->av[cnt] != NULL; cnt++)
 		{
-			if ((ch = strstr(oki->av[cnt], "=")) != NULL)
+			if (strstr(oki->av[cnt], "=") != NULL)
 			{
 				value = strdup(oki->av[1]);
 				value = get_value(value);
@@ -47,7 +46,8 @@ void alias_(okeoma *oki)
 				if (check_NAME(oki->pos, oki->av[cnt]) == true)
 					print_s_alias(oki->pos, oki->av[cnt], oki);
 				else
-					p(STE, "%s: %d: %s: %s: not found\n", oki->Name, oki->com_num, oki->av[0], oki->av[cnt]);
+					p(STE, "%s: %d: %s: %s: not found\n",
+					oki->N, oki->c, oki->av[0], oki->av[cnt]);
 			}
 		}
 		return;

@@ -6,7 +6,7 @@
  * @av: string to run comparism with
  *
  * Return: a pointer to the modified string
- * else retruns the original string 
+ * else retruns the original string
 */
 char *first(env_list *head, char *av)
 {
@@ -22,10 +22,11 @@ char *first(env_list *head, char *av)
 		tok = malloc(len);
 		strcat(tok, "$");
 		strcat(tok, cur->NAME);
-		if ((rep = strstr(va, tok)) != NULL)
+		if (strstr(va, tok) != NULL)
 		{
+			rep = strstr(va, tok);
 			len = strlen(tok);
-			if(strncmp(rep, tok, len) == 0)
+			if (strncmp(rep, tok, len) == 0)
 			{
 				rem = strdup(rep + len);
 				n_size = strlen(cur->value) + strlen(rem) + 1;
@@ -65,10 +66,11 @@ char *second(okeoma *oki, char *av)
 		int_char(oki->mypid, oki->status, ex);
 		while (expand[i] != NULL)
 		{
-			if ((val = strstr(va, expand[i])) != NULL)
+			if (strstr(va, expand[i]) != NULL)
 			{
+				val = strstr(va, expand[i]);
 				len = strlen(expand[i]);
-				if(strncmp(val, expand[i], len) == 0)
+				if (strncmp(val, expand[i], len) == 0)
 				{
 					rem = strdup(val + len);
 					n_size = strlen(ex[i]) + strlen(rem) + 1;
@@ -99,13 +101,13 @@ char *replace(env_list *head, okeoma *oki, char *value)
 {
 	bool check;
 	char *sec = strdup(value);
-				
+
 	check = checker(sec);
 	while (check == true)
 	{
 		sec = first(head, sec);
 		sec = second(oki, sec);
-		
+
 		check = checker(sec);
 	}
 	return (sec);

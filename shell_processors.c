@@ -50,7 +50,7 @@ int execute_command(okeoma *oki)
 	oki->ec = find_executable(oki);
 	if (!oki->ec)
 	{
-		p(STE, "%s: %d: %s: not found\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: not found\n", oki->N, oki->c, oki->av[0]);
 	}
 	if (oki->ec)
 	{
@@ -61,7 +61,7 @@ int execute_command(okeoma *oki)
 		else if (oki->child_pid == 0)
 		{
 			execve(oki->ec, oki->av, env_from_list(oki->head));
-			p(STE, "%s: %d: %s: Permission denied\n", oki->Name, oki->com_num, oki->av[0]);
+			p(STE, "%s: %d: %s: Permission denied\n", oki->N, oki->c, oki->av[0]);
 			return (EXIT_FAILURE);
 		}
 		else
@@ -150,10 +150,12 @@ void B_exc(okeoma *oki)
 		for (oki->i = 0; oki->command[oki->i] != NULL; oki->i++)
 		{
 			prs(oki, oki->command[oki->i]);
-			if (oki->it) oki->com_num++;
+			if (oki->it)
+				oki->c++;
 			for (z = 0; oki->av[z] != NULL; z++)
-				oki->av[z] = replace(oki->head, oki, oki->av[z]);	
-			if ((oki->status = execute_builtin_command(oki)) != 0)
+				oki->av[z] = replace(oki->head, oki, oki->av[z]);
+			oki->status = execute_builtin_command(oki);
+			if (oki->status != 0)
 				oki->status = execute_command(oki);
 		}
 		if (oki->y == 1 && oki->status != 0)

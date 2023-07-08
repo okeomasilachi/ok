@@ -8,7 +8,8 @@
 */
 void free_recursive(alias *head)
 {
-	if (head == NULL) return;
+	if (head == NULL)
+		return;
 
 	free_recursive(head->next);
 	free(head->NAME);
@@ -25,14 +26,18 @@ void free_recursive(alias *head)
  */
 bool check_NAME(alias *head, const char *NAME)
 {
-	if (head == NULL) return (false);
-	else if (strcmp(head->NAME, NAME) == 0) return (true);
-	else return (check_NAME(head->next, NAME));
+	if (head == NULL)
+		return (false);
+	else if (strcmp(head->NAME, NAME) == 0)
+		return (true);
+	else
+		return (check_NAME(head->next, NAME));
 }
 
 /**
  * print_alias - Prints the values of an alias list
  * @head: The head of the linked list
+ * @oki: struct of type okeoma
  *
  * Return: void
  */
@@ -42,21 +47,21 @@ void print_alias(alias *head, okeoma *oki)
 
 	if (current == NULL)
 	{
-		p(STE, "%s: %d: %s: no defined alias\n", oki->Name, oki->com_num, oki->av[0]);
-		return;
+		p(STE, "%s: %d: %s: no defined alias\n",
+		oki->N, oki->c, oki->av[0]);
 	}
 	while (current != NULL)
 	{
 		p(STO, "%s='%s'\n", current->NAME, current->value);
 		current = current->next;
 	}
-	return;
-	
 }
 
 /**
  * print_s_alias - Prints the values of a specific alias
  * @head: The head of the linked list
+ * @NAME: Name of the alias to print
+ * @oki: struct of type okeoma
  *
  * Return: void
  */
@@ -66,21 +71,24 @@ void print_s_alias(alias *head, const char *NAME, okeoma *oki)
 
 	if (current == NULL)
 	{
-		p(STE, "%s: %d: %s: no defined alias\n", oki->Name, oki->com_num, oki->av[0]);
-		return;
+		p(STE, "%s: %d: %s: no defined alias\n",
+		oki->N, oki->c, oki->av[0]);
 	}
-	while (current != NULL)
+	else
 	{
-		if (strcmp(current->NAME, NAME) == 0)
-			p(STO, "%s='%s'\n", current->NAME, current->value);
+		while (current != NULL)
+		{
+			if (strcmp(current->NAME, NAME) == 0)
+				p(STO, "%s='%s'\n", current->NAME, current->value);
 
-		current = current->next;
+			current = current->next;
+		}
 	}
-	return;
 }
 
 /**
- * insert - Inserts a new alias with a given NAME and value at the tail of a linked list
+ * insert - Inserts a new alias with a given NAME
+ *		and value at the tail of a linked list
  * @head: The head of the linked list
  * @NAME: name of variable
  * @value: The value to be inserted

@@ -8,9 +8,12 @@
 */
 bool checker(char *arr)
 {
-	if (arr == NULL) return false;
-	else if (strstr(arr, "$") != NULL) return true;
-	else return false;
+	if (arr == NULL)
+		return (false);
+	else if (strstr(arr, "$") != NULL)
+		return (true);
+	else
+		return (false);
 }
 
 /**
@@ -21,7 +24,7 @@ bool checker(char *arr)
  *
  * Return: Void
 */
-void r_char(int value, char* str, int base)
+void r_char(int value, char *str, int base)
 {
 	int i, is_neg, rem, len, st, ed;
 	char temp;
@@ -34,7 +37,7 @@ void r_char(int value, char* str, int base)
 	}
 	i = 0;
 	is_neg = 0;
-	
+
 	if (value < 0 && base == 10)
 	{
 		is_neg = 1;
@@ -68,7 +71,7 @@ void r_char(int value, char* str, int base)
  * @n1: first integer to be converted
  * @n2: second integer to be converted
  * @str: pointer to an array for storing the converted integers
- * 
+ *
  * Return:
 */
 void int_char(int n1, int n2, char **str)

@@ -41,7 +41,8 @@ void cd_command(okeoma *oki)
 			set_env_value(oki->head, "PWD", get_cwd());
 		}
 		else
-			p(STE, "%s: %d: %s: can't cd to %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+			p(STE, "%s: %d: %s: can't cd to %s\n",
+			oki->N, oki->c, oki->av[0], oki->av[1]);
 	}
 }
 
@@ -73,7 +74,8 @@ void exit_command(okeoma *oki)
 			}
 		}
 		if (!isNumber)
-			p(STE, "%s: %d: %s: Illegal number: %s\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+			p(STE, "%s: %d: %s: Illegal number: %s\n",
+			oki->N, oki->c, oki->av[0], oki->av[1]);
 		else
 		{
 			free_list(oki->head);
@@ -92,7 +94,8 @@ void exit_command(okeoma *oki)
 void setenv_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL || oki->av[2] == NULL || oki->av[3] != NULL)
-		p(STE, "%s: %d: %s: Usage: setenv NAME value\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: Usage: setenv NAME value\n",
+		oki->N, oki->c, oki->av[0]);
 	else
 	{
 		set_env_value(oki->head, oki->av[1], oki->av[2]);
@@ -109,13 +112,14 @@ void setenv_command(okeoma *oki)
 void unsetenv_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL || oki->av[2] != NULL)
-		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->Name, oki->com_num, oki->av[0]);
+		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->N, oki->c, oki->av[0]);
 	else
 	{
 		if (is_NAME(oki->head, oki->av[1]) == true)
 			oki->head = delete_match(oki->head, oki->av[1]);
 		else
-			p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);			
+			p(STE, "%s: %d: %s: \"%s\" not set\n",
+			oki->N, oki->c, oki->av[0], oki->av[1]);
 	}
 }
 
@@ -129,16 +133,19 @@ void get_env_command(okeoma *oki)
 {
 	if (oki->av[1] == NULL || oki->av[2] != NULL)
 	{
-		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n", oki->Name, oki->com_num, oki->av[0], oki->av[0]);
+		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n",
+		oki->N, oki->c, oki->av[0], oki->av[0]);
 	}
-	else if ((oki->ok = get_env(oki->head, oki->av[1])) != NULL)
+	else if (get_env(oki->head, oki->av[1]) != NULL)
 	{
+		oki->ok = get_env(oki->head, oki->av[1]);
 		p(STO, "%s\n", oki->ok);
 		free(oki->ok);
 		return;
 	}
 	else
 	{
-		p(STE, "%s: %d: %s: \"%s\" not set\n", oki->Name, oki->com_num, oki->av[0], oki->av[1]);
+		p(STE, "%s: %d: %s: \"%s\" not set\n",
+		oki->N, oki->c, oki->av[0], oki->av[1]);
 	}
 }

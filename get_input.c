@@ -74,7 +74,7 @@ char *_getline(char *buffer, int *buffer_pos, int *buffer_size)
  * Return: pointer to the read characters
 */
 void *p_Input()
-{	
+{
 	static char buffer[BUFFER_SIZE];
 	static int buffer_pos, buffer_size;
 	char *m;
@@ -85,10 +85,10 @@ void *p_Input()
 }
 
 /**
- * read-in - reads from stdin to a buffer
+ * read_in - reads from stdin to a buffer
  * @oki: structure containing all parameters
  *
- * Return: Void 
+ * Return: Void
 */
 void read_in(okeoma *oki)
 {
@@ -130,5 +130,5 @@ void read_in(okeoma *oki)
 		write_index = write_index - (newline_count - 1);
 	}
 	oki->cmd[write_index] = '\0';
-	oki->cmd = (char*)realloc(oki->cmd, (write_index + 1) * sizeof(char));
+	oki->cmd = (char *)realloc(oki->cmd, (write_index + 1) * sizeof(char));
 }
