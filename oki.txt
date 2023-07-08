@@ -1,20 +1,7 @@
 ls
-pwd
-okeoma
-            
-ls -al	
-
-				okeoma
-	rfe
-
-
-
-
-
-
-
-
-
-
-bg
-				
+alias ok=ls
+alias
+setenv okeoma=okeoma
+env
+unsetenv okeoma
+exit 98

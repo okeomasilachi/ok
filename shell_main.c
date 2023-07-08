@@ -37,6 +37,12 @@ void _in(okeoma *oki, char **argv)
 	oki->head = list_from_env(environ);
 }
 
+/**
+ * remov - removes all occurance of "\n\t"" in a string
+ * @str: string to be processed
+ *
+ * Return: Void
+*/
 void remov(char *str)
 {
 	int i, j;
@@ -65,6 +71,12 @@ void remov(char *str)
 	*dst = '\0';
 }
 
+/**
+ * empty - checks if an address pointed to by a pointer is empty
+ * @str: string to be checked
+ *
+ * Return: 0 if empty else 1
+*/
 int empty(const char *str)
 {
 	while (*str)
@@ -76,6 +88,13 @@ int empty(const char *str)
 	return 1;
 }
 
+/**
+ * File - handles all file processing
+ * @filename: name of the file to be processed
+ * @oki: struct of type okeoma
+ *
+ * Return: void
+*/
 void File(char* filename, okeoma *oki)
 {
 	size_t len;
@@ -137,11 +156,9 @@ int main(int argc, char **argv)
 	_in(oki, argv);
 	signal(SIGINT, sig);
 
-	
 	if (argc > 1)
-	{
 		File(argv[1], oki);
-	}
+
 	while (true)
 	{
 		oki->c++;
