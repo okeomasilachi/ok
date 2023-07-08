@@ -183,5 +183,6 @@ char *rem(char *str);
 char **env_from_list(env_list *head);
 char *strbind(const char *name, const char *value);
 size_t list_len(env_list *head);
+int empty(const char *str);
 
 #endif /* MAIN_H */

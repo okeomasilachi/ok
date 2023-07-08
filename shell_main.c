@@ -46,7 +46,7 @@ void _in(okeoma *oki, char **argv)
 void remov(char *str)
 {
 	int i, j;
-	char *src, *dst; 
+	char *src, *dst;
 
 	for (i = 0, j = 0; str[i] != '\0'; i++)
 	{
@@ -69,23 +69,6 @@ void remov(char *str)
 		src++;
 	}
 	*dst = '\0';
-}
-
-/**
- * empty - checks if an address pointed to by a pointer is empty
- * @str: string to be checked
- *
- * Return: 0 if empty else 1
-*/
-int empty(const char *str)
-{
-	while (*str)
-	{
-		if (!isspace(*str))
-			return 0;
-		str++;
-	}
-	return 1;
 }
 
 /**
@@ -156,9 +139,9 @@ int main(int argc, char **argv)
 	_in(oki, argv);
 	signal(SIGINT, sig);
 
-	if (argc > 1)
+	/* if (argc > 1 && !oki->it)
 		File(argv[1], oki);
-
+ */
 	while (true)
 	{
 		oki->c++;
@@ -171,7 +154,7 @@ int main(int argc, char **argv)
 			continue;
 		}
 		B_exc(oki);
-		
+
 		if (oki->it)
 			break;
 		else

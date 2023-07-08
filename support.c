@@ -105,3 +105,20 @@ void my_free(size_t count, ...)
 	}
 	va_end(args);
 }
+
+/**
+ * empty - checks if an address pointed to by a pointer is empty
+ * @str: string to be checked
+ *
+ * Return: 0 if empty else 1
+*/
+int empty(const char *str)
+{
+	while (*str)
+	{
+		if (!isspace(*str))
+			return 0;
+		str++;
+	}
+	return 1;
+}
