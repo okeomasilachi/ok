@@ -37,47 +37,89 @@ void _in(okeoma *oki, char **argv)
 	oki->head = list_from_env(environ);
 }
 
-FILE *stm(int argc, char **argv, okeoma *oki)
+void remov(char *str)
 {
-	FILE *fd = NULL;
+	int i, j;
+	char *src, *dst; 
 
-	if (argc > 2)
-		p(STE, "%s: %d: Usage: simple_shell [filename]\n", oki->N, oki->c);
-	else if (argc == 1)
+	for (i = 0, j = 0; str[i] != '\0'; i++)
 	{
-		fd = stdin;
+		if (str[i] != '\t' && str[i] != '\n')
+		{
+			str[j] = str[i];
+			j++;
+		}
 	}
+	str[j] = '\0';
+	src = str;
+	dst = str;
+	while (*src)
+	{
+		if (*src != '"')
+		{
+			*dst = *src;
+			dst++;
+		}
+		src++;
+	}
+	*dst = '\0';
+}
+
+int empty(const char *str)
+{
+	while (*str)
+	{
+		if (!isspace(*str))
+			return 0;
+		str++;
+	}
+	return 1;
+}
+
+void File(char* filename, okeoma *oki)
+{
+	size_t len;
+	ssize_t read;
+	FILE *file;
+	int fd;
+
+	oki->cmd = NULL;
+	if (access(filename, F_OK) == 0)
+		fd = open(filename, O_RDONLY);
 	else
 	{
-		fd = fopen(argv[1], "r");
+		p(STE, "%s: %d: cannot open %s: No such file\n",
+		oki->N, oki->c, filename);
+		exit(2);
 	}
-
-	return (fd);
+	if (fd == -1)
+		return;
+	file = fdopen(fd, "r");
+	if (file == NULL)
+	{
+		close(fd);
+		return;
+	}
+	len = 0;
+	oki->c++;
+	oki->N = filename;
+	while ((read = getline(&oki->cmd, &len, file)) != -1)
+	{
+		remov(oki->cmd);
+		if (empty(oki->cmd))
+		{
+			oki->c++;
+			continue;
+		}
+		B_exc(oki);
+		oki->c++;
+	}
+	free(oki->cmd);
+	fclose(file);
+	close(fd);
+	exit(0);
 }
 
-void readFromFile(const char* filename, okeoma *oki) {
-    int i = 0, fd = open(filename, O_RDONLY);
-    char buf[1024];
-    ssize_t bytes, len = 0;
-    v oki, v i;
-    if (fd == -1) {
-        printf("Failed to open the file.\n");
-        return;
-    }
-    while ((bytes = read(fd, buf,sizeof(buf))) != 0)
-    {
-	len += strlen(buf) + 1;
-	printf("%s ", buf);
-	/* i++;
-	printf("%d", i); */
-    }
-    printf("%lu\n", len);
-
-    close(fd);
-
-    exit(0);
-
-}
 
 /**
  * main - entry point of the shell
@@ -95,8 +137,11 @@ int main(int argc, char **argv)
 	_in(oki, argv);
 	signal(SIGINT, sig);
 
-	if (argc == 2)
-		readFromFile(argv[1], oki);
+	
+	if (argc > 1)
+	{
+		File(argv[1], oki);
+	}
 	while (true)
 	{
 		oki->c++;
