@@ -117,8 +117,8 @@ int empty(const char *str)
 	while (*str)
 	{
 		if (!isspace(*str))
-			return 0;
+			return (0);
 		str++;
 	}
-	return 1;
+	return (1);
 }

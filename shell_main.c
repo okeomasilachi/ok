@@ -78,7 +78,7 @@ void remov(char *str)
  *
  * Return: void
 */
-void File(char* filename, okeoma *oki)
+void File(char *filename, okeoma *oki)
 {
 	size_t len;
 	ssize_t read;
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	ssize_t byte_r = 1;
 	char st = 0;
 	FILE *fd;
-	
+
 	signal(SIGINT, sig);
 	_in(oki, argv);
 	fd = file_handle(oki, argc, argv);
@@ -155,8 +155,7 @@ int main(int argc, char **argv)
 		B_exc(oki);
 		if (oki->it && st)
 			break;
-		else
-			continue;
+
 		oki->c++;
 	}
 

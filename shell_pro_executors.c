@@ -170,7 +170,7 @@ void B_exc(okeoma *oki)
 }
 
 
-FILE *file_handle( okeoma *oki, int argc, char **argv)
+FILE *file_handle(okeoma *oki, int argc, char **argv)
 {
 	FILE *file_d;
 
