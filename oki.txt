@@ -1,7 +1,11 @@
 ls
-alias ok=ls
-alias
-setenv okeoma=okeoma
-env
-unsetenv okeoma
-exit 98
+
+
+
+
+"kk kk"
+
+
+
+ls
+gg

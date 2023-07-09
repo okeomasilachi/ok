@@ -51,6 +51,8 @@ int execute_command(okeoma *oki)
 	if (!oki->ec)
 	{
 		p(STE, "%s: %d: %s: not found\n", oki->N, oki->c, oki->av[0]);
+		if (oki->it)
+			exit(127);
 	}
 	if (oki->ec)
 	{
@@ -165,4 +167,31 @@ void B_exc(okeoma *oki)
 		oki->y = find_set(NULL);
 		oki->tok2 = s_tok(&oki->tokens, "&&||");
 	}
+}
+
+
+FILE *file_handle( okeoma *oki, int argc, char **argv)
+{
+	FILE *file_d;
+
+	if (argc > 2)
+	{
+		p(STE, "%s: Usage: simple_shell [filename]\n", argv[0]);
+		exit(98);
+	}
+	if (argc == 1)
+		file_d = stdin;
+	else
+	{
+		file_d = fopen(argv[1], "r");
+		oki->N = argv[1];
+	}
+	if (file_d == NULL)
+	{
+		p(STE, "%s: %d: cannot open %s: No such file\n",
+		argv[0], oki->c, argv[1]);
+		exit(2);
+
+	}
+	return (file_d);
 }

@@ -10,7 +10,7 @@ void sig(int num)
 {
 	v num;
 
-	p(STO, "\n===> ");
+	p(STO, "\n$ ");
 	fflush(stdout);
 }
 
@@ -135,30 +135,29 @@ int main(int argc, char **argv)
 {
 	okeoma *oki = malloc(sizeof(okeoma));
 	size_t n = 0;
-
-	_in(oki, argv);
+	ssize_t byte_r = 1;
+	char st = 0;
+	FILE *fd;
+	
 	signal(SIGINT, sig);
-
-	/* if (argc > 1 && !oki->it)
-		File(argv[1], oki);
- */
-	while (true)
+	_in(oki, argv);
+	fd = file_handle(oki, argc, argv);
+	while (1 && (!st || byte_r != 0))
 	{
-		oki->c++;
-		if (!oki->it && argc == 1)
-			p(STO, "===$> ");
-		getline(&oki->cmd, &n, stdin);
-		if (oki->cmd == NULL || *oki->cmd == '\0')
-		{
-			free(oki->cmd);
-			continue;
-		}
+		if (!st && !oki->it)
+			oki->c++;
+		st = !isatty(STDIN_FILENO);
+		if (argc == 1 && !st)
+			p(STO, "$ ");
+		byte_r = getline(&oki->cmd, &n, fd);
+		if (byte_r == -1)
+			break;
 		B_exc(oki);
-
-		if (oki->it)
+		if (oki->it && st)
 			break;
 		else
 			continue;
+		oki->c++;
 	}
 
 	return (0);
