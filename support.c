@@ -58,55 +58,6 @@ int find_set(char *str)
 }
 
 /**
- * free_all - free's all dynamically allocated memory
- * @oki: struct of type okeoma
- *
- * Return: void
-*/
-void free_all(okeoma *oki)
-{
-	int i, k;
-
-	for (i = 0; oki->av[i] != NULL; i++)
-		free(oki->av[i]);
-
-	for (k = 0; oki->command[k] != NULL; k++)
-		free(oki->command[k]);
-
-	my_free(3, oki->cmd, oki->command, oki->av);
-}
-
-/**
- * my_free - free count number of dynamically allocated memory
- * @count: number of memory to free
- *
- * Return: void
-*/
-void my_free(size_t count, ...)
-{
-	void *ptr;
-	va_list args;
-	size_t i;
-
-	if (count <= 0)
-	{
-		p(STE, "Invalid number of arguments for my_free\n");
-		return;
-	}
-	va_start(args, count);
-	for (i = 0; i < count; i++)
-	{
-		ptr = va_arg(args, void *);
-
-		if (ptr != NULL)
-			free(ptr);
-		else
-			continue;
-	}
-	va_end(args);
-}
-
-/**
  * empty - checks if an address pointed to by a pointer is empty
  * @str: string to be checked
  *

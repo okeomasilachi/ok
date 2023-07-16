@@ -33,10 +33,10 @@ int execute_builtin_command(okeoma *oki)
 		if (strcmp(oki->av[0], built_in_commands[i]) == 0)
 		{
 			(*built_in_funcs[i])(oki);
-			return (0); /* Command executed */
+			return (0);
 		}
 	}
-	return (1); /* Not a built-in command */
+	return (1);
 }
 
 /**
@@ -47,6 +47,8 @@ int execute_builtin_command(okeoma *oki)
 */
 int execute_command(okeoma *oki)
 {
+	char **envi = NULL;
+
 	oki->ec = find_executable(oki);
 	if (!oki->ec)
 	{
@@ -62,14 +64,15 @@ int execute_command(okeoma *oki)
 
 		else if (oki->child_pid == 0)
 		{
-			execve(oki->ec, oki->av, env_from_list(oki->head));
+			envi = env_from_list(oki->head);
+			execve(oki->ec, oki->av, envi);
 			p(STE, "%s: %d: %s: Permission denied\n", oki->N, oki->c, oki->av[0]);
 			return (EXIT_FAILURE);
 		}
 		else
 		{
 			waitpid(oki->child_pid, &oki->status, 0);
-			free(oki->ec);
+			fr__(2, oki->ec, envi);
 			if (WIFEXITED(oki->status))
 			{
 				return (WEXITSTATUS(oki->status));
@@ -174,11 +177,11 @@ FILE *file_handle(okeoma *oki, int argc, char **argv)
 {
 	FILE *file_d;
 
-	if (argc > 2)
+	/*if (argc > 2)
 	{
 		p(STE, "%s: Usage: simple_shell [filename]\n", argv[0]);
 		exit(98);
-	}
+	}*/
 	if (argc == 1)
 		file_d = stdin;
 	else

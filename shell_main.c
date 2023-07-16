@@ -153,11 +153,13 @@ int main(int argc, char **argv)
 		if (byte_r == -1)
 			break;
 		B_exc(oki);
+		if (!oki->it && !st)
+			continue;
 		if (oki->it && st)
 			break;
 
 		oki->c++;
 	}
-
+	free_all(oki);
 	return (0);
 }

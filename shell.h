@@ -22,10 +22,6 @@
 #define STE 2
 #define v (void)
 #define MAX_PATH 4096
-#define READ 1
-#define WRITE 2
-#define APPEND 4
-#define TRUNC 8
 
 extern char **environ;
 
@@ -144,7 +140,7 @@ void f_tokenizer(Tokenizer *tokenizer, char *input_string);
 void prs(okeoma *oki, char *coms);
 void prs_2(okeoma *oki);
 void _in(okeoma *oki, char **argv);
-void my_free(size_t count, ...);
+void fr__(size_t count, ...);
 void read_input(char *buffer, int *buffer_pos, int *buffer_size);
 char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
 void p(int stream, const char *format, ...);
