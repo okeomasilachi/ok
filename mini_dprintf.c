@@ -90,7 +90,7 @@ void print_integer(int num, int n)
 */
 void write_string(int n, const char *s)
 {
-	write(n, s, strlen(s));
+	write(n, s, _strlen(s));
 }
 
 /**

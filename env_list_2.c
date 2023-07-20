@@ -11,7 +11,7 @@ bool is_value(env_list *head, const char *value)
 {
 	if (head == NULL)
 		return (false);
-	else if (strcmp(head->NAME, value) == 0)
+	else if (_strcmp(head->NAME, value) == 0)
 		return (true);
 	else
 		return (is_value(head->next, value));
@@ -28,7 +28,7 @@ bool is_NAME(env_list *head, const char *NAME)
 {
 	if (head == NULL)
 		return (false);
-	else if (strcmp(head->NAME, NAME) == 0)
+	else if (_strcmp(head->NAME, NAME) == 0)
 		return (true);
 	else
 		return (is_NAME(head->next, NAME));
@@ -89,15 +89,15 @@ char *strbind(const char *name, const char *value)
 	if (name == NULL || value == NULL)
 		return (NULL);
 
-	len = (strlen(name) + strlen(value));
+	len = (_strlen(name) + _strlen(value));
 	take = malloc(sizeof(char) * (len + 2));
 
 	if (take == NULL)
 		return (NULL);
 
-	strcpy(take, name);
-	strcat(take, "=");
-	strcat(take, value);
+	_strcpy(take, name);
+	_strcat(take, "=");
+	_strcat(take, value);
 	take[len + 2] = '\0';
 
 	return (take);

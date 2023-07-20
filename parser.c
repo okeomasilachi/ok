@@ -81,8 +81,8 @@ void prs(okeoma *oki, char *coms)
 		oki->tok = s_tok(&oki->baxi, dl);
 		while (oki->tok)
 		{
-			oki->av[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
-			strcpy(oki->av[count], oki->tok);
+			oki->av[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
+			_strcpy(oki->av[count], oki->tok);
 			oki->tok = s_tok(&oki->baxi, dl);
 			count++;
 		}
@@ -120,8 +120,8 @@ void prs_2(okeoma *oki)
 		oki->tok = s_tok(&oki->Hook, dl);
 		while (oki->tok)
 		{
-			oki->command[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
-			strcpy(oki->command[count], oki->tok);
+			oki->command[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
+			_strcpy(oki->command[count], oki->tok);
 			oki->tok = s_tok(&oki->Hook, dl);
 			count++;
 		}

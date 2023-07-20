@@ -18,21 +18,21 @@ char *first(env_list *head, char *av)
 	va = strdup(av);
 	while (cur != NULL)
 	{
-		len = strlen(cur->NAME) + 2;
+		len = _strlen(cur->NAME) + 2;
 		tok = malloc(len);
-		strcat(tok, "$");
-		strcat(tok, cur->NAME);
+		_strcat(tok, "$");
+		_strcat(tok, cur->NAME);
 		if (strstr(va, tok) != NULL)
 		{
 			rep = strstr(va, tok);
-			len = strlen(tok);
+			len = _strlen(tok);
 			if (strncmp(rep, tok, len) == 0)
 			{
 				rem = strdup(rep + len);
-				n_size = strlen(cur->value) + strlen(rem) + 1;
+				n_size = _strlen(cur->value) + _strlen(rem) + 1;
 				new = malloc(n_size);
-				strcpy(new, cur->value);
-				strcat(new, rem);
+				_strcpy(new, cur->value);
+				_strcat(new, rem);
 				memcpy(rep, new, n_size);
 				free(rem), free(new), free(tok);
 				return (va);
@@ -69,14 +69,14 @@ char *second(okeoma *oki, char *av)
 			if (strstr(va, expand[i]) != NULL)
 			{
 				val = strstr(va, expand[i]);
-				len = strlen(expand[i]);
+				len = _strlen(expand[i]);
 				if (strncmp(val, expand[i], len) == 0)
 				{
 					rem = strdup(val + len);
-					n_size = strlen(ex[i]) + strlen(rem) + 1;
+					n_size = _strlen(ex[i]) + _strlen(rem) + 1;
 					new = malloc(n_size);
-					strcpy(new, ex[i]);
-					strcat(new, rem);
+					_strcpy(new, ex[i]);
+					_strcat(new, rem);
 					memcpy(val, new, n_size);
 					free(rem), free(new);
 					return (va);

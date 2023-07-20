@@ -10,7 +10,7 @@
 */
 void find_char(const char *dest, int character)
 {
-	char *str_cpy = strchr(dest, character);
+	char *str_cpy = _strchr(dest, character);
 
 	if (str_cpy != NULL)
 	{
@@ -46,12 +46,12 @@ int find_set(char *str)
 
 	if (result1 == NULL || (result2 != NULL && result2 < result1))
 	{
-		currentPosition = result2 + strlen("||");
+		currentPosition = result2 + _strlen("||");
 		setValue = 2;
 	}
 	else
 	{
-		currentPosition = result1 + strlen("&&");
+		currentPosition = result1 + _strlen("&&");
 		setValue = 1;
 	}
 	return (setValue);

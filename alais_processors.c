@@ -28,7 +28,7 @@ bool check_NAME(alias *head, const char *NAME)
 {
 	if (head == NULL)
 		return (false);
-	else if (strcmp(head->NAME, NAME) == 0)
+	else if (_strcmp(head->NAME, NAME) == 0)
 		return (true);
 	else
 		return (check_NAME(head->next, NAME));
@@ -78,7 +78,7 @@ void print_s_alias(alias *head, const char *NAME, okeoma *oki)
 	{
 		while (current != NULL)
 		{
-			if (strcmp(current->NAME, NAME) == 0)
+			if (_strcmp(current->NAME, NAME) == 0)
 				p(STO, "%s='%s'\n", current->NAME, current->value);
 
 			current = current->next;
@@ -110,7 +110,7 @@ alias *insert(alias *head, const char *NAME, const char *value)
 	{
 		while (current != NULL)
 		{
-			if (strcmp(current->NAME, NAME) == 0)
+			if (_strcmp(current->NAME, NAME) == 0)
 			{
 				free(current->value);
 				current->value = strdup(value);

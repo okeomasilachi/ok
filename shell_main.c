@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 		if (!st && !oki->it)
 			oki->c++;
 		st = !isatty(STDIN_FILENO);
-		if (argc == 1 && !st)
+		if (argc == 1 && !st && !oki->it)
 			p(STO, "$ ");
 		byte_r = getline(&oki->cmd, &n, fd);
 		if (byte_r == -1)

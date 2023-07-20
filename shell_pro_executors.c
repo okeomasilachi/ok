@@ -30,7 +30,7 @@ int execute_builtin_command(okeoma *oki)
 
 	for (i = 0; i < num_built_in_com; i++)
 	{
-		if (strcmp(oki->av[0], built_in_commands[i]) == 0)
+		if (_strcmp(oki->av[0], built_in_commands[i]) == 0)
 		{
 			(*built_in_funcs[i])(oki);
 			return (0);
@@ -90,41 +90,30 @@ int execute_command(okeoma *oki)
 */
 char *find_executable(okeoma *oki)
 {
-	char *path_env, *path_copy, *token, *exe_path;
-	size_t token_len, exec_name_len;
+	char *fpath = NULL, *tok, *path = getenv("PATH");
+	int len;
+
+	v len;
 
 	if (access(oki->av[0], X_OK) == 0)
+		return (strdup(oki->av[0]));
+
+	len = _strlen(oki->av[0]);
+	tok = strtok(path, ":");
+	while (tok)
 	{
-		exe_path = strdup(oki->av[0]);
-		return (exe_path);
-	}
-	path_env = getenv("PATH");
-	path_copy = strdup(path_env);
-	f_tokenizer(&oki->baxi, path_copy);
-	token = s_tok(&oki->baxi, ":");
-	while (token)
-	{
-		token_len = strlen(token);
-		exec_name_len = strlen(oki->av[0]);
-		exe_path = (char *)malloc((token_len + exec_name_len + 2) * sizeof(char));
-		if (exe_path == NULL)
+		fpath = malloc(sizeof(char) * (_strlen(tok) + 2 + len));
+		fpath[0] = '\0';
+		_strcpy(fpath, tok);
+		_strcat(fpath, "/");
+		_strcat(fpath, oki->av[0]);
+		if (access(fpath, X_OK) == 0)
 		{
-			perror("Memory allocation failed");
-			free(path_copy);
-			return (NULL);
+			return (fpath);
 		}
-		strcpy(exe_path, token);
-		strcat(exe_path, "/");
-		strcat(exe_path, oki->av[0]);
-		if (access(exe_path, X_OK) == 0)
-		{
-			free(path_copy);
-			return (exe_path);
-		}
-		free(exe_path);
-		token = s_tok(&oki->baxi, ":");
+		tok = strtok(NULL, ":");
 	}
-	free(path_copy);
+	free(fpath);
 	return (NULL);
 }
 
@@ -172,16 +161,25 @@ void B_exc(okeoma *oki)
 	}
 }
 
-
+/**
+ * file_handle - does selection for what filestream to read from
+ * @oki: struct of type okeoma
+ * @argc: argument count
+ * @argv: argument vector
+ *
+ * Return: FILE struct
+*/
 FILE *file_handle(okeoma *oki, int argc, char **argv)
 {
 	FILE *file_d;
 
-	/*if (argc > 2)
-	{
-		p(STE, "%s: Usage: simple_shell [filename]\n", argv[0]);
-		exit(98);
-	}*/
+	/**
+	 * if (argc > 2)
+	 * {
+	 *	p(STE, "%s: Usage: simple_shell [filename]\n", argv[0]);
+	 *	exit(98);
+	 * }
+	*/
 	if (argc == 1)
 		file_d = stdin;
 	else

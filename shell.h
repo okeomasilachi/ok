@@ -117,69 +117,107 @@ typedef struct variables
 	bool it;
 } okeoma;
 
-void *p_Input();
-void read_in(okeoma *oki);
-void get_env_command(okeoma *oki);
-void find_char(const char *dest, int character);
-int find_set(char *str);
-void unsetenv_command(okeoma *oki);
-void setenv_command(okeoma *oki);
-void exit_command(okeoma *oki);
-void cd_command(okeoma *oki);
-int execute_command(okeoma *oki);
-char *find_executable(okeoma *oki);
-int execute_builtin_command(okeoma *oki);
-void B_exc(okeoma *oki);
-void file(okeoma *oki, char *argv);
-char *read_file(const char *filename);
-char *read_lines(int fd);
-int open_file(const char *filename);
-void free_all(okeoma *oki);
-char *s_tok(Tokenizer *tokenizer, const char *delimiters);
-void f_tokenizer(Tokenizer *tokenizer, char *input_string);
-void prs(okeoma *oki, char *coms);
-void prs_2(okeoma *oki);
-void _in(okeoma *oki, char **argv);
-void fr__(size_t count, ...);
-void read_input(char *buffer, int *buffer_pos, int *buffer_size);
-char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
-void p(int stream, const char *format, ...);
-void print_integer(int num, int n);
-void print_string(char *s, int n);
-void write_string(int n, const char *s);
-int _isspace(int c);
-void free_list(env_list *head);
-char *get_env(env_list *env, const char *NAME);
-env_list *list_from_env(char **env);
-bool is_value(env_list *head, const char *value);
-bool is_NAME(env_list *head, const char *NAME);
-void print(env_list *head);
-env_list *insert_env(env_list *head, const char *NAME, const char *value);
-env_list *delete_match(env_list *head, char *delete_NAME);
-void delete_duplicate(env_list *head);
-env_list *revers_list(env_list *head);
-void set_env_value(env_list *env, const char *NAME, const char *value);
-char *get_cwd(void);
-bool checker(char *arr);
-char *second(okeoma *oki, char *av);
-char *first(env_list *head, char *av);
-void int_char(int n1, int n2, char **str);
-void r_char(int value, char *str, int base);
-char *replace(env_list *head, okeoma *oki, char *value);
+/* alias functions */
 void free_recursive(alias *head);
 bool check_NAME(alias *head, const char *NAME);
 void print_alias(alias *head, okeoma *oki);
 void print_s_alias(alias *head, const char *NAME, okeoma *oki);
 alias *insert(alias *head, const char *NAME, const char *value);
+bool null_check(char *ok);
 char *get_value(char *str);
-void alias_(okeoma *oki);
-char *command(alias *head, char *check);
 bool alias_checker(alias *head, char *arr);
+char *command(alias *head, char *check);
+int number(char *str, char *match);
+int position(char *str, char *srh);
 char *rem(char *str);
+
+/* built-ins */
+void cd_command(okeoma *oki);
+void exit_command(okeoma *oki);
+void setenv_command(okeoma *oki);
+void unsetenv_command(okeoma *oki);
+void get_env_command(okeoma *oki);
+void alias_(okeoma *oki);
+char *get_cwd(void);
+
+/* env & env_list functions */
+env_list *list_from_env(char **env);
 char **env_from_list(env_list *head);
-char *strbind(const char *name, const char *value);
+env_list *insert_env(env_list *head, const char *NAME, const char *value);
+env_list *delete_match(env_list *head, char *delete_NAME);
+void free_list(env_list *head);
+void set_env_value(env_list *env, const char *NAME, const char *value);
+char *get_env(env_list *env, const char *NAME);
+bool is_value(env_list *head, const char *value);
+bool is_NAME(env_list *head, const char *NAME);
+void print(env_list *head);
 size_t list_len(env_list *head);
-int empty(const char *str);
+char *strbind(const char *name, const char *value);
+
+/* variable exapantion functions */
+bool checker(char *arr);
+void r_char(int value, char *str, int base);
+void int_char(int n1, int n2, char **str);
+char *first(env_list *head, char *av);
+char *second(okeoma *oki, char *av);
+char *replace(env_list *head, okeoma *oki, char *value);
+
+/* input functions */
+void read_input(char *buffer, int *buffer_pos, int *buffer_size);
+char *_getline(char *buffer, int *buffer_pos, int *buffer_size);
+void *p_Input();
+void read_in(okeoma *oki);
+
+/* general free functions */
+void free_all(okeoma *oki);
+void fr__(size_t count, ...);
+
+/* stream write functions (mini-dprintf) */
+void p(int stream, const char *format, ...);
+void print_integer(int num, int n);
+void write_string(int n, const char *s);
+void print_string(char *s, int n);
+int _isspace(int c);
+
+/* parser's */
+void f_tokenizer(Tokenizer *tokenizer, char *input_string);
+char *s_tok(Tokenizer *tokenizer, const char *delimiters);
+void prs(okeoma *oki, char *coms);
+void prs_2(okeoma *oki);
+
+/* miscellaneous */
+void sig(int num);
+void _in(okeoma *oki, char **argv);
+void remov(char *str);
+void File(char *filename, okeoma *oki);
+
+/* shell main processing functions */
+int execute_builtin_command(okeoma *oki);
+int execute_command(okeoma *oki);
+char *find_executable(okeoma *oki);
+void B_exc(okeoma *oki);
 FILE *file_handle(okeoma *oki, int argc, char **argv);
+
+/* string & memory manipulators */
+char *_strcat(char *dest, const char *src);
+char *_strchr(const char *s, int c);
+char *_strncpy(char *dest, char *src, int n);
+int _strcmp(char *s1, const char *s2);
+char *_strstr(char *haystack, const char *needle);
+int _isdigit(int c);
+size_t _strlen(const char *str);
+char *_strdup(const char *str);
+int _strncmp(const char *s1, const char *s2, size_t n);
+size_t _strcspn(const char *str, const char *reject);
+void *_memcpy(void *dest, const void *src, size_t n);
+void *_memmove(void *dest, const void *src, size_t n);
+int _atoi(const char *nptr);
+void *_realloc(void *ptr, size_t size);
+char *_strcpy(char *dest, const char *src);
+
+/* support functions */
+void find_char(const char *dest, int character);
+int find_set(char *str);
+int empty(const char *str);
 
 #endif /* MAIN_H */

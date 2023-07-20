@@ -53,7 +53,7 @@ void r_char(int value, char *str, int base)
 		str[i++] = '-';
 
 	str[i] = '\0';
-	len = strlen(str);
+	len = _strlen(str);
 	st = 0;
 	ed = len - 1;
 	while (st < ed)
