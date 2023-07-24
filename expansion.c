@@ -20,8 +20,8 @@ char *first(env_list *head, char *av)
 	{
 		len = _strlen(cur->NAME) + 2;
 		tok = malloc(len);
-		_strcat(tok, "$");
-		_strcat(tok, cur->NAME);
+		strcat(tok, "$");
+		strcat(tok, cur->NAME);
 		if (strstr(va, tok) != NULL)
 		{
 			rep = strstr(va, tok);
@@ -31,8 +31,8 @@ char *first(env_list *head, char *av)
 				rem = strdup(rep + len);
 				n_size = _strlen(cur->value) + _strlen(rem) + 1;
 				new = malloc(n_size);
-				_strcpy(new, cur->value);
-				_strcat(new, rem);
+				strcpy(new, cur->value);
+				strcat(new, rem);
 				memcpy(rep, new, n_size);
 				free(rem), free(new), free(tok);
 				return (va);
@@ -75,8 +75,8 @@ char *second(okeoma *oki, char *av)
 					rem = strdup(val + len);
 					n_size = _strlen(ex[i]) + _strlen(rem) + 1;
 					new = malloc(n_size);
-					_strcpy(new, ex[i]);
-					_strcat(new, rem);
+					strcpy(new, ex[i]);
+					strcat(new, rem);
 					memcpy(val, new, n_size);
 					free(rem), free(new);
 					return (va);

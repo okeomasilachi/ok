@@ -15,18 +15,18 @@ bool alias_checker(alias *head, char *arr)
 	if (head == NULL || arr == NULL)
 		return (false);
 
-	tok = strtok(che, " \n");
+	tok = s_tok(che, " \n");
 	while (tok != NULL)
 	{
 		while (cur != NULL)
 		{
-			if (_strcmp(tok, cur->NAME) == 0)
+			if (strcmp(tok, cur->NAME) == 0)
 				return (true);
 
 			cur = cur->next;
 		}
 		cur = head;
-		tok = strtok(NULL, " \n");
+		tok = s_tok(NULL, " \n");
 	}
 	return (false);
 }
@@ -49,28 +49,28 @@ char *command(alias *head, char *check)
 	if (head == NULL)
 		return (check);
 
-	tok = strtok(che, " \n");
+	tok = s_tok(che, " \n");
 	while (tok != NULL)
 	{
 		while (cur != NULL)
 		{
-			if (_strcmp(tok, cur->NAME) == 0)
+			if (strcmp(tok, cur->NAME) == 0)
 				tok = strdup(cur->value);
 
 			cur = cur->next;
 		}
-		len += _strlen(tok) + 1;
+		len += strlen(tok) + 1;
 		Alias = insert(Alias, tok, tok);
 		cur = head;
-		tok = strtok(NULL, " \n");
+		tok = s_tok(NULL, " \n");
 	}
 	cur = Alias;
 	c1 = malloc(sizeof(char) * len);
 	c1[0] = '\0';
 	while (cur != NULL)
 	{
-		_strcat(c1, cur->value);
-		_strcat(c1, " ");
+		strcat(c1, cur->value);
+		strcat(c1, " ");
 
 		cur = cur->next;
 	}
@@ -139,13 +139,13 @@ char *rem(char *str)
 		return (NULL);
 
 	a = number(str_cpy, "'");
-	i = _strlen(str_cpy) - a;
+	i = strlen(str_cpy) - a;
 	first = malloc(i + 1);
-	sec = strtok(str_cpy, "'");
+	sec = s_tok(str_cpy, "'");
 	while (sec != NULL)
 	{
-		_strcat(first, sec);
-		sec = strtok(NULL, "'");
+		strcat(first, sec);
+		sec = s_tok(NULL, "'");
 	}
 	return (first);
 }

@@ -20,7 +20,7 @@ void cd_command(okeoma *oki)
 		}
 		return;
 	}
-	else if (_strcmp(oki->av[1], "-") == 0)
+	else if (strcmp(oki->av[1], "-") == 0)
 	{
 		oki->ok = get_env(oki->head, "OLDPWD");
 		i = chdir(oki->ok);

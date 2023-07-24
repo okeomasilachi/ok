@@ -27,7 +27,7 @@ char *get_env(env_list *env, const char *NAME)
 
 	if (current->next == NULL)
 		return (NULL);
-	else if (_strcmp(current->NAME, NAME) == 0)
+	else if (strcmp(current->NAME, NAME) == 0)
 		return (current->value);
 	else
 		return (get_env(current->next, NAME));

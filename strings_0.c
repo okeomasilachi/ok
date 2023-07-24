@@ -10,7 +10,8 @@
 
 char *_strcat(char *dest, const char *src)
 {
-	int i, ld = _strlen(dest), ls = _strlen(src);
+	int i, ld = _strlen(dest);
+	int ls = _strlen(src);
 
 	for (i = 0; i <= ls; i++)
 		dest[ld + i] = src[i];
