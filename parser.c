@@ -11,15 +11,15 @@
 char *s_tok(char *str, const char *del)
 {
 	char *tok_st = NULL, *tok_ed = NULL;
-	static char *nxt = NULL;
+	static char *saved_str = NULL;
 
 	if (str != NULL)
-		nxt = str;
+		saved_str = str;
 
-	if (nxt == NULL || *nxt == '\0')
+	if (saved_str == NULL || *saved_str == '\0')
 		return (NULL);
 
-	tok_st = nxt;
+	tok_st = saved_str;
 
 	while (*tok_st != '\0' && strchr(del, *tok_st) != NULL)
 		tok_st++;
@@ -32,11 +32,11 @@ char *s_tok(char *str, const char *del)
 	if (*tok_ed != '\0')
 	{
 		*tok_ed = '\0';
-		nxt = tok_ed + 1;
+		saved_str = tok_ed + 1;
 	}
 	else
 	{
-		nxt = NULL;
+		saved_str = NULL;
 	}
 
 	return (tok_st);	
@@ -57,20 +57,20 @@ void prs(okeoma *oki, char *coms)
 	if (oki->cmd)
 	{
 		com_cpy = strdup(coms);
-		oki->tok = s_tok(coms, dl);
+		oki->tok = strtok(coms, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(NULL, dl);
+			oki->tok = strtok(NULL, dl);
 		}
 		cnt++;
 		oki->av = malloc(sizeof(char *) * (cnt + 1));
-		oki->tok = s_tok(com_cpy, dl);
+		oki->tok = strtok(com_cpy, dl);
 		while (oki->tok)
 		{
 			oki->av[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
 			strcpy(oki->av[count], oki->tok);
-			oki->tok = s_tok(NULL, dl);
+			oki->tok = strtok(NULL, dl);
 			count++;
 		}
 		oki->av[count] = NULL;
@@ -88,26 +88,26 @@ void prs(okeoma *oki, char *coms)
 */
 void prs_2(okeoma *oki)
 {
-	char *com_cpy = NULL, *dl = ";\n";
+	char *com_cpy = NULL, *dl = ";\t\n";
 	size_t count = 0, cnt = 0;
 
 	if (oki->cmd)
 	{
 		com_cpy = strdup(oki->tok2);
-		oki->tok = s_tok(oki->tok2, dl);
+		oki->tok = strtok(oki->tok2, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(NULL, dl);
+			oki->tok = strtok(NULL, dl);
 		}
 		cnt++;
 		oki->command = malloc(sizeof(char *) * (cnt + 1));
-		oki->tok = s_tok(com_cpy, dl);
+		oki->tok = strtok(com_cpy, dl);
 		while (oki->tok)
 		{
 			oki->command[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
 			strcpy(oki->command[count], oki->tok);
-			oki->tok = s_tok(NULL, dl);
+			oki->tok = strtok(NULL, dl);
 			count++;
 		}
 		oki->command[count] = NULL;

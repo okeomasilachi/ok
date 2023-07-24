@@ -96,10 +96,10 @@ char *find_executable(okeoma *oki)
 	v len;
 
 	if (access(oki->av[0], X_OK) == 0)
-		return (strdup(oki->av[0]));
+		return (oki->av[0]);
 
 	len = strlen(oki->av[0]);
-	tok = s_tok(path, ":");
+	tok = strtok(path, ":");
 	while (tok)
 	{
 		fpath = malloc(sizeof(char) * (strlen(tok) + 2 + len));
@@ -111,7 +111,7 @@ char *find_executable(okeoma *oki)
 		{
 			return (fpath);
 		}
-		tok = s_tok(NULL, ":");
+		tok = strtok(NULL, ":");
 	}
 	free(fpath);
 	return (NULL);
@@ -136,7 +136,7 @@ void B_exc(okeoma *oki)
 		affirm = alias_checker(oki->pos, oki->cmd);
 	}
 	oki->y = find_set(oki->cmd);
-	oki->tok2 = s_tok(oki->cmd, "&&||");
+	oki->tok2 = strtok(oki->cmd, "&&||");
 	while (oki->tok2 != NULL)
 	{
 		prs_2(oki);
@@ -156,7 +156,7 @@ void B_exc(okeoma *oki)
 		if (oki->y == 2 && oki->status == 0)
 			break;
 		oki->y = find_set(NULL);
-		oki->tok2 = s_tok(NULL, "&&||");
+		oki->tok2 = strtok(NULL, "&&||");
 	}
 }
 
