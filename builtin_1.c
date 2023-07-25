@@ -46,8 +46,10 @@ void alias_(okeoma *oki)
 				if (check_NAME(oki->pos, oki->av[cnt]) == true)
 					print_s_alias(oki->pos, oki->av[cnt], oki);
 				else
+				{
 					p(STE, "%s: %d: %s: %s: not found\n",
 					oki->N, oki->c, oki->av[0], oki->av[cnt]);
+				}
 			}
 		}
 		return;
