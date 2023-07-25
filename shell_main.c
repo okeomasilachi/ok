@@ -72,6 +72,58 @@ void remov(char *str)
 }
 
 /**
+ * File - handles all file processing
+ * @filename: name of the file to be processed
+ * @oki: struct of type okeoma
+ *
+ * Return: void
+*/
+void File(char *filename, okeoma *oki)
+{
+	size_t len;
+	ssize_t read;
+	FILE *file;
+	int fd;
+
+	oki->cmd = NULL;
+	if (access(filename, F_OK) == 0)
+		fd = open(filename, O_RDONLY);
+	else
+	{
+		p(STE, "%s: %d: cannot open %s: No such file\n",
+		oki->N, oki->c, filename);
+		exit(2);
+	}
+	if (fd == -1)
+		return;
+	file = fdopen(fd, "r");
+	if (file == NULL)
+	{
+		close(fd);
+		return;
+	}
+	len = 0;
+	oki->c++;
+	oki->N = filename;
+	while ((read = getline(&oki->cmd, &len, file)) != -1)
+	{
+		remov(oki->cmd);
+		if (empty(oki->cmd))
+		{
+			oki->c++;
+			continue;
+		}
+		B_exc(oki);
+		oki->c++;
+	}
+	free(oki->cmd);
+	fclose(file);
+	close(fd);
+	exit(0);
+}
+
+
+/**
  * main - entry point of the shell
  * @argc: argument count
  * @argv: argument vectors

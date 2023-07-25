@@ -15,13 +15,13 @@ env_list *list_from_env(char **env)
 	while (env[i] != NULL)
 	{
 		variable = env[i];
-		separator = strchr(variable, '=');
+		separator = _strchr(variable, '=');
 
 		if (separator != NULL)
 		{
 			name_len = separator - variable;
 			name = (char *)malloc((name_len + 1) * sizeof(char));
-			strncpy(name, variable, name_len);
+			_strncpy(name, variable, name_len);
 			name[name_len] = '\0';
 
 			value = strdup(separator + 1);
@@ -104,7 +104,7 @@ env_list *insert_env(env_list *head, const char *NAME, const char *value)
 	{
 		while (current != NULL)
 		{
-			if (strcmp(current->NAME, NAME) == 0)
+			if (_strcmp(current->NAME, NAME) == 0)
 			{
 				free(current->value);
 				current->value = strdup(value);
@@ -136,7 +136,7 @@ env_list *delete_match(env_list *head, char *delete_NAME)
 
 	if (head == NULL)
 		return (NULL);
-	if (head->next != NULL && strcmp(head->next->NAME, delete_NAME) == 0)
+	if (head->next != NULL && _strcmp(head->next->NAME, delete_NAME) == 0)
 	{
 		temp = head->next;
 		head->next = temp->next;

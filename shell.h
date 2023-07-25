@@ -52,6 +52,17 @@ typedef struct list
 } alias;
 
 /**
+ * struct onyedibia - structs for the strtok funtion
+ * @cur_tok_st: holds the current token
+ * @nxt_tok_st: holds the next token
+*/
+typedef struct onyedibia
+{
+	char *cur_tok_st;
+	char *nxt_tok_st;
+} Tokenizer;
+
+/**
  * struct variables - struct that holds all nessacery parameters
  * @command:holds argumentents for the ';' shell operation
  * @av: holds the arguments to be executed
@@ -69,6 +80,9 @@ typedef struct list
  * @check: parameter check
  * @n: for the strlen of a string
  * @c: the number of command of the current shell process
+ * @tokens: s_tok initialiser
+ * @Hook: s_tok initialiser
+ * @baxi: s_tok initialiser
  * @head: holds the env in a linked list
  * @pos: holds all aliases
  * @mypid: holds the process id of the shell
@@ -93,6 +107,9 @@ typedef struct variables
 	int check;
 	size_t n;
 	ssize_t c;
+	Tokenizer tokens;
+	Tokenizer Hook;
+	Tokenizer baxi;
 	env_list *head;
 	alias *pos;
 	pid_t mypid;
@@ -163,7 +180,8 @@ void print_string(char *s, int n);
 int _isspace(int c);
 
 /* parser's */
-char *s_tok(char *str, const char *del);
+void f_tokenizer(Tokenizer *tokenizer, char *input_string);
+char *s_tok(Tokenizer *tokenizer, const char *delimiters);
 void prs(okeoma *oki, char *coms);
 void prs_2(okeoma *oki);
 

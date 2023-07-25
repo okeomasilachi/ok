@@ -10,7 +10,7 @@
 */
 void find_char(const char *dest, int character)
 {
-	char *str_cpy = strchr(dest, character);
+	char *str_cpy = _strchr(dest, character);
 
 	if (str_cpy != NULL)
 	{

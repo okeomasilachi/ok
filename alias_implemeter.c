@@ -20,7 +20,7 @@ bool alias_checker(alias *head, char *arr)
 	{
 		while (cur != NULL)
 		{
-			if (strcmp(tok, cur->NAME) == 0)
+			if (_strcmp(tok, cur->NAME) == 0)
 				return (true);
 
 			cur = cur->next;
@@ -54,12 +54,12 @@ char *command(alias *head, char *check)
 	{
 		while (cur != NULL)
 		{
-			if (strcmp(tok, cur->NAME) == 0)
+			if (_strcmp(tok, cur->NAME) == 0)
 				tok = strdup(cur->value);
 
 			cur = cur->next;
 		}
-		len += strlen(tok) + 1;
+		len += _strlen(tok) + 1;
 		Alias = insert(Alias, tok, tok);
 		cur = head;
 		tok = strtok(NULL, " \n");
@@ -69,8 +69,8 @@ char *command(alias *head, char *check)
 	c1[0] = '\0';
 	while (cur != NULL)
 	{
-		strcat(c1, cur->value);
-		strcat(c1, " ");
+		_strcat(c1, cur->value);
+		_strcat(c1, " ");
 
 		cur = cur->next;
 	}
@@ -139,12 +139,12 @@ char *rem(char *str)
 		return (NULL);
 
 	a = number(str_cpy, "'");
-	i = strlen(str_cpy) - a;
+	i = _strlen(str_cpy) - a;
 	first = malloc(i + 1);
 	sec = strtok(str_cpy, "'");
 	while (sec != NULL)
 	{
-		strcat(first, sec);
+		_strcat(first, sec);
 		sec = strtok(NULL, "'");
 	}
 	return (first);
