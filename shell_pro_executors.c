@@ -90,13 +90,13 @@ int execute_command(okeoma *oki)
 */
 char *find_executable(okeoma *oki)
 {
-	char *fpath = NULL, *tok, *path = getenv("PATH");
+	char *fpath = NULL, *tok, *path = get_env(oki->head, "PATH");
 	int len;
 
 	v len;
 
 	if (access(oki->av[0], X_OK) == 0)
-		return (strdup(oki->av[0]));
+		return (oki->av[0]);
 
 	len = strlen(oki->av[0]);
 	tok = string(path, ":");

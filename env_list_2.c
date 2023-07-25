@@ -83,21 +83,22 @@ size_t list_len(env_list *head)
 */
 char *strbind(const char *name, const char *value)
 {
-	char *take;
-	size_t len;
+	char *take = NULL;
+	size_t len = 0;
 
 	if (name == NULL || value == NULL)
 		return (NULL);
 
-	len = (_strlen(name) + _strlen(value));
+	len = (strlen(name) + strlen(value));
 	take = malloc(sizeof(char) * (len + 2));
+	*take = '\0';
 
 	if (take == NULL)
 		return (NULL);
 
-	_strcpy(take, name);
-	_strcat(take, "=");
-	_strcat(take, value);
+	strcpy(take, name);
+	strcat(take, "=");
+	strcat(take, value);
 	take[len + 2] = '\0';
 
 	return (take);

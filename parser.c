@@ -106,7 +106,7 @@ void prs(okeoma *oki, char *coms)
 			oki->tok = string(NULL, dl);
 		}
 		cnt++;
-		oki->av = malloc(sizeof(char *) * (cnt + 1));
+		oki->av = malloc(sizeof(char *) * (cnt));
 		oki->tok = string(com_cpy, dl);
 		while (oki->tok)
 		{

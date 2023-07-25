@@ -150,6 +150,12 @@ int main(int argc, char **argv)
 		if (argc == 1 && !st && !oki->it)
 			p(STO, "$ ");
 		byte_r = getline(&oki->cmd, &n, fd);
+		remov(oki->cmd);
+		if (empty(oki->cmd))
+		{
+			oki->c++;
+			continue;
+		}
 		if (*oki->cmd == '\n')
 			continue;
 
@@ -163,6 +169,7 @@ int main(int argc, char **argv)
 
 		oki->c++;
 	}
+	fclose(fd);
 	free_all(oki);
 	return (0);
 }

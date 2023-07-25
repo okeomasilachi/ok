@@ -9,11 +9,11 @@
 */
 bool alias_checker(alias *head, char *arr)
 {
-	char *tok, *che = strdup(arr);
+	char *tok = NULL, *che = strdup(arr);
 	alias *cur = head;
 
-	if (head == NULL || arr == NULL)
-		return (false);
+	/* if (head == NULL || arr == NULL)
+		return (false); */
 
 	tok = string(che, " \n");
 	while (tok != NULL)
@@ -21,13 +21,16 @@ bool alias_checker(alias *head, char *arr)
 		while (cur != NULL)
 		{
 			if (strcmp(tok, cur->NAME) == 0)
+			{
+				free(che);
 				return (true);
-
+			}
 			cur = cur->next;
 		}
 		cur = head;
 		tok = string(NULL, " \n");
 	}
+	free(che);
 	return (false);
 }
 
@@ -42,7 +45,7 @@ bool alias_checker(alias *head, char *arr)
 */
 char *command(alias *head, char *check)
 {
-	char *c1 = NULL, *tok, *che = strdup(check);
+	char *c1 = NULL, *tok = NULL, *che = strdup(check);
 	int len = 0;
 	alias *Alias = NULL, *cur = head;
 
@@ -75,6 +78,7 @@ char *command(alias *head, char *check)
 		cur = cur->next;
 	}
 	c1[strlen(c1) + 1] = '\0';
+	fr__(2, tok, che);
 	return (c1);
 }
 
@@ -147,5 +151,6 @@ char *rem(char *str)
 		strcat(first, sec);
 		sec = string(NULL, "'");
 	}
+	fr__(2, sec, str_cpy);
 	return (first);
 }

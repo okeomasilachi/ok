@@ -36,8 +36,7 @@ void alias_(okeoma *oki)
 		{
 			if (strstr(oki->av[cnt], "=") != NULL)
 			{
-				value = strdup(oki->av[1]);
-				value = get_value(value);
+				value = get_value(oki->av[1]);
 				find_char(oki->av[1], '=');
 				oki->pos = insert(oki->pos, oki->av[1], rem(value));
 			}

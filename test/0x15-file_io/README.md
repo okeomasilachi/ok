@@ -1,1 +1,0 @@
-This is a read me file for the project on file input and output

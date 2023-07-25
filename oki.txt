@@ -1,9 +1,4 @@
 ls
-  ls -la
-
-
-
-
-
+ls -la
 ls
 gg
