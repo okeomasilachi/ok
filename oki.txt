@@ -1,9 +1,7 @@
 ls
+  ls -la
 
 
-
-
-"kk kk"
 
 
 

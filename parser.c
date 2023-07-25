@@ -1,56 +1,87 @@
 #include "shell.h"
 
 /**
- * f_tokenizer - the initializer for string tokenization
- * @tokenizer: struct for storing the tokens
- * @input_string: string to tokenize
+ * st - Breaks a string into a sequence of zero or more nonempty tokens
+ * @str: The string to be parsed 
+ * @del: Set of bytes that delimit the tokens in the parsed string
  *
- * Return: void
+ * Return: Pointer to the next token,
+ *		or NULL if there are no more tokens.
 */
-void f_tokenizer(Tokenizer *tokenizer, char *input_string)
+char *string(char *str, const char *del)
 {
-	tokenizer->cur_tok_st = input_string;
-	tokenizer->nxt_tok_st = input_string;
-}
+	char *tok_st = NULL, *tok_ed = NULL;
+	static char *saved_str = NULL;
 
-/**
- * s_tok - function for tokenizing strings
- * @tokenizer: struct where token are stored
- * @delimiters: the delimeters for the tokenization
- *
- * Return: pointer to token
- * error: NULL if no more tokens are found
-*/
-char *s_tok(Tokenizer *tokenizer, const char *delimiters)
-{
-	char *token;
+	if (str != NULL)
+		saved_str = str;
 
-	if (tokenizer->cur_tok_st == NULL)
+	if (saved_str == NULL || *saved_str == '\0')
 		return (NULL);
-	/* Skip leading delimiters */
-	tokenizer->cur_tok_st += strspn(tokenizer->cur_tok_st, delimiters);
-	/* Check if end of string is reached */
-	if (*tokenizer->cur_tok_st == '\0')
+
+	tok_st = saved_str;
+
+	while (*tok_st != '\0' && strchr(del, *tok_st) != NULL)
+		tok_st++;
+
+	tok_ed = tok_st;
+
+	while (*tok_ed != '\0' && strchr(del, *tok_ed) == NULL)
+		tok_ed++;
+
+	if (*tok_ed != '\0')
 	{
-		tokenizer->cur_tok_st = NULL;
-		return (NULL);
-	}
-	tokenizer->nxt_tok_st = tokenizer->cur_tok_st;
-	/* Find the end of the current token */
-	tokenizer->nxt_tok_st += strcspn(tokenizer->nxt_tok_st, delimiters);
-	if (*tokenizer->nxt_tok_st != '\0')
-	{
-		*tokenizer->nxt_tok_st = '\0';
-		tokenizer->nxt_tok_st++;
+		*tok_ed = '\0';
+		saved_str = tok_ed + 1;
 	}
 	else
 	{
-		tokenizer->nxt_tok_st = NULL;
+		saved_str = NULL;
 	}
-	token = tokenizer->cur_tok_st;
-	tokenizer->cur_tok_st = tokenizer->nxt_tok_st;
 
-	return (token);
+	return (tok_st);	
+}
+
+/**
+ * str_tok - Breaks a string into a sequence of zero or more nonempty tokens
+ * @str: The string to be parsed 
+ * @del: Set of bytes that delimit the tokens in the parsed string
+ *
+ * Return: Pointer to the next token,
+ *		or NULL if there are no more tokens.
+*/
+char *str_tok(char *str, const char *del)
+{
+	char *tok_st = NULL, *tok_ed = NULL;
+	static char *sa_str = NULL;
+
+	if (str != NULL)
+		sa_str = str;
+
+	if (sa_str == NULL || *sa_str == '\0')
+		return (NULL);
+
+	tok_st = sa_str;
+
+	while (*tok_st != '\0' && strchr(del, *tok_st) != NULL)
+		tok_st++;
+
+	tok_ed = tok_st;
+
+	while (*tok_ed != '\0' && strchr(del, *tok_ed) == NULL)
+		tok_ed++;
+
+	if (*tok_ed != '\0')
+	{
+		*tok_ed = '\0';
+		sa_str = tok_ed + 1;
+	}
+	else
+	{
+		sa_str = NULL;
+	}
+
+	return (tok_st);	
 }
 
 /**
@@ -68,22 +99,20 @@ void prs(okeoma *oki, char *coms)
 	if (oki->cmd)
 	{
 		com_cpy = strdup(coms);
-		f_tokenizer(&oki->baxi, coms);
-		oki->tok = s_tok(&oki->baxi, dl);
+		oki->tok = string(coms, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(&oki->baxi, dl);
+			oki->tok = string(NULL, dl);
 		}
 		cnt++;
 		oki->av = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(&oki->baxi, com_cpy);
-		oki->tok = s_tok(&oki->baxi, dl);
+		oki->tok = string(com_cpy, dl);
 		while (oki->tok)
 		{
-			oki->av[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
-			_strcpy(oki->av[count], oki->tok);
-			oki->tok = s_tok(&oki->baxi, dl);
+			oki->av[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
+			strcpy(oki->av[count], oki->tok);
+			oki->tok = string(NULL, dl);
 			count++;
 		}
 		oki->av[count] = NULL;
@@ -107,22 +136,20 @@ void prs_2(okeoma *oki)
 	if (oki->cmd)
 	{
 		com_cpy = strdup(oki->tok2);
-		f_tokenizer(&oki->Hook, oki->tok2);
-		oki->tok = s_tok(&oki->Hook, dl);
+		oki->tok = string(oki->tok2, dl);
 		while (oki->tok)
 		{
 			cnt++;
-			oki->tok = s_tok(&oki->Hook, dl);
+			oki->tok = string(NULL, dl);
 		}
 		cnt++;
 		oki->command = malloc(sizeof(char *) * (cnt + 1));
-		f_tokenizer(&oki->Hook, com_cpy);
-		oki->tok = s_tok(&oki->Hook, dl);
+		oki->tok = string(com_cpy, dl);
 		while (oki->tok)
 		{
-			oki->command[count] = malloc(sizeof(char) * (_strlen(oki->tok) + 1));
-			_strcpy(oki->command[count], oki->tok);
-			oki->tok = s_tok(&oki->Hook, dl);
+			oki->command[count] = malloc(sizeof(char) * (strlen(oki->tok) + 1));
+			strcpy(oki->command[count], oki->tok);
+			oki->tok = string(NULL, dl);
 			count++;
 		}
 		oki->command[count] = NULL;

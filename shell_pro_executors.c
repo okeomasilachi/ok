@@ -30,7 +30,7 @@ int execute_builtin_command(okeoma *oki)
 
 	for (i = 0; i < num_built_in_com; i++)
 	{
-		if (_strcmp(oki->av[0], built_in_commands[i]) == 0)
+		if (strcmp(oki->av[0], built_in_commands[i]) == 0)
 		{
 			(*built_in_funcs[i])(oki);
 			return (0);
@@ -98,20 +98,20 @@ char *find_executable(okeoma *oki)
 	if (access(oki->av[0], X_OK) == 0)
 		return (strdup(oki->av[0]));
 
-	len = _strlen(oki->av[0]);
-	tok = strtok(path, ":");
+	len = strlen(oki->av[0]);
+	tok = string(path, ":");
 	while (tok)
 	{
-		fpath = malloc(sizeof(char) * (_strlen(tok) + 2 + len));
+		fpath = malloc(sizeof(char) * (strlen(tok) + 2 + len));
 		fpath[0] = '\0';
-		_strcpy(fpath, tok);
-		_strcat(fpath, "/");
-		_strcat(fpath, oki->av[0]);
+		strcpy(fpath, tok);
+		strcat(fpath, "/");
+		strcat(fpath, oki->av[0]);
 		if (access(fpath, X_OK) == 0)
 		{
 			return (fpath);
 		}
-		tok = strtok(NULL, ":");
+		tok = string(NULL, ":");
 	}
 	free(fpath);
 	return (NULL);
@@ -136,8 +136,7 @@ void B_exc(okeoma *oki)
 		affirm = alias_checker(oki->pos, oki->cmd);
 	}
 	oki->y = find_set(oki->cmd);
-	f_tokenizer(&oki->tokens, oki->cmd);
-	oki->tok2 = s_tok(&oki->tokens, "&&||");
+	oki->tok2 = str_tok(oki->cmd, "&&||");
 	while (oki->tok2 != NULL)
 	{
 		prs_2(oki);
@@ -157,7 +156,7 @@ void B_exc(okeoma *oki)
 		if (oki->y == 2 && oki->status == 0)
 			break;
 		oki->y = find_set(NULL);
-		oki->tok2 = s_tok(&oki->tokens, "&&||");
+		oki->tok2 = str_tok(NULL, "&&||");
 	}
 }
 

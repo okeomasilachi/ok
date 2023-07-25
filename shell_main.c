@@ -150,6 +150,9 @@ int main(int argc, char **argv)
 		if (argc == 1 && !st && !oki->it)
 			p(STO, "$ ");
 		byte_r = getline(&oki->cmd, &n, fd);
+		if (*oki->cmd == '\n')
+			continue;
+
 		if (byte_r == -1)
 			break;
 		B_exc(oki);
