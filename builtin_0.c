@@ -59,8 +59,7 @@ void exit_command(okeoma *oki)
 
 	if (oki->av[1] == NULL)
 	{
-		free_list(oki->head);
-		/*free_all(oki);*/
+		free_all(oki);
 		exit(EXIT_SUCCESS);
 	}
 	else if (oki->av[1] != NULL)
@@ -78,8 +77,7 @@ void exit_command(okeoma *oki)
 			oki->N, oki->c, oki->av[0], oki->av[1]);
 		else
 		{
-			free_list(oki->head);
-			/*free_all(oki);*/
+			free_all(oki);
 			exit(atoi(oki->av[1]));
 		}
 	}

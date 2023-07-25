@@ -158,6 +158,7 @@ void B_exc(okeoma *oki)
 		oki->y = find_set(NULL);
 		oki->tok2 = str_tok(NULL, "&&||");
 	}
+	free_all(oki);
 }
 
 /**

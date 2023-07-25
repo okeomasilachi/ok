@@ -8,7 +8,7 @@
 */
 void free_all(okeoma *oki)
 {
-	int i, k;
+	int i;
 
 	free_recursive(oki->pos);
 	free_list(oki->head);
@@ -16,11 +16,11 @@ void free_all(okeoma *oki)
 	for (i = 0; oki->av[i] != NULL; i++)
 		free(oki->av[i]);
 
-	for (k = 0; oki->command[k] != NULL; k++)
-		free(oki->command[k]);
+	for (i = 0; oki->command[i] != NULL; i++)
+		free(oki->command[i]);
 
-	fr__(3, oki->cmd, oki->command, oki->av,
-		oki->ok, oki->old, oki);
+	fr__(5, oki->cmd, oki->command, oki->av,
+		oki->ok, oki->old, oki->tok2, oki->tok);
 }
 
 /**
