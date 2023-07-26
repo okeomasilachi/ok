@@ -18,10 +18,11 @@ void sig(int num)
  * _in - initialise members of struct of type okeoma
  * @oki: struct of type okeoma
  * @argv: argument vector
+ * @env: environmental variable
  *
  * Return: Void
 */
-void _in(okeoma *oki, char **argv)
+void _in(okeoma *oki, char **argv, char **env)
 {
 	oki->mypid = getpid();
 	oki->cmd = NULL;
@@ -34,7 +35,7 @@ void _in(okeoma *oki, char **argv)
 	oki->N = argv[0];
 	oki->c = 0;
 	oki->i = 0;
-	oki->head = list_from_env(environ);
+	oki->head = list_from_env(env);
 }
 
 /**
@@ -72,66 +73,43 @@ void remov(char *str)
 }
 
 /**
- * File - handles all file processing
- * @filename: name of the file to be processed
- * @oki: struct of type okeoma
+ * line - funtions removes concurent white spaces from a string
+ * @cmd: the string to be worked on
  *
  * Return: void
 */
-void File(char *filename, okeoma *oki)
+void line(char *cmd)
 {
-	size_t len;
-	ssize_t read;
-	FILE *file;
-	int fd;
+	char *new;
 
-	oki->cmd = NULL;
-	if (access(filename, F_OK) == 0)
-		fd = open(filename, O_RDONLY);
-	else
-	{
-		p(STE, "%s: %d: cannot open %s: No such file\n",
-		oki->N, oki->c, filename);
-		exit(2);
-	}
-	if (fd == -1)
+	if (cmd == NULL || *cmd == '\0')
 		return;
-	file = fdopen(fd, "r");
-	if (file == NULL)
+
+	new = cmd;
+	while (*cmd != '\0')
 	{
-		close(fd);
-		return;
-	}
-	len = 0;
-	oki->c++;
-	oki->N = filename;
-	while ((read = getline(&oki->cmd, &len, file)) != -1)
-	{
-		remov(oki->cmd);
-		if (empty(oki->cmd))
+		if (*cmd == ' ')
 		{
-			oki->c++;
-			continue;
+			while (*(cmd + 1) == ' ')
+				cmd++;
 		}
-		B_exc(oki);
-		oki->c++;
+		*new = *cmd;
+		cmd++;
+		new++;
 	}
-	free(oki->cmd);
-	fclose(file);
-	close(fd);
-	exit(0);
+	*new = '\0';
 }
-
 
 /**
  * main - entry point of the shell
  * @argc: argument count
  * @argv: argument vectors
+ * @env: envronment variables
  *
  * Return: 0 on success
  * error: Non zero value is returned
 */
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
 	okeoma *oki = malloc(sizeof(okeoma));
 	size_t n = 0;
@@ -140,35 +118,18 @@ int main(int argc, char **argv)
 	FILE *fd;
 
 	signal(SIGINT, sig);
-	_in(oki, argv);
+	_in(oki, argv, env);
 	fd = file_handle(oki, argc, argv);
-	while (1 && (!st || byte_r != 0))
+	if (argc > 1)
+		file_loop(oki, n, byte_r, st, fd);
+	if (!isatty(STDIN_FILENO))
 	{
-		if (!st && !oki->it)
-			oki->c++;
-		st = !isatty(STDIN_FILENO);
-		if (argc == 1 && !st && !oki->it)
-			p(STO, "$ ");
-		byte_r = getline(&oki->cmd, &n, fd);
-		remov(oki->cmd);
-		if (empty(oki->cmd))
-		{
-			oki->c++;
-			continue;
-		}
-		if (*oki->cmd == '\n')
-			continue;
-
-		if (byte_r == -1)
-			break;
-		B_exc(oki);
-		if (!oki->it && !st)
-			continue;
-		if (oki->it && st)
-			break;
-
-		oki->c++;
+		non_loop(oki, n, byte_r, st, fd);
+		return (0);
 	}
+	if (isatty(STDIN_FILENO) && argc == 1 && !oki->it)
+		_loop(argc, oki, n, byte_r, st, fd);
+
 	fclose(fd);
 	free_all(oki);
 	return (0);

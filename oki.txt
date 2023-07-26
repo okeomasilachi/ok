@@ -1,4 +1,8 @@
 ls
-ls -la
+ls -l
 ls
 gg
+    /bin/ls
+     /bin/ls
+/bin/ls
+   /bin/ls     

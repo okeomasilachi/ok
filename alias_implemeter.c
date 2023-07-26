@@ -12,8 +12,8 @@ bool alias_checker(alias *head, char *arr)
 	char *tok = NULL, *che = strdup(arr);
 	alias *cur = head;
 
-	/* if (head == NULL || arr == NULL)
-		return (false); */
+	if (head == NULL || arr == NULL)
+		return (false);
 
 	tok = string(che, " \n");
 	while (tok != NULL)

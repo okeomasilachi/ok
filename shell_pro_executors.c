@@ -72,7 +72,7 @@ int execute_command(okeoma *oki)
 		else
 		{
 			waitpid(oki->child_pid, &oki->status, 0);
-			fr__(2, oki->ec, envi);
+			/* fr__(2, oki->ec, envi); */
 			if (WIFEXITED(oki->status))
 			{
 				return (WEXITSTATUS(oki->status));
@@ -179,13 +179,13 @@ FILE *file_handle(okeoma *oki, int argc, char **argv)
 	 *	exit(98);
 	 * }
 	*/
-	if (argc == 1)
-		file_d = stdin;
-	else
+	if (argc > 1 && argv[1] != NULL)
 	{
 		file_d = fopen(argv[1], "r");
 		oki->N = argv[1];
 	}
+	else
+		file_d = stdin;
 	if (file_d == NULL)
 	{
 		p(STE, "%s: %d: cannot open %s: No such file\n",

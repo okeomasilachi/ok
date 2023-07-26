@@ -1,8 +1,8 @@
 #include "shell.h"
 
 /**
- * st - Breaks a string into a sequence of zero or more nonempty tokens
- * @str: The string to be parsed 
+ * string - Breaks a string into a sequence of zero or more nonempty tokens
+ * @str: The string to be parsed
  * @del: Set of bytes that delimit the tokens in the parsed string
  *
  * Return: Pointer to the next token,
@@ -11,7 +11,7 @@
 char *string(char *str, const char *del)
 {
 	char *tok_st = NULL, *tok_ed = NULL;
-	static char *saved_str = NULL;
+	static char *saved_str;
 
 	if (str != NULL)
 		saved_str = str;
@@ -39,12 +39,12 @@ char *string(char *str, const char *del)
 		saved_str = NULL;
 	}
 
-	return (tok_st);	
+	return (tok_st);
 }
 
 /**
  * str_tok - Breaks a string into a sequence of zero or more nonempty tokens
- * @str: The string to be parsed 
+ * @str: The string to be parsed
  * @del: Set of bytes that delimit the tokens in the parsed string
  *
  * Return: Pointer to the next token,
@@ -53,7 +53,7 @@ char *string(char *str, const char *del)
 char *str_tok(char *str, const char *del)
 {
 	char *tok_st = NULL, *tok_ed = NULL;
-	static char *sa_str = NULL;
+	static char *sa_str;
 
 	if (str != NULL)
 		sa_str = str;
@@ -81,7 +81,7 @@ char *str_tok(char *str, const char *del)
 		sa_str = NULL;
 	}
 
-	return (tok_st);	
+	return (tok_st);
 }
 
 /**
