@@ -55,7 +55,7 @@ void file_loop(okeoma *oki, size_t n, ssize_t byte_r, char st, FILE *fd)
 void non_loop(okeoma *oki, size_t n, ssize_t byte_r, char st, FILE *fd)
 {
 	while (true)
-	{	
+	{
 		st = !isatty(STDIN_FILENO);
 		while ((byte_r = getline(&oki->cmd, &n, fd)) != -1)
 		{
