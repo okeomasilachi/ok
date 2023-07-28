@@ -1,154 +1,100 @@
-#include "shell.h"
+#include "main.h"
 
 /**
  * cd_command - changes directory to the specified path
- * @oki: struct of type okeoma
+ * @av: argument varable
+ * @argv: argument variable
+ * @command_count: current argument number
+ * @command: arguments
+ * @colon: for the command separator
  *
  * Return: void
 */
-void cd_command(okeoma *oki)
+void cd_command(char **av, char **argv, size_t command_count,
+char *command, char **colon)
 {
 	int i;
+	v command, v colon;
 
-	if (oki->av[1] == NULL)
+	if (av[1] == NULL)
 	{
-		i = chdir(get_env(oki->head, "HOME"));
+		i = chdir(getenv("HOME"));
 		if (i == 0)
 		{
-			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
-			set_env_value(oki->head, "PWD", get_cwd());
+			setenv("OLDPWD", getenv("PWD"), 1);
+			setenv("PWD", get_cwd(), 1);
 		}
 		return;
 	}
-	else if (strcmp(oki->av[1], "-") == 0)
+	else if (strcmp(av[1], "-") == 0)
 	{
-		oki->ok = get_env(oki->head, "OLDPWD");
-		i = chdir(oki->ok);
+		char *ok = getenv("OLDPWD");
+
+		i = chdir(ok);
 		if  (i == 0)
 		{
-			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
-			set_env_value(oki->head, "PWD", get_cwd());
-			p(STO, "%s\n", get_env(oki->head, "PWD"));
+			setenv("OLDPWD", getenv("PWD"), 1);
+			setenv("PWD", get_cwd(), 1);
+			print(STO, "%s\n", getenv("PWD"));
 		}
 		return;
 	}
 	else
 	{
-		i = chdir(oki->av[1]);
+		i = chdir(av[1]);
 		if (i == 0)
 		{
-			set_env_value(oki->head, "OLDPWD", get_env(oki->head, "PWD"));
-			set_env_value(oki->head, "PWD", get_cwd());
+			setenv("OLDPWD", getenv("PWD"), 1);
+			setenv("PWD", get_cwd(), 1);
 		}
 		else
-			p(STE, "%s: %d: %s: can't cd to %s\n",
-			oki->N, oki->c, oki->av[0], oki->av[1]);
+			print(STE, "%s: %d: %s: can't cd to %s\n",
+			argv[0], command_count, av[0], av[1]);
 	}
 }
 
 /**
  * exit_command - exits the program
- * @oki: struct of type okeoma
+ * @av: argument varable
+ * @argv: argument variable
+ * @command_count: current argument number
+ * @command: arguments
+ * @colon: for the command separator
  *
  * Return: void
 */
-void exit_command(okeoma *oki)
+void exit_command(char **av, char **argv, size_t command_count,
+char *command, char **colon)
 {
 	int i;
 	int isNumber = 1;
 	int satus;
 
-	if (oki->av[1] == NULL)
+	if (av[1] == NULL)
 	{
-		free_all(oki);
-		if (!oki->it)
-			exit(EXIT_SUCCESS);
-		else
-			exit(oki->status);
+		arg_free(av, colon);
+		free(command);
+		exit(EXIT_SUCCESS);
 	}
-	else if (oki->av[1] != NULL)
+	else if (av[1] != NULL)
 	{
-		for (i = 0; oki->av[1][i] != '\0'; i++)
+		for (i = 0; av[1][i] != '\0'; i++)
 		{
-			if (!isdigit(oki->av[1][i]))
+			if (!isdigit(av[1][i]))
 			{
 				isNumber = 0;
 				break;
 			}
 		}
 		if (!isNumber)
-			p(STE, "%s: %d: %s: Illegal number: %s\n",
-			oki->N, oki->c, oki->av[0], oki->av[1]);
+			print(STE, "%s: %d: %s: Illegal number: %s\n",
+			argv[0], command_count, av[0], av[1]);
 		else
 		{
-			satus = _atoi(oki->av[1]);
-			free_all(oki);
+			satus = atoi(av[1]);
+			arg_free(av, colon);
+			free(command);
 			exit(satus);
 		}
-	}
-}
-
-/**
- * setenv_command - sets the specified environ
- * @oki: struct of type okeoma
- *
- * Return: void
-*/
-void setenv_command(okeoma *oki)
-{
-	if (oki->av[1] == NULL || oki->av[2] == NULL || oki->av[3] != NULL)
-		p(STE, "%s: %d: %s: Usage: setenv NAME value\n",
-		oki->N, oki->c, oki->av[0]);
-	else
-	{
-		set_env_value(oki->head, oki->av[1], oki->av[2]);
-		return;
-	}
-}
-
-/**
- * unsetenv_command - unsets an environmental variable
- * @oki: struct of type okeoma
- *
- * Return: void
-*/
-void unsetenv_command(okeoma *oki)
-{
-	if (oki->av[1] == NULL || oki->av[2] != NULL)
-		p(STE, "%s: %d: %s: Usage: unsetenv NAME\n", oki->N, oki->c, oki->av[0]);
-	else
-	{
-		if (is_NAME(oki->head, oki->av[1]) == true)
-			oki->head = delete_match(oki->head, oki->av[1]);
-		else
-			p(STE, "%s: %d: %s: \"%s\" not set\n",
-			oki->N, oki->c, oki->av[0], oki->av[1]);
-	}
-}
-
-/**
- * get_env_command - print a particular environ
- * @oki: struct of type okeoma
- *
- * Return: void
-*/
-void get_env_command(okeoma *oki)
-{
-	if (oki->av[1] == NULL || oki->av[2] != NULL)
-	{
-		p(STE, "%s: %d: %s: Usage: %s <NAME of environ>\n",
-		oki->N, oki->c, oki->av[0], oki->av[0]);
-	}
-	else if (get_env(oki->head, oki->av[1]) != NULL)
-	{
-		oki->ok = get_env(oki->head, oki->av[1]);
-		p(STO, "%s\n", oki->ok);
-		free(oki->ok);
-		return;
-	}
-	else
-	{
-		p(STE, "%s: %d: %s: \"%s\" not set\n",
-		oki->N, oki->c, oki->av[0], oki->av[1]);
 	}
 }

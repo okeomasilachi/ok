@@ -1,141 +1,102 @@
-#include "shell.h"
-
-/**
- * var_free - frees all char ** variables
- * @oki: struct of type okeoma
- *
- * Return: void
-*/
-void var_free(okeoma *oki)
-{
-	int i;
-
-	for (i = 0; oki->av[i] != NULL; i++)
-		free(oki->av[i]);
-
-	for (i = 0; oki->command[i] != NULL; i++)
-		free(oki->command[i]);
-	free(oki->command);
-	free(oki->av);
-}
-
-/**
- * file_loop - shell interactive loop
- * @oki: struct of type okeoma
- * @n: buffer size for getline
- * @byte_r: actual bytes read by getline
- * @st: file stream check
- * @fd: file stream
- *
- * Return: void
-*/
-void file_loop(okeoma *oki, size_t n, ssize_t byte_r, char st, FILE *fd)
-{
-	st = isatty(STDIN_FILENO);
-	byte_r = 0;
-	do {
-		oki->c++;
-		while ((byte_r = getline(&oki->cmd, &n, fd)) != -1)
-		{
-			remov(oki->cmd);
-			line(oki->cmd);
-
-			if (empty(oki->cmd))
-			{
-				oki->c++;
-				continue;
-			}
-			if (oki->cmd == NULL || *oki->cmd == '\0')
-				break;
-			if (*oki->cmd == '\n')
-				break;
-			B_exc(oki);
-			var_free(oki);
-			if (oki->it && !st)
-				continue;
-			if (!oki->it && st)
-				break;
-		}
-	} while (byte_r != -1);
-}
-
+#include "main.h"
 
 /**
  * non_loop - shell interactive loop
- * @oki: struct of type okeoma
- * @n: buffer size for getline
- * @byte_r: actual bytes read by getline
- * @st: file stream check
+ * @av: argument count
+ * @command: argument count
+ * @command_count: command number
  * @fd: file stream
+ * @status: exit status
+ * @argv: argument vector
+ * @colon: for the command separator
  *
  * Return: void
 */
-void non_loop(okeoma *oki, size_t n, ssize_t byte_r, char st, FILE *fd)
+void non_loop(char **av, char *command, size_t command_count,
+FILE *fd, int status, char **argv, char **colon)
 {
-	st = !isatty(STDIN_FILENO);
+	ssize_t byte_r;
+	size_t n = 0;
+	char st = !isatty(STDIN_FILENO);
+
+	v av;
+
 	do {
-		byte_r = getline(&oki->cmd, &n, fd);
+		byte_r = getline(&command, &n, fd);
 		if (byte_r != -1)
 		{
-			remov(oki->cmd);
-			line(oki->cmd);
-			if (empty(oki->cmd))
+			remov(command);
+			line(command);
+			if (empty(command))
 			{
-				oki->c++;
+				command_count++;
 				continue;
 			}
-			if (*oki->cmd == '\n')
+			if (*command == '\n')
 				continue;
-			B_exc(oki);
-			if (oki->it && !st)
+			handel_comment(command);
+			command_count++;
+			if (*command != '\0')
+				exec(command, av, argv, command_count, st, status, colon);
+
+			if (!st)
 				continue;
-			if (!oki->it && st)
+			if (st)
 				break;
 		}
 	} while (byte_r != -1);
+	exit(status);
 }
-
 
 /**
  * _loop - shell interactive loop
  * @argc: argument count
- * @oki: struct of type okeoma
- * @n: buffer size for getline
- * @byte_r: actual bytes read by getline
- * @st: file stream check
+ * @av: argument count
+ * @command: argument count
+ * @command_count: command number
  * @fd: file stream
+ * @status: exit status
+ * @argv: argument vector
+ * @colon: for the command separator
  *
  * Return: void
 */
-void _loop(int argc, okeoma *oki, size_t n, ssize_t byte_r, char st, FILE *fd)
+void _loop(int argc, char **av, char *command, size_t command_count,
+FILE *fd, int status, char **argv, char **colon)
 {
+	ssize_t byte_r;
+	size_t n = 0;
+	char st = !isatty(STDIN_FILENO);
+
+	v av;
+
 	while (true && isatty(STDIN_FILENO) && (!st || byte_r != 0))
 	{
-		if (!st && !oki->it)
-			oki->c++;
+		command_count++;
 		st = !isatty(STDIN_FILENO);
-		if (argc == 1 && !st && !oki->it)
-			p(STO, "$ ");
-		byte_r = getline(&oki->cmd, &n, fd);
+		if (argc == 1 && !st)
+			print(STO, "$ ");
+		byte_r = getline(&command, &n, fd);
 		if (byte_r == -1)
 		{
-			putchar('\n');
+			free(command);
+			print(STO, "\n");
 			break;
 		}
-		line(oki->cmd);
-		remov(oki->cmd);
-		if (empty(oki->cmd))
+		line(command);
+		remov(command);
+		if (empty(command))
 		{
-			oki->c++;
 			continue;
 		}
-		if (*oki->cmd == '\n')
+		if (*command == '\n')
 			continue;
-		B_exc(oki);
-		var_free(oki);
-		if (!oki->it && !st)
+		handel_comment(command);
+		if (*command != '\0')
+			exec(command, av, argv, command_count, st, status, colon);
+		if (!st)
 			continue;
-		if (oki->it && st)
+		if (st)
 			break;
 	}
 }
