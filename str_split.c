@@ -108,3 +108,53 @@ void arg_free(char **av, char **colon)
 	}
 	free(colon);
 }
+
+/**
+ * _isdigit - Checks if variable is a digit.
+ * @c: The parameter to be checked.
+ *
+ * Return: 1 c is a number, 0 otherwise.
+ */
+int _isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	else
+		return (0);
+}
+
+/**
+ * _atoi - converts string to integer
+ * @nptr: string to be converted
+ *
+ * Return: void
+*/
+int _atoi(const char *nptr)
+{
+	int result, sign, i, digit;
+
+	if (nptr == NULL)
+		return (0);
+
+	result = 0;
+	sign = 1;
+	i = 0;
+
+	while (_isspace(nptr[i]))
+		i++;
+
+	if (nptr[i] == '-' || nptr[i] == '+')
+	{
+		sign = (nptr[i] == '-') ? -1 : 1;
+		i++;
+	}
+	while (_isdigit(nptr[i]))
+	{
+		digit = nptr[i] - '0';
+		if (result > (INT_MAX - digit) / 10)
+			return (sign == 1 ? INT_MAX : INT_MIN);
+		result = result * 10 + digit;
+		i++;
+	}
+	return (sign * result);
+}

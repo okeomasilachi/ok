@@ -39,9 +39,9 @@ FILE *fd, int status, char **argv, char **colon)
 			if (*command != '\0')
 				exec(command, av, argv, command_count, st, status, colon);
 
-			if (!st)
-				continue;
 			if (st)
+				continue;
+			if (!st)
 				break;
 		}
 	} while (byte_r != -1);

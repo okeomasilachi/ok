@@ -18,24 +18,26 @@ char *command, char **colon)
 
 	if (av[1] == NULL)
 	{
-		i = chdir(getenv("HOME"));
+		i = chdir(get_env("HOME"));
 		if (i == 0)
 		{
-			setenv("OLDPWD", getenv("PWD"), 1);
-			setenv("PWD", get_cwd(), 1);
+			set_env("OLDPWD", get_env("PWD"), 1);
+			set_env("PWD", get_cwd(), 1);
 		}
 		return;
 	}
-	else if (strcmp(av[1], "-") == 0)
+	else if (_strcmp(av[1], "-") == 0)
 	{
-		char *ok = getenv("OLDPWD");
+		char *ok = get_env("OLDPWD");
 
 		i = chdir(ok);
 		if  (i == 0)
 		{
-			setenv("OLDPWD", getenv("PWD"), 1);
-			setenv("PWD", get_cwd(), 1);
-			print(STO, "%s\n", getenv("PWD"));
+			set_env("OLDPWD", get_env("PWD"), 1);
+			set_env("PWD", get_cwd(), 1);
+			print(STO, "%s\n", get_env("PWD"));
+			if (!isatty(STDIN_FILENO))
+				print(STO, "%s\n", get_env("PWD"));
 		}
 		return;
 	}
@@ -44,8 +46,8 @@ char *command, char **colon)
 		i = chdir(av[1]);
 		if (i == 0)
 		{
-			setenv("OLDPWD", getenv("PWD"), 1);
-			setenv("PWD", get_cwd(), 1);
+			set_env("OLDPWD", get_env("PWD"), 1);
+			set_env("PWD", get_cwd(), 1);
 		}
 		else
 			print(STE, "%s: %d: %s: can't cd to %s\n",
@@ -80,18 +82,24 @@ char *command, char **colon)
 	{
 		for (i = 0; av[1][i] != '\0'; i++)
 		{
-			if (!isdigit(av[1][i]))
+			if (!_isdigit(av[1][i]))
 			{
 				isNumber = 0;
 				break;
 			}
 		}
 		if (!isNumber)
+		{
 			print(STE, "%s: %d: %s: Illegal number: %s\n",
 			argv[0], command_count, av[0], av[1]);
+			arg_free(av, colon);
+			free(command);
+			if (!isatty(STDIN_FILENO))
+				exit(2);
+		}
 		else
 		{
-			satus = atoi(av[1]);
+			satus = _atoi(av[1]);
 			arg_free(av, colon);
 			free(command);
 			exit(satus);

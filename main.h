@@ -37,8 +37,6 @@ void exit_command(char **av, char **argv, size_t command_count,
 char *command, char **colon);
 
 char *get_cwd(void);
-void set_env(const char *NAME, const char *value);
-char *get_env(const char *NAME);
 
 int execute_builtin_command(char **av, char **argv, size_t command_count,
 char *command, char **colon);
@@ -67,5 +65,13 @@ char *_strcpy(char *dest, const char *src);
 char *_strncpy(char *s1, const char *sc, size_t n);
 int _strcmp(const char *s1, const char *s2);
 char *_strchr(const char *str, int ch);
+int _isdigit(int c);
+int _atoi(const char *nptr);
+int _isspace(int c);
+
+char *get_env(const char *name);
+int set_env(const char *name, const char *value, int overwrite);
+int put_env(const char *string);
+
 
 #endif /* MAIN_H */

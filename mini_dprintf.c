@@ -67,7 +67,7 @@ void print_string(char *s, int n)
 */
 int _isspace(int c)
 {
-	if (c == ' ' || c == '\t' || c == '\n')
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\v' || c == '\r')
 		return (1);
 	else
 		return (0);

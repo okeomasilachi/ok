@@ -152,6 +152,7 @@ size_t command_count, char st, int status, char **colon)
 		if (status != 0)
 			status = execute_command(av, argv, status, command_count, st);
 	}
-	arg_free(av, colon);
+	if (isatty(STDIN_FILENO))
+		arg_free(av, colon);
 	return (status);
 }

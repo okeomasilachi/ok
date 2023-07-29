@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	char st = 0;
 	int status = 0;
 
-	v status, v st, v byte_r, v n, v argc, v argv;
+	v status, v st, v byte_r, v n;
 
 	signal(SIGINT, sig);
 	if (!isatty(STDIN_FILENO))
