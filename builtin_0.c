@@ -36,8 +36,6 @@ char *command, char **colon)
 			set_env("OLDPWD", get_env("PWD"), 1);
 			set_env("PWD", get_cwd(), 1);
 			print(STO, "%s\n", get_env("PWD"));
-			if (!isatty(STDIN_FILENO))
-				print(STO, "%s\n", get_env("PWD"));
 		}
 		return;
 	}
